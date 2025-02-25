@@ -1,0 +1,27 @@
+.button_login {
+    width: 30%;
+}
+
+.input_container {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.label {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+    z-index: 1;
+    transition: .3s ease;
+}
+
+.input {
+    text-align: left;
+}
+
+.input:focus + .label,
+.input:not(:placeholder-shown) + .label{
+    transform: translateY(-60px);
+}
+

@@ -1,0 +1,52 @@
+package ad
+
+import (
+	"fmt"
+
+	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
+	"github.com/go-ldap/ldap/v3"
+)
+
+func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err error) {
+
+	matches = make([]models.UserSimpleInfo, 0)
+
+	l, err := connectToLDAP()
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	defer l.Close()
+	defer l.Unbind()
+
+	searchRequest := ldap.NewSearchRequest(
+		"DC=URMC-sh,DC=rochester,DC=edu",
+		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
+		fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue),
+		[]string{"cn", "name", "sAMAccountName", "distinguishedName", "uid", "mail"},
+		nil,
+	)
+
+	results, err := l.Search(searchRequest)
+	fmt.Println(err)
+
+	if results == nil || err != nil {
+		return
+	}
+
+	for _, entry := range results.Entries {
+		fmt.Println(entry.GetAttributeValue("uid"))
+		matches = append(matches, models.UserSimpleInfo{
+			Type:     "user",
+			Name:     entry.GetAttributeValue("cn"),
+			Username: entry.GetAttributeValue("sAMAccountName"),
+			Email:    entry.GetAttributeValue("mail"),
+			OU:       entry.GetAttributeValue("distinguishedName"),
+			NetID:    entry.GetAttributeValue("uid"),
+		})
+	}
+
+	return
+}
