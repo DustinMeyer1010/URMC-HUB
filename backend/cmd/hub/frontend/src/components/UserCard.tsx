@@ -1,19 +1,14 @@
-import axios from "axios";
-import { useEffect } from "react";
 import "./UserCard.css";
 
 function UserCard() {
     
-    useEffect(() => {
-        axios.get('http://localhost:8080/search/users/dmeyer20')
-        .then((res) => console.log(res.data))
-        .catch(console.error);
-    }, []);
-
 
     return (
         <div>
             <div className="user-container">
+                <p>Username: Dmeyer20</p>
+                <p>Name: Dustin Meyer</p>
+                <p>OU: dalkjfbfksal dasfndnfkjandf </p>
             </div>
         </div>
     )

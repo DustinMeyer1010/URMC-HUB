@@ -1,0 +1,9 @@
+.user-container {
+    width: 100%;
+    height: fit-content;
+    padding: 10px;
+    background: none;
+    box-shadow: 0 0 10px rgba(150, 150, 150, 1);
+    backdrop-filter: blur(20px);
+    border-radius: 10px;
+}
