@@ -1,6 +1,6 @@
 import "./UserCard.css";
 
-function UserCard() {
+const UserCard = () => {
     
 
     return (

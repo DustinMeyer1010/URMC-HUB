@@ -1,17 +1,20 @@
-import SearchBoxStyles from "./SearchBox.module.css"
+import Input from "../styles/Input.module.css"
+import Button from "../styles/Button.module.css"
 
 
 type SearchBox = {
     value: string;
     onChange: (newValue: string) => void;
     onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    onClick: () => void;
 }
 
-const SearchBox: React.FC<SearchBox> = ({value, onChange, onKeyDown}) => {
+const SearchBox: React.FC<SearchBox> = ({value, onChange, onKeyDown, onClick}) => {
     return (
-        <div>
+        <div style={{display: 'flex', gap: '10px'}}>
+            <button className={Button.default} onClick={onClick}>Search</button>
             <input 
-                className={SearchBoxStyles.input} 
+                className={Input.default} 
                 type="text" 
                 value={value}
                 placeholder="Search"

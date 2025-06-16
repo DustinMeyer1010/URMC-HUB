@@ -1,9 +1,12 @@
 
 import { useState } from "react";
-import "./Search.css"
 import axios from "axios";
 import UserCard from "../components/UserCard";
-import SearchBox from "../components/SearchBox";
+import SearchBox from "../components/SearchInput";
+import HomeStyles from "./Home.module.css";
+import Button from "../styles/Button.module.css";
+import SearchStyles from "./Search.module.css";
+import Paging from "../components/Paging";
 
 function Search() {
     const [searchValue, setSearchValue] = useState("");
@@ -40,17 +43,15 @@ function Search() {
                 <UserCard/>
                 {JSON.stringify(data)}
             </div>
-            <div className="control-container">
-            <button onClick={handleSubmit}>Search</button>
+            <div className={HomeStyles.control_container}>
             <SearchBox
                 value={searchValue}
                 onChange={handleChange}
                 onKeyDown={handleEnter}
+                onClick={handleSubmit}
                 />
-           
-                <button className="pager-button">-</button>
-                <button className="pager-button">+</button>
-
+            
+            <Paging/>
             </div>
 
         </div>

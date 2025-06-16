@@ -1,6 +1,6 @@
 
 
-function SelectionMenu() {
+const SelectionMenu = () => {
     return (
         <div></div>
     )
