@@ -1,4 +1,5 @@
 import LinkCardStyle from "../components/LinkCard.module.css";
+import image from "../assets/bac.jpg";
 
 type LinkCard = {
     title?: string;
@@ -8,8 +9,10 @@ type LinkCard = {
     favorite?: boolean;
 }
 
+console.log(image)
 
-const LinkCard: React.FC<LinkCard> = ({title= "URMC-HUB", link = "", description = "This is going to be my test input", imagePath = "/src/assets/bac.jpg", favorite = true}) => {
+
+const LinkCard: React.FC<LinkCard> = ({title= "URMC-HUB", link = "", description = "This is going to be my test input", imagePath = image, favorite = true}) => {
     return (
         <a className={LinkCardStyle.a} href={link} target="_blank">
             <div className={LinkCardStyle.link_container}>
@@ -21,7 +24,7 @@ const LinkCard: React.FC<LinkCard> = ({title= "URMC-HUB", link = "", description
                 </div>
 
 
-                {/*favorite && <span>⭐</span>*/}
+                {favorite && <span>⭐</span>}
             </div>
         </a>
     )

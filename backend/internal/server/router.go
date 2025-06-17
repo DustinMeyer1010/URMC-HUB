@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"embed"
@@ -8,6 +8,7 @@ import (
 	"path"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/api/get"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/api/post"
 )
 
 //go:embed frontend/dist/*
@@ -23,7 +24,7 @@ func createRouter() *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", reactHandler)
 	mux.HandleFunc("/search/users/", get.UserSearch)
-
+	mux.HandleFunc("/user/login", post.Login)
 	return mux
 
 }

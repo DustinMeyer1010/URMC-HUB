@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 )
 
 // Creates the router and start local server
-func startServer() {
+func Start() {
 
 	router := createRouter()
 

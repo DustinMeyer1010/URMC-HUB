@@ -14,6 +14,7 @@ func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err er
 	l, err := connectToLDAP()
 
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 

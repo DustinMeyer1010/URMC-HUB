@@ -4,8 +4,6 @@ import axios from "axios";
 import UserCard from "../components/UserCard";
 import SearchBox from "../components/SearchInput";
 import HomeStyles from "./Home.module.css";
-import Button from "../styles/Button.module.css";
-import SearchStyles from "./Search.module.css";
 import Paging from "../components/Paging";
 
 function Search() {
@@ -33,7 +31,13 @@ function Search() {
             
             
           } catch (error) {
-            console.error('Error fetching data:', error);
+            if (axios.isAxiosError(error)){
+                if (error.response) {
+                    console.log(error.response.data)
+                }
+            } else {
+                console.error(error)
+            }
           }
     };
 

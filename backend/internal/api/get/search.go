@@ -21,7 +21,13 @@ func UserSearch(w http.ResponseWriter, r *http.Request) {
 
 	searchValue, _ = url.QueryUnescape(searchValue)
 
-	userMatches, _ := ad.SearchAllUsers(searchValue)
+	userMatches, err := ad.SearchAllUsers(searchValue)
+
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
 	jsonData, _ := json.Marshal(userMatches)
 
