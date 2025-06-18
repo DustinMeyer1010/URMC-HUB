@@ -1,19 +1,22 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Home from "./pages/Home";
 import Search from "./pages/Search";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { AuthProvider } from "./components/Authentication";
+import { useAuth } from "./components/Authentication";
 import Login from "./pages/Login";
+import Nav from "./components/Nav";
 
 function App() {
+
+  const { loading, isLoggedIn } = useAuth();
+
+  if (loading || isLoggedIn === null) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <AuthProvider>
       <Router>
-        <nav style={{ display: "flex", gap: "1rem", marginBottom: "1rem", position: 'fixed', top: "10px", left: "10px", zIndex: "10"}}>
-          <Link to="/">Home</Link>
-            <Link to="/search">Search</Link>
-          <Link to="/SummaryIndex">System Summary Index</Link>
-        </nav>
+        <Nav/>
 
         <Routes>
           <Route path="/" element={ <Home /> } />
@@ -26,8 +29,7 @@ function App() {
           <Route path="/login" element={ <Login/> }/>
         </Routes>
       </Router>
-    </AuthProvider>
-  );
-}
+    );
+  }
 
-export default App;
+  export default App;

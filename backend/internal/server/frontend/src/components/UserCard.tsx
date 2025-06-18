@@ -1,16 +1,24 @@
 import "./UserCard.css";
 
-const UserCard = () => {
+type UserCardInfo = {
+    Name?: String,
+    Username?: String,
+    NetID?: String,
+    Email?: String,
+    OU?: String,
+}
+
+const UserCard: React.FC<UserCardInfo> = ({ Name = "", Username = "" , NetID = "", Email = "", OU = "" }) => {
     
 
     return (
-        <div>
             <div className="user-container">
-                <p>Username: Dmeyer20</p>
-                <p>Name: Dustin Meyer</p>
-                <p>OU: dalkjfbfksal dasfndnfkjandf </p>
+                <p>Username: {Username} </p>
+                <p>Name: {Name} </p>
+                <p>NetID: {NetID} </p>
+                <p>Email: {Email} </p>
+                <p>OU: {OU} </p>
             </div>
-        </div>
     )
 }
 

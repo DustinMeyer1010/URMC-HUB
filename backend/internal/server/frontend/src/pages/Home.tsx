@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import SearchBox from '../components/SearchInput';
+import SearchBox from '../components/SearchBox';
 import HomeStyles from './Home.module.css';
 import LinkCard from '../components/LinkCard';
 import Paging from '../components/Paging';

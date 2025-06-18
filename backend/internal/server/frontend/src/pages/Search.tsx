@@ -2,9 +2,10 @@
 import { useState } from "react";
 import axios from "axios";
 import UserCard from "../components/UserCard";
-import SearchBox from "../components/SearchInput";
+import SearchBox from "../components/SearchBox";
 import HomeStyles from "./Home.module.css";
 import Paging from "../components/Paging";
+import SearchStyles from "./Search.module.css"
 
 function Search() {
     const [searchValue, setSearchValue] = useState("");
@@ -43,7 +44,20 @@ function Search() {
 
     return (
         <div>
-            <div className="results-container">
+            <div className={SearchStyles.results_container}>
+                <UserCard/>
+                
+                <UserCard/>
+                <UserCard/>
+                <UserCard/>
+                <UserCard/>
+                <UserCard/>
+                <UserCard/>
+                <UserCard/>
+                <UserCard/>
+                <UserCard/>
+                <UserCard/>
+                <UserCard/>
                 <UserCard/>
                 {JSON.stringify(data)}
             </div>
