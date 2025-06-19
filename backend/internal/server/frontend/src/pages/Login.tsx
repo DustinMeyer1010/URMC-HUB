@@ -1,12 +1,13 @@
-import { useAuth } from "../components/Authentication";
-import input from "../styles/Input.module.css"
-import Button from "../styles/Button.module.css"
-import Form from "../styles/Form.module.css"
-import LoginStyles from "./Login.module.css"
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
+import { useAuth } from "../components/Authentication";
+
+import input from "../styles/global/Input.module.css"
+import Button from "../styles/global/Button.module.css"
+import Form from "../styles/global/Form.module.css"
+import LoginStyles from "../styles/pages/Login.module.css"
 
 
 const Login = () => {
