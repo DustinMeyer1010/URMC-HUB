@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import SearchBox from '../components/SearchBox';
-import HomeStyles from './Home.module.css';
-import LinkCard from '../components/LinkCard';
-import Paging from '../components/Paging';
+import LinkCard from '../components/cards/LinkCard';
+//import Paging from '../components/Paging';
+
+import HomeStyles from '../styles/pages/Home.module.css';
 
 const Home = () => {
 
@@ -51,7 +52,7 @@ const Home = () => {
         onKeyDown={handleEnter}
         onClick={handleClick}
         />
-        <Paging />
+        {/*<Paging />*/}
       </div>
     </div>
     );

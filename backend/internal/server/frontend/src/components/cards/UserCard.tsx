@@ -1,18 +1,10 @@
-import "./UserCard.css";
-
-type UserCardInfo = {
-    Name?: String,
-    Username?: String,
-    NetID?: String,
-    Email?: String,
-    OU?: String,
-}
+import UserCardStyles from "../../styles/components/UserCard.module.css";
+import type { UserCardInfo } from "../../models/User";
 
 const UserCard: React.FC<UserCardInfo> = ({ Name = "", Username = "" , NetID = "", Email = "", OU = "" }) => {
-    
 
     return (
-            <div className="user-container">
+            <div className={UserCardStyles.card}>
                 <p>Username: {Username} </p>
                 <p>Name: {Name} </p>
                 <p>NetID: {NetID} </p>

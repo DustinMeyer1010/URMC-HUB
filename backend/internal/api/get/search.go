@@ -40,6 +40,10 @@ func GroupSearch(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func PrinterSearch(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func ComputerSearch(w http.ResponseWriter, r *http.Request) {
 
 }
