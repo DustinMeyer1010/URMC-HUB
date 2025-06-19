@@ -43,12 +43,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         
         if (requireLogin){
             checkLoginStatus();
-<<<<<<< Updated upstream
-            /*
-            login()
-            setloading(false)
-            */
-=======
         }
         else {
             login()
@@ -56,7 +50,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
          
         }
            
->>>>>>> Stashed changes
             }, []);
 
     return (
