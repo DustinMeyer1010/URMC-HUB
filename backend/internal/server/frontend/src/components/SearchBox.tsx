@@ -1,5 +1,5 @@
-import Input from "../styles/Input.module.css"
-import Button from "../styles/Button.module.css"
+import Input from "../styles/global/Input.module.css"
+import Button from "../styles/global/Button.module.css"
 
 
 type SearchBox = {

@@ -1,7 +1,8 @@
 
 import { Link } from "react-router-dom"
-import NavStyles from "./Nav.module.css"
 import { useEffect, useState } from "react"
+
+import NavStyles from "../styles/components/Nav.module.css"
 
 const Nav = () => {
 
@@ -9,7 +10,7 @@ const Nav = () => {
 
     useEffect(() => {
         const onScroll = () => {
-            setScrolled(window.scrollY > 100)
+            setScrolled(window.scrollY > 1)
         }
 
         window.addEventListener('scroll', onScroll);

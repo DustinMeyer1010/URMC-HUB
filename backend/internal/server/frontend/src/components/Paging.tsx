@@ -1,5 +1,6 @@
-import Button from "../styles/Button.module.css";
-import PagingStyle from "./Paging.module.css";
+import Button from "../styles/global/Button.module.css";
+
+import PagingStyle from "../styles/components/Paging.module.css";
 
 const Paging = () => {
     return (

@@ -39,10 +39,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
             checkLoginStatus();
-            /*
-            login()
-            setloading(false)
-            */
+            
+            //login()
+            //setloading(false)
+            
             }, []);
 
     return (

@@ -10,9 +10,9 @@
     left: 50%;
     transform: translateX(-50%); 
     z-index: 10;
-    background-color: rgba(0, 110, 255, 0.1);
+    background-color: rgba(0, 110, 255, 0.15);
     backdrop-filter: blur(20px);
-    transition: .3s ease;
+    transition: .5s ease-in-out;
 }
 
 .nav_top {
@@ -21,14 +21,14 @@
     width: 100%;
     position: fixed;
     justify-content: space-between;
-    border-radius: 10px;
+    border-radius: 0px;
     padding: 0 50px 0 50px;
     top: 0; 
     left: 0;
     z-index: 10;
-    background-color: rgba(0, 110, 255, 0.1);
+    background-color: rgba(0, 110, 255, 0.15);
     backdrop-filter: blur(20px);
-    transition: .3s ease;
+    transition: .5s ease-in-out;
 
 }
 
