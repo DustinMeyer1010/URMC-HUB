@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import devConfig from "../../devconfig.json"
 
 type Auth = {
     isLoggedIn: boolean | null;
@@ -38,11 +39,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             };
         }
 
+        const requireLogin = devConfig.login.require === "true"
+        
+        if (requireLogin){
             checkLoginStatus();
+<<<<<<< Updated upstream
             /*
             login()
             setloading(false)
             */
+=======
+        }
+        else {
+            login()
+            setloading(false)
+         
+        }
+           
+>>>>>>> Stashed changes
             }, []);
 
     return (

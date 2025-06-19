@@ -12,7 +12,11 @@
     z-index: 10;
     background-color: rgba(0, 110, 255, 0.1);
     backdrop-filter: blur(20px);
+<<<<<<< Updated upstream:backend/internal/server/frontend/src/components/Nav.module.css
     transition: .3s ease;
+=======
+
+>>>>>>> Stashed changes:backend/internal/server/frontend/src/styles/components/Nav.module.css
 }
 
 .nav_top {
@@ -28,7 +32,10 @@
     z-index: 10;
     background-color: rgba(0, 110, 255, 0.1);
     backdrop-filter: blur(20px);
+<<<<<<< Updated upstream:backend/internal/server/frontend/src/components/Nav.module.css
     transition: .3s ease;
+=======
+>>>>>>> Stashed changes:backend/internal/server/frontend/src/styles/components/Nav.module.css
 
 }
 
