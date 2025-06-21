@@ -38,6 +38,29 @@ func UserSearch(w http.ResponseWriter, r *http.Request) {
 
 func GroupSearch(w http.ResponseWriter, r *http.Request) {
 
+	urlParse := strings.Split(r.URL.Path, "/")
+	searchValue := urlParse[len(urlParse)-1]
+
+	searchValue, _ = url.QueryUnescape(searchValue)
+
+	groupMatches, err := ad.SearchAllGroups(searchValue)
+
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	jsonData, _ := json.Marshal(groupMatches)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
+
+}
+
+func PrinterSearch(w http.ResponseWriter, r *http.Request) {
+
 }
 
 func ComputerSearch(w http.ResponseWriter, r *http.Request) {

@@ -25,13 +25,11 @@ func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err er
 		"DC=URMC-sh,DC=rochester,DC=edu",
 		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
 		fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue),
-		[]string{"cn", "name", "sAMAccountName", "distinguishedName"},
+		[]string{"cn", "name", "sAMAccountName", "distinguishedName", "uid", "mail"},
 		nil,
 	)
 
 	results, err := l.Search(searchRequest)
-
-	fmt.Println(results.Entries)
 	fmt.Println(err)
 
 	if results == nil || err != nil {
@@ -43,7 +41,9 @@ func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err er
 			Type:     "user",
 			Name:     entry.GetAttributeValue("cn"),
 			Username: entry.GetAttributeValue("sAMAccountName"),
+			Email:    entry.GetAttributeValue("mail"),
 			OU:       entry.GetAttributeValue("distinguishedName"),
+			NetID:    entry.GetAttributeValue("uid"),
 		})
 	}
 

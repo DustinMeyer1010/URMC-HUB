@@ -1,5 +1,5 @@
-import LinkCardStyle from "../components/LinkCard.module.css";
-import image from "../assets/bac.jpg";
+import image from "../../assets/bac.jpg";
+import LinkCardStyle from "../../styles/components/LinkCard.module.css";
 
 type LinkCard = {
     title?: string;
@@ -8,8 +8,6 @@ type LinkCard = {
     imagePath?: string;
     favorite?: boolean;
 }
-
-console.log(image)
 
 
 const LinkCard: React.FC<LinkCard> = ({title= "URMC-HUB", link = "", description = "This is going to be my test input", imagePath = image, favorite = true}) => {
@@ -24,7 +22,7 @@ const LinkCard: React.FC<LinkCard> = ({title= "URMC-HUB", link = "", description
                 </div>
 
 
-                {favorite && <span>⭐</span>}
+                {favorite && <span  >⭐</span>}
             </div>
         </a>
     )

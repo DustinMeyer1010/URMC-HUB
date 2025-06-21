@@ -1,14 +1,34 @@
 
 import { useState } from "react";
-import axios from "axios";
-import UserCard from "../components/UserCard";
-import SearchBox from "../components/SearchInput";
-import HomeStyles from "./Home.module.css";
+
+//import UserCard from "../components/cards/UserCard";
+import SearchBox from "../components/SearchBox";
 import Paging from "../components/Paging";
+//import ComputerCard from "../components/cards/ComputerCard"
+
+import { UserSearch, GroupSearch } from "./SearchHelper"
+
+import type { UserCardInfo } from "../models/User";
+
+import SearchStyles from "../styles/pages/Search.module.css"
+import HomeStyles from "../styles/pages/Home.module.css";
+import GroupCard from "../components/cards/GroupCard";
+import type { GroupCardInfo } from "../models/Group";
 
 function Search() {
     const [searchValue, setSearchValue] = useState("");
-    const [data, setData] = useState<any>(null);
+    const [usersResults, setUsersResults] = useState<UserCardInfo[]>([])
+    const [groupsResults, setGroupsResults] = useState<GroupCardInfo[]>([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const itemsPerPage = 5;
+    const idxLastItem = currentPage * itemsPerPage
+    const idxFirstItem = idxLastItem - itemsPerPage
+
+    // Changed based 
+    //const currentUsersItems = usersResults.slice(idxFirstItem, idxLastItem)
+    const currentGroupItems = groupsResults.slice(idxFirstItem, idxLastItem)
+
+    const totalPage = Math.ceil(groupsResults.length + usersResults.length / itemsPerPage)
 
     const handleChange = (newValue: string) => {
         setSearchValue(newValue);
@@ -19,43 +39,43 @@ function Search() {
             console.log("Not Enter");
             return;
         }
+        setCurrentPage(1)
         handleSubmit();
 
         };
     
     const handleSubmit = async () => {
-        
-        try {
-            const response = await axios.get(`http://localhost:8080/search/users/${searchValue}`, {});
-                setData(response.data); 
-            
-            
-          } catch (error) {
-            if (axios.isAxiosError(error)){
-                if (error.response) {
-                    console.log(error.response.data)
-                }
-            } else {
-                console.error(error)
-            }
-          }
+        setGroupsResults(await GroupSearch(searchValue));
+        setUsersResults(await UserSearch(searchValue));
     };
+
+
 
     return (
         <div>
-            <div className="results-container">
-                <UserCard/>
-                {JSON.stringify(data)}
+            <div className={SearchStyles.results_container}>
+                {
+                    /*
+                currentUsersItems.map((user) => (
+                    <UserCard Name={user.Name} Username={user.Username} NetID={user.NetID} Email={user.Email} OU={user.OU}/>
+                ))
+                    */
+                }
+                {
+                currentGroupItems.map((group) => (
+                    <GroupCard Name={group.Name} OU={group.OU} Description={group.Description} Information={group.Information} />
+                ))
+                }
             </div>
             <div className={HomeStyles.control_container}>
-            <SearchBox
-                value={searchValue}
-                onChange={handleChange}
-                onKeyDown={handleEnter}
-                onClick={handleSubmit}
-                />
-            
-            <Paging/>
+                <SearchBox
+                    value={searchValue}
+                    onChange={handleChange}
+                    onKeyDown={handleEnter}
+                    onClick={handleSubmit}
+                    />
+                
+                <Paging currentPage={currentPage} totalPages={totalPage} onPageChange={setCurrentPage}/>
             </div>
 
         </div>

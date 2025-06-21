@@ -35,9 +35,27 @@ func Login(user models.UserLogin) error {
 	err = l.Bind(fmt.Sprintf("URMC-sh\\%s", user.Username), user.Password)
 
 	if err != nil {
-		return fmt.Errorf("Invalid Username or Password")
+		return fmt.Errorf("invalid Username or Password")
 	}
+
+	global.Username = user.Username
+	global.Password = user.Password
 
 	return nil
 
+}
+
+func Verify() error {
+
+	if global.Username == "" || global.Password == "" {
+		return fmt.Errorf("no Username or Password")
+	}
+
+	_, err := connectToLDAP()
+
+	if err != nil {
+		return fmt.Errorf("invalid username or password")
+	}
+
+	return nil
 }

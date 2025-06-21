@@ -24,7 +24,9 @@ func createRouter() *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", reactHandler)
 	mux.HandleFunc("/search/users/", get.UserSearch)
+	mux.HandleFunc("/search/groups/", get.GroupSearch)
 	mux.HandleFunc("/user/login", post.Login)
+	mux.HandleFunc("/verify", get.Verify)
 	return mux
 
 }

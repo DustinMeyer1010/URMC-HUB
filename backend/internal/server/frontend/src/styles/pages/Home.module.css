@@ -17,7 +17,9 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    row-gap: 100px;
+    column-gap: 20px;
     flex-wrap: wrap;
     height: auto;
+    margin-top: 100px;
 }
