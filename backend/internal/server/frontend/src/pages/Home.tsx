@@ -33,17 +33,6 @@ const Home = () => {
         <LinkCard />
         <LinkCard />
         <LinkCard />
-        <LinkCard />
-        <LinkCard />
-        <LinkCard />
-        <LinkCard />
-        <LinkCard />
-        <LinkCard />
-        <LinkCard />
-        <LinkCard />
-        <LinkCard />
-        <LinkCard />
-        <LinkCard />
       </div>
       <div className={HomeStyles.control_container}>
         <SearchBox

@@ -1,7 +1,7 @@
 import UserCardStyles from "../../styles/components/UserCard.module.css";
 import type { UserCardInfo } from "../../models/User";
 
-const UserCard: React.FC<UserCardInfo> = ({ Name = "", Username = "" , NetID = "", Email = "", OU = "" }) => {
+const UserCard: React.FC<UserCardInfo> = ({ Name = "NA", Username = "NA" , NetID = "NA", Email = "NA", OU = "NA" }) => {
 
     return (
             <div className={UserCardStyles.card}>
