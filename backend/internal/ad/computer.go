@@ -33,7 +33,6 @@ func SearchAllComputers(searchValue string) (matches []models.ComputerSimpleInfo
 	if results == nil || err != nil {
 		return
 	}
-	fmt.Println(len(results.Entries))
 	for _, entry := range results.Entries {
 		matches = append(matches, models.ComputerSimpleInfo{
 			Type:            "Computer",
