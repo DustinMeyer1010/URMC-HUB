@@ -37,7 +37,6 @@ func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err er
 	}
 
 	for _, entry := range results.Entries {
-		fmt.Println(entry.GetAttributeValue("uid"))
 		matches = append(matches, models.UserSimpleInfo{
 			Type:     "user",
 			Name:     entry.GetAttributeValue("cn"),

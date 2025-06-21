@@ -1,6 +1,6 @@
 {
     "login": 
     {
-        "require": "true"
+        "require": "false"
     }
 }
