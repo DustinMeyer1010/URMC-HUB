@@ -23,11 +23,7 @@ func SearchAllGroups(searchValue string) (matches []models.GroupSimpleInfo, err 
 	searchRequest := ldap.NewSearchRequest(
 		"DC=URMC-sh,DC=rochester,DC=edu",
 		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
-<<<<<<< HEAD
-		fmt.Sprintf("(&(objectCategory=group)((anr=%s)))", searchValue),
-=======
 		fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue),
->>>>>>> 7bee0822d69810c5b4d41720d993116f62c3b40b
 		[]string{"cn", "distinguishedName", "sAMAccountName", "description", "info"},
 		nil,
 	)
@@ -36,6 +32,7 @@ func SearchAllGroups(searchValue string) (matches []models.GroupSimpleInfo, err 
 	fmt.Println(err)
 
 	if results == nil || err != nil {
+
 		return
 	}
 
