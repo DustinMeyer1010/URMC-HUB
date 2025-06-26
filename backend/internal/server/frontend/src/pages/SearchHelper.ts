@@ -11,7 +11,7 @@ export const UserSearch = async (searchValue: string): Promise<UserCardInfo[]> =
         let valueEncoded = encodeURIComponent(searchValue)
 
         try {
-            const response = await axios.get<UserCardInfo[]>(`http://localhost:8080/search/users/${valueEncoded}`, {});
+            const response = await axios.get<UserCardInfo[]>(`http://localhost:8000/search/users/${valueEncoded}`, {});
                 users = response.data
           } catch (error) {
             if (axios.isAxiosError(error)){
@@ -32,7 +32,7 @@ export const GroupSearch = async (searchValue: string): Promise<GroupCardInfo[]>
     let valueEncoded = encodeURIComponent(searchValue)
 
     try {
-        const response = await axios.get<GroupCardInfo[]>(`http://localhost:8080/search/groups/${valueEncoded}`, {});
+        const response = await axios.get<GroupCardInfo[]>(`http://localhost:8000/search/groups/${valueEncoded}`, {});
         groups = response.data
 
     } catch (error) {
@@ -54,7 +54,7 @@ export const ComputerSearch = async (searchValue: string): Promise<ComputerCardI
     let valueEncoded = encodeURIComponent(searchValue) 
 
     try {
-        const response = await axios.get<GroupCardInfo[]>(`http://localhost:8080/search/computers/${valueEncoded}`, {});
+        const response = await axios.get<GroupCardInfo[]>(`http://localhost:8000/search/computers/${valueEncoded}`, {});
         computers = response.data
 
     } catch (error) {
