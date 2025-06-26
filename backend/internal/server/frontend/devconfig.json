@@ -1,6 +1,10 @@
 {
     "login": 
     {
+<<<<<<< HEAD
         "require": "true"
+=======
+        "require": "false"
+>>>>>>> 2.0-dev
     }
 }

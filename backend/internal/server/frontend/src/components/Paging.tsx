@@ -12,12 +12,37 @@ type PagingOptions = {
 }
 
 const Paging: React.FC<PagingOptions> = ( { currentPage, totalPages, onPageChange}) => {
+
+    const toNextPage = () => {
+        if (currentPage > 1) {
+            onPageChange(currentPage - 1)
+        }
+    }
+
+    const toPreviousPage = () => {
+        if (currentPage < totalPages) {
+            onPageChange(currentPage + 1)
+        }
+    }
+
     return (
         <div className={PagingStyle.pager_container}>
-            <span className={PagingStyle.page_numbers}>{currentPage} / {totalPages}</span>
+            <span className={PagingStyle.page_numbers}>
+                {currentPage} / {totalPages ? totalPages : 1}
+            </span>
             <div className={PagingStyle.pager_button_container}>
-                <button onClick={() => {if(currentPage > 1) onPageChange(currentPage - 1)}} className={`${Button.default} ${PagingStyle.pager_button}`}>-</button>
-                <button onClick={() => {if(currentPage < totalPages) onPageChange(currentPage + 1)}} className={`${Button.default} ${PagingStyle.pager_button}`}>+</button>
+                <button 
+                    onClick={toNextPage} 
+                    className={`${Button.default} ${PagingStyle.pager_button}`}
+                    >
+                        -
+                </button>
+                <button 
+                    onClick={toPreviousPage}
+                    className={`${Button.default} ${PagingStyle.pager_button}`}
+                    >
+                    +
+                </button>
             </div>
         </div>
     )
