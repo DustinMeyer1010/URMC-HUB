@@ -17,14 +17,14 @@ import SearchStyles from "../styles/pages/Search.module.css"
 import HomeStyles from "../styles/pages/Home.module.css";
 import type { GroupCardInfo } from "../models/Group";
 import ComputerCard from "../components/cards/ComputerCard";
-import SideBar from "../components/sidebar";
+import SideBar from "../components/SideBar";
 
 function Search() {
     const [searchValue, setSearchValue] = useState("");
     const [usersResults, setUsersResults] = useState<UserCardInfo[]>([])
     const [groupsResults, setGroupsResults] = useState<GroupCardInfo[]>([])
     const [computerResults, setComputerResults] = useState<ComputerCardInfo[]>([])
-    const [selected, setSelected] = useState<string[]>(["apple", "fruit", "veggie"])
+    const [selected, setSelected] = useState<string[]>([])
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 5;
     const idxLastItem = currentPage * itemsPerPage
@@ -61,18 +61,22 @@ function Search() {
         setSelected((item) => item.includes(Name) ? item.filter((i) => i !== Name) : [...item, Name]);
     };
 
+    const handleClear = () => {
+        setSelected([])
+    }
+
 
 
     return (
         <div>
             <div className={SearchStyles.results_container}>
-                <SideBar selected={selected} setSelected={handleSelection}/>
-                <ComputerCard Select={handleSelection}/>
+                <SideBar clear={handleClear} selected={selected} setSelected={handleSelection}/>
+                <ComputerCard Select={handleSelection} ItemsSelected={selected}/>
                 
-                <ComputerCard Name="Test1" Select={handleSelection}/>
-                <ComputerCard Name="Test2" Select={handleSelection}/>
-                <ComputerCard Name="Test3" Select={handleSelection}/>
-                <ComputerCard Name="Test5" Select={handleSelection}/>
+                <ComputerCard Name="Test1" Select={handleSelection} ItemsSelected={selected}/>
+                <ComputerCard Name="Test2" Select={handleSelection} ItemsSelected={selected}/>
+                <ComputerCard Name="Test3" Select={handleSelection} ItemsSelected={selected}/>
+                <ComputerCard Name="Test5" Select={handleSelection} ItemsSelected={selected}/>
                 {
                     /*
                 currentUsersItems.map((user) => (
@@ -89,7 +93,7 @@ function Search() {
                 }
                 {
                 currentCompterItems.map((computer) => (
-                    <ComputerCard Name={computer.Name} OU={computer.OU} OperatingSystem={computer.OperatingSystem} Select={handleSelection} />
+                    <ComputerCard Name={computer.Name} OU={computer.OU} OperatingSystem={computer.OperatingSystem} Select={handleSelection}  ItemsSelected={selected}/>
                 ))
                 }
             </div>

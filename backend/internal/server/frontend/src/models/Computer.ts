@@ -8,5 +8,6 @@ export type ComputerCardComponent = {
     Name?: string;
     OU?: string;
     OperatingSystem?: string;
-    Select: (Type: string, Name: string) => void
+    Select: (Type: string, Name: string) => void;
+    ItemsSelected: string[];
 }
