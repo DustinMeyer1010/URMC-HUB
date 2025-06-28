@@ -28,3 +28,19 @@
     0 4px 20px rgba(0, 0, 0, 0.3); 
     outline: none;
 }
+
+.unselected {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 50px;
+    border: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 5px;
+    border: 1px solid white;
+}
+
+.selected {
+    background: green;
+}

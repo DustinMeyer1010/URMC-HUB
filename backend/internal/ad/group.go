@@ -32,7 +32,6 @@ func SearchAllGroups(searchValue string) (matches []models.GroupSimpleInfo, err 
 	fmt.Println(err)
 
 	if results == nil || err != nil {
-
 		return
 	}
 
