@@ -18,6 +18,8 @@ import HomeStyles from "../styles/pages/Home.module.css";
 import type { GroupCardInfo } from "../models/Group";
 import ComputerCard from "../components/cards/ComputerCard";
 import SideBar from "../components/SideBar";
+import UserCard from "../components/cards/UserCard";
+import GroupCard from "../components/cards/GroupCard";
 
 function Search() {
     const [searchValue, setSearchValue] = useState("");
@@ -72,15 +74,14 @@ function Search() {
             <div className={SearchStyles.results_container}>
                 <SideBar clear={handleClear} selected={selected} setSelected={handleSelection}/>
                 <ComputerCard Select={handleSelection} ItemsSelected={selected}/>
-                
                 <ComputerCard Name="Test1" Select={handleSelection} ItemsSelected={selected}/>
-                <ComputerCard Name="Test2" Select={handleSelection} ItemsSelected={selected}/>
-                <ComputerCard Name="Test3" Select={handleSelection} ItemsSelected={selected}/>
                 <ComputerCard Name="Test5" Select={handleSelection} ItemsSelected={selected}/>
+                <GroupCard Name="GroupTest" Select={handleSelection} ItemsSelected={selected}/>
+                <UserCard Name="UserTest1" Select={handleSelection} ItemsSelected={selected}/>
                 {
                     /*
                 currentUsersItems.map((user) => (
-                    <UserCard Name={user.Name} Username={user.Username} NetID={user.NetID} Email={user.Email} OU={user.OU}/>
+                    <UserCard Name={user.Name} Username={user.Username} NetID={user.NetID} Email={user.Email} OU={user.OU} />
                 ))
                     */
                 }

@@ -21,7 +21,9 @@ const SideBar: React.FC<Selection> = ({selected, setSelected, clear}) => {
         setHidden(370)
 
     }
-
+    const handleSearch = () => {
+        return
+    }
     return (
         <div style={{transform: `translateY(${hidden}px)`}} className={styles.container}>
             <button onClick={toggleMenu} className={`${styles.tab_button} ${Button.default}`}>Items Menu</button>
@@ -31,7 +33,7 @@ const SideBar: React.FC<Selection> = ({selected, setSelected, clear}) => {
                 )}
             </div>
             <div className={styles.button_container}> 
-                    <button className={`${Button.default} ${styles.search_button}`}>Search All</button>
+                    <button onClick={handleSearch} className={`${Button.default} ${styles.search_button}`}>Search All</button>
                 <button onClick={clear} className={`${Button.default} ${styles.clear_button}`}>Clear All</button>
             </div>
         </div>
