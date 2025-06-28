@@ -10,7 +10,12 @@ const Nav = () => {
 
     useEffect(() => {
         const onScroll = () => {
-            setScrolled(window.scrollY > 1)
+            if (!scrolled && window.scrollY > 1) {
+                setScrolled(true)
+                return
+            } else if (scrolled && window.scrollY == 0) {
+                setScrolled(false)
+            }
         }
 
         window.addEventListener('scroll', onScroll);
