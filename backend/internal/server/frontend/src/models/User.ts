@@ -17,3 +17,13 @@ export type UserCardComponent = {
     Select: (Type: string, Name: string) => void,
     ItemsSelected: string[],
 }
+
+export const CopyUserAtrribute = (text: string) => {
+    navigator.clipboard.writeText(text)
+    .then(() => {
+
+    })
+    .catch((err) => {
+        alert(err)
+    })
+}   
