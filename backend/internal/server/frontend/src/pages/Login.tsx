@@ -27,8 +27,10 @@ const Login = () => {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
 
+        console.log("button clicked")
+
         try {
-            const response = await axios.post("http://localhost:8080/user/login", formData)
+            const response = await axios.post("http://localhost:8000/user/login", formData)
 
             if (response.status == 200){
                 login()

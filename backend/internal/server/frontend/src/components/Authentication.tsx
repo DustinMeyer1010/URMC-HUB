@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         useEffect(() => {
             const checkLoginStatus = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/verify`, {});
+                const response = await axios.get(`http://localhost:8000/verify`, {});
                 if (response.status == 200) {
                     login()
                 }    
