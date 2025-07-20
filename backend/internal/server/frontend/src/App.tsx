@@ -5,6 +5,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useAuth } from "./components/Authentication";
 import Login from "./pages/Login";
 import Nav from "./components/Nav";
+import User from "./pages/User";
 
 function App() {
 
@@ -25,6 +26,12 @@ function App() {
                 <Search />
               </ProtectedRoute>
               } 
+            />
+            <Route path="/user/:Username" element={
+              <ProtectedRoute>
+                <User />
+              </ProtectedRoute>
+            }
             />
           <Route path="/login" element={ <Login/> }/>
         </Routes>

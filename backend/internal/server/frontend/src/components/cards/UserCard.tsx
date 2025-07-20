@@ -4,10 +4,12 @@ import Button from "../../styles/global/Button.module.css"
 import { useContextMenu } from "../ContextMenuProvider";
 import { useState } from "react";
 import Menu from "./Menu";
+import { useNavigate } from "react-router-dom";
 
 const UserCard: React.FC<UserCardComponent> = ({ Name = "NA", Username = "NA" , NetID = "NA", Email = "NA", OU = "NA", Select, ItemsSelected = []  }) => {
      const { openMenu } = useContextMenu(); 
      const [ copied, setCopied ] = useState("");
+     const navigate = useNavigate();
      const MenuValue = new Map<string, string>([
         ["Name", Name],
         ["Username", Username],
@@ -23,10 +25,14 @@ const UserCard: React.FC<UserCardComponent> = ({ Name = "NA", Username = "NA" , 
         openMenu(e.clientX, e.clientY, (<Menu items={MenuValue} setCopied={setCopied}/>));
     };
 
+    const navigateToUserPage = () => {
+        navigate(`/user/${Username}`)
+    }
+
 
 
     return (
-            <div className={Styles.card} onContextMenu={handleRightClick}>
+            <div className={Styles.card} onContextMenu={handleRightClick} onClick={navigateToUserPage}>
                 <p>Username: {Username} </p>
                 <p>Name: {Name} </p>
                 <p>NetID: {NetID} </p>
