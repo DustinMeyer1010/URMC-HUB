@@ -11,7 +11,6 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
 
 
     if (!isLoggedIn) {
-        console.log(isLoggedIn, loading)
         return <Navigate to="/login" replace />;
     }
 

@@ -20,6 +20,7 @@ import ComputerCard from "../components/cards/ComputerCard";
 import SideBar from "../components/SideBar";
 import UserCard from "../components/cards/UserCard";
 import GroupCard from "../components/cards/GroupCard";
+import PrinterCard from "../components/cards/PrinterCard";
 
 function Search() {
     const [searchValue, setSearchValue] = useState("");
@@ -78,6 +79,7 @@ function Search() {
                 <ComputerCard Name="Test5" Select={handleSelection} ItemsSelected={selected}/>
                 <GroupCard Name="GroupTest" Select={handleSelection} ItemsSelected={selected}/>
                 <UserCard Name="UserTest1" Select={handleSelection} ItemsSelected={selected}/>
+                <PrinterCard Name="Wow" Select={handleSelection} ItemsSelected={selected}/>
                 {
                     /*
                 currentUsersItems.map((user) => (

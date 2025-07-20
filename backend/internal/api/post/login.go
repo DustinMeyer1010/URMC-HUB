@@ -2,6 +2,7 @@ package post
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
@@ -12,6 +13,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var user models.UserLogin
 
 	err := json.NewDecoder(r.Body).Decode(&user)
+
+	fmt.Println("test")
 
 	if err != nil {
 		panic(err)
