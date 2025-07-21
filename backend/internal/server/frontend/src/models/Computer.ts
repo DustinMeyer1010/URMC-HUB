@@ -12,12 +12,3 @@ export type ComputerCardComponent = {
     ItemsSelected: string[],
 }
 
-export const CopyComputerAtrribute = (text: string) => {
-    navigator.clipboard.writeText(text)
-    .then(() => {
-
-    })
-    .catch((err) => {
-        alert(err)
-    })
-}   
