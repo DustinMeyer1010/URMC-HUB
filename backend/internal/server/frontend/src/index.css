@@ -38,8 +38,8 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-    padding-top: 100px;
-  padding-bottom: 150px;
+  padding-top: 100px;
+  padding-bottom: 300px;
 }
 
 #root {
