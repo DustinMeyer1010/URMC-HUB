@@ -11,7 +11,7 @@
 
 
 
-The URMC-HUB is a simple web applications that converts many tools for the URMC service desk into one fast application.
+The URMC-HUB is a simple web applications that converts tools for the URMC service desk into one fast application.
 
 - Active Directory Searching
 - Network Drive Searching
