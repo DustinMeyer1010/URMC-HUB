@@ -26,6 +26,7 @@ func createRouter() *http.ServeMux {
 	mux.HandleFunc("/search/users/", get.UserSearch)
 	mux.HandleFunc("/search/groups/", get.GroupSearch)
 	mux.HandleFunc("/search/computers/", get.ComputerSearch)
+	mux.HandleFunc("/user/", get.PullUserInformation)
 	mux.HandleFunc("/user/login", post.Login)
 	mux.HandleFunc("/verify", get.Verify)
 	return mux

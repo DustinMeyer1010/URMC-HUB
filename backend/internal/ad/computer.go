@@ -20,12 +20,21 @@ func SearchAllComputers(searchValue string) (matches []models.ComputerSimpleInfo
 	defer l.Close()
 	defer l.Unbind()
 
-	searchRequest := ldap.NewSearchRequest(
-		"DC=URMC-sh,DC=rochester,DC=edu",
-		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
-		fmt.Sprintf("(&(objectCategory=computer)(name=%s*))", searchValue),
+	ldapConfig := SearchConfig(
 		[]string{"name", "operatingSystem", "distinguishedName"},
-		nil,
+		fmt.Sprintf("(&(objectCategory=computer)(name=%s*))", searchValue),
+	)
+
+	searchRequest := ldap.NewSearchRequest(
+		ldapConfig.BaseDN,
+		ldapConfig.Scope,
+		ldapConfig.Deref,
+		ldapConfig.SizeLimit,
+		ldapConfig.TimeLimit,
+		ldapConfig.TypesOnly,
+		ldapConfig.Filter,
+		ldapConfig.Attribute,
+		ldapConfig.Control,
 	)
 
 	results, err := l.Search(searchRequest)

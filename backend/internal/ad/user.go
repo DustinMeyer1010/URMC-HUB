@@ -11,42 +11,108 @@ func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err er
 
 	matches = make([]models.UserSimpleInfo, 0)
 
-	l, err := connectToLDAP()
+	conn, err := connectToLDAP()
 
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	defer l.Close()
-	defer l.Unbind()
+	defer conn.Close()
+	defer conn.Unbind()
 
-	searchRequest := ldap.NewSearchRequest(
-		"DC=URMC-sh,DC=rochester,DC=edu",
-		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
-		fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue),
+	ldapConfig := SearchConfig(
 		[]string{"cn", "name", "sAMAccountName", "distinguishedName", "uid", "mail"},
-		nil,
+		fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue),
 	)
 
-	results, err := l.Search(searchRequest)
-	fmt.Println(err)
+	searchRequest := ldap.NewSearchRequest(
+		ldapConfig.BaseDN,
+		ldapConfig.Scope,
+		ldapConfig.Deref,
+		ldapConfig.SizeLimit,
+		ldapConfig.TimeLimit,
+		ldapConfig.TypesOnly,
+		ldapConfig.Filter,
+		ldapConfig.Attribute,
+		ldapConfig.Control,
+	)
+
+	results, err := conn.Search(searchRequest)
 
 	if results == nil || err != nil {
 		return
 	}
 
 	for _, entry := range results.Entries {
-		fmt.Println(entry.GetAttributeValue("uid"))
-		matches = append(matches, models.UserSimpleInfo{
-			Type:     "user",
-			Name:     entry.GetAttributeValue("cn"),
-			Username: entry.GetAttributeValue("sAMAccountName"),
-			Email:    entry.GetAttributeValue("mail"),
-			OU:       entry.GetAttributeValue("distinguishedName"),
-			NetID:    entry.GetAttributeValue("uid"),
-		})
+		var user models.UserSimpleInfo
+		user.FillAttributes(entry)
+		matches = append(matches, user)
 	}
 
 	return
+}
+
+func PullUserInformation(username string) (models.UserFullInfo, error) {
+
+	var user models.UserFullInfo
+
+	conn, err := connectToLDAP()
+
+	if err != nil {
+		return user, err
+	}
+
+	defer conn.Close()
+	defer conn.Unbind()
+
+	ldapConfig := SearchConfig(
+		[]string{
+			"cn",
+			"name",
+			"sAMAccountName",
+			"distinguishedName",
+			"uid",
+			"mail",
+			"urid",
+			"telephoneNumber",
+			"department",
+			"title",
+			"pwdlastset",
+			"description",
+			"physicalDeliveryOfficeName",
+			"givenName",
+			"memberOf",
+			"sn",
+		},
+		fmt.Sprintf("(&(objectCategory=user)(|(SAMAccountName=%s)))", username),
+	)
+
+	searchRequest := ldap.NewSearchRequest(
+		ldapConfig.BaseDN,
+		ldapConfig.Scope,
+		ldapConfig.Deref,
+		ldapConfig.SizeLimit,
+		ldapConfig.TimeLimit,
+		ldapConfig.TypesOnly,
+		ldapConfig.Filter,
+		ldapConfig.Attribute,
+		ldapConfig.Control,
+	)
+
+	results, err := conn.Search(searchRequest)
+
+	if results == nil {
+		return user, fmt.Errorf("username not found")
+	}
+
+	if err != nil {
+		return user, fmt.Errorf("ldap threw an error: %s", err)
+	}
+
+	foundUser := results.Entries[0]
+
+	user.FillAttributes(foundUser)
+
+	return user, nil
 }

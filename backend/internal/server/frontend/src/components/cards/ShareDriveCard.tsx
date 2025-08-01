@@ -7,7 +7,7 @@ import Menu from "./Menu";
 import Button from "../../styles/global/Button.module.css"
 
 
-const ShareDriveCard: React.FC<ShareDriveComponent> = ({ Name = "NA", Server = "NA", Groups = [], Select, ItemsSelected}) => {
+const ShareDriveCard: React.FC<ShareDriveComponent> = ({ Name = "NA", Server = "NA", Select, ItemsSelected}) => {
 
  const { openMenu } = useContextMenu();
     const [ copied, setCopied ] = useState("");

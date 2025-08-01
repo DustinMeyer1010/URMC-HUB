@@ -1,18 +1,37 @@
 import { useParams } from "react-router-dom"
 import Styles from "../styles/pages/User.module.css"
 import React, { useState } from "react";
+import axios from "axios";
+import type { UserInformation }from "../models/User"
 
 const User = () => {
     const { Username } = useParams<{ Username: string }>();
     const [currentContent, setCurrentContent] = useState({ id: "info", move: Styles.moveInfo})
+    const [user, setUser] = useState<UserInformation>()
 
     React.useEffect(() => {
         document.body.classList.toggle("no-scroll")
 
+        const fetchData = async () => {
+            try {
+                const response = await axios.get<UserInformation>(`http://localhost:8000/user/${Username}`, {});
+                setUser(response.data)
+            }
+            catch (error) {
+                console.log(error)
+            }   
+
+        }
+
+        fetchData();
+
+
         return () => {
             document.body.classList.remove("no-scroll")
         }
-    }) 
+
+
+    },[]) 
 
     const handleContentChange = (id: string, move: string) => {
         if (currentContent.id == id){
@@ -39,14 +58,16 @@ const User = () => {
 
                 <ul id="info" className={Styles.content}>
                     <li>Username: {Username}</li>
-                    <li>NedID</li>
-                    <li>Email</li>
-                    <li>Relationship Status</li>
-                    <li>Department</li>
-                    <li>Title</li>
-                    <li>Phone</li>
-                    <li>Location</li>
-                    <li>Password Set</li>
+                    <li>NedID: {user?.NetID ? user.NetID : "NA"}</li>
+                    <li>Email: {user?.Email ? user.Email : "NA"}</li>
+                    <li>URID: {user?.URID ? user.URID : "NA"}</li>
+                    <li>Relationship Status: {user?.RelationshipStatus ? user.RelationshipStatus : "NA"}</li>
+                    <li>Department: {user?.Department ? user.Department : "NA"}</li>
+                    <li>Title: {user?.Title ? user.Title : "NA"}</li>
+                    <li>Phone: {user?.Phone ? user.Phone : "NA"}</li>
+                    <li>Location: {user?.Location ? user.Location : "NA"}</li>
+                    <li>Password Set: {user?.LastPasswordSet ? user.LastPasswordSet : "NA"}</li>
+                    <li>OU: {user?.OU ? user.OU : "NA"}</li>
                 </ul>
                 <ul id="groups" className={`${Styles.content} ${Styles.moveGroups}`}>
                     Groups content

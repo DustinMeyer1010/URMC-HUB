@@ -9,7 +9,7 @@ import Paging from "../components/Paging";
 //import GroupCard from "../components/cards/GroupCard";
 import type { ComputerCardInfo } from "../models/Computer";
 
-import { UserSearch, GroupSearch, ComputerSearch } from "./SearchHelper"
+import { UserSearch, GroupSearch, ComputerSearch } from "../services/SearchRequest"
 
 import type { UserCardInfo } from "../models/User";
 
@@ -60,7 +60,7 @@ function Search() {
         setComputerResults(await ComputerSearch(searchValue))
     };
 
-    const handleSelection = (Type: string, Name: string) => {
+    const handleSelection = (Name: string) => {
         setSelected((item) => item.includes(Name) ? item.filter((i) => i !== Name) : [...item, Name]);
     };
 

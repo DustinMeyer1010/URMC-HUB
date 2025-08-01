@@ -1,6 +1,6 @@
 import type React from "react"
-import { HandleCopy } from "./Copy"
 import Style from "../../styles/global/Menu.module.css"
+import { Copy } from "../../utils/Copy"
 
 type MenuModel = {
     items: Map<string, string>
@@ -8,6 +8,18 @@ type MenuModel = {
 }
 
 const Menu: React.FC<MenuModel> = ({ items,  setCopied }) => {
+
+   const HandleCopy = (copyItem: string, copyItemValue: string , setCopied: React.Dispatch<React.SetStateAction<string>>, ) => {
+
+    Copy(copyItemValue)
+
+    setCopied(copyItem + " Copied")
+
+    setTimeout(() => {
+        setCopied("")
+        }, 1000)
+    }
+
 
 
     return (
