@@ -23,6 +23,8 @@
     border-radius: 20px;
 }
 
+
+
 .content {
     position: absolute;
     transition: .5s ease-in-out;
@@ -31,9 +33,7 @@
     align-items: center;
     flex-direction: column;
     top: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-
+    left: 20px;
 }
 
 .navigation {

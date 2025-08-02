@@ -3,6 +3,7 @@ import Styles from "../styles/pages/User.module.css"
 import React, { useState } from "react";
 import axios from "axios";
 import type { UserInformation }from "../models/User"
+import { UserAbout, UserGroups, UserShareDrive } from "../components/UserPageComponents";
 
 const User = () => {
     const { Username } = useParams<{ Username: string }>();
@@ -34,6 +35,7 @@ const User = () => {
     },[]) 
 
     const handleContentChange = (id: string, move: string) => {
+
         if (currentContent.id == id){
             return
         }
@@ -56,25 +58,15 @@ const User = () => {
                     <button onClick={() => handleContentChange("lockout", `${Styles.moveLockout}`)}>Lockout</button>
                 </div>
 
-                <ul id="info" className={Styles.content}>
-                    <li>Username: {Username}</li>
-                    <li>NedID: {user?.NetID ? user.NetID : "NA"}</li>
-                    <li>Email: {user?.Email ? user.Email : "NA"}</li>
-                    <li>URID: {user?.URID ? user.URID : "NA"}</li>
-                    <li>Relationship Status: {user?.RelationshipStatus ? user.RelationshipStatus : "NA"}</li>
-                    <li>Department: {user?.Department ? user.Department : "NA"}</li>
-                    <li>Title: {user?.Title ? user.Title : "NA"}</li>
-                    <li>Phone: {user?.Phone ? user.Phone : "NA"}</li>
-                    <li>Location: {user?.Location ? user.Location : "NA"}</li>
-                    <li>Password Set: {user?.LastPasswordSet ? user.LastPasswordSet : "NA"}</li>
-                    <li>OU: {user?.OU ? user.OU : "NA"}</li>
-                </ul>
-                <ul id="groups" className={`${Styles.content} ${Styles.moveGroups}`}>
-                    Groups content
-                </ul>
-                <ul id="sharedrive" className={`${Styles.content} ${Styles.moveShareDrive}`}>
-                    Sharedrive content
-                </ul>
+                <div id="info" className={`${Styles.content} `}>
+                    <UserAbout user={user}></UserAbout>
+                </div>
+                <div id="groups" className={`${Styles.content} ${Styles.moveGroups}`}>
+                    <UserGroups user={user}></UserGroups>
+                </div>
+                <div id="sharedrive" className={`${Styles.content} ${Styles.moveShareDrive}`}>
+                    <UserShareDrive user={user}></UserShareDrive>
+                </div>
                 <table id="lockout" className={`${Styles.content} ${Styles.table} ${Styles.moveLockout}`}>
                     <colgroup>
                         <col style={{width: "33%"}}/>
