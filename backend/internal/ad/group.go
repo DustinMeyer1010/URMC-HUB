@@ -7,6 +7,7 @@ import (
 	"github.com/go-ldap/ldap/v3"
 )
 
+// Pull all groups that match the search value returning CN, distinguishedName, description, info for each group
 func SearchAllGroups(searchValue string) (matches []models.GroupSimpleInfo, err error) {
 	matches = make([]models.GroupSimpleInfo, 0)
 
@@ -20,12 +21,21 @@ func SearchAllGroups(searchValue string) (matches []models.GroupSimpleInfo, err 
 	defer l.Close()
 	defer l.Unbind()
 
-	searchRequest := ldap.NewSearchRequest(
-		"DC=URMC-sh,DC=rochester,DC=edu",
-		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
-		fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue),
+	ldapConfig := SearchConfig(
 		[]string{"cn", "distinguishedName", "sAMAccountName", "description", "info"},
-		nil,
+		fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue),
+	)
+
+	searchRequest := ldap.NewSearchRequest(
+		ldapConfig.BaseDN,
+		ldapConfig.Scope,
+		ldapConfig.Deref,
+		ldapConfig.SizeLimit,
+		ldapConfig.TimeLimit,
+		ldapConfig.TypesOnly,
+		ldapConfig.Filter,
+		ldapConfig.Attribute,
+		ldapConfig.Control,
 	)
 
 	results, err := l.Search(searchRequest)

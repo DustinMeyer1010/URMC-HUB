@@ -8,8 +8,7 @@
   width: 100vw;
   height: fit-content;
   box-sizing: border-box;
-  padding-top: 100px;
-  padding-bottom: 150px;
+
   color-scheme: light dark;
   background-color: #242424;
   background-image: url(./assets/Background.jpg);
@@ -32,4 +31,24 @@
   mix-blend-mode: multiply;
   pointer-events: none;
   z-index: -1;
+}
+
+
+body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 100px;
+  padding-bottom: 300px;
+}
+
+#root {
+  flex-grow: 1;
+}
+
+.no-scroll {
+  overflow: hidden;
+  padding-bottom: 0px;
+  padding-top: 50px;
+
 }
