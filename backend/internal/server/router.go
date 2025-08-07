@@ -11,10 +11,10 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/api/post"
 )
 
-//go:embed frontend/dist/*
+//go:embed dist/*
 var embeddedFiles embed.FS
 
-//go:embed frontend/dist/index.html
+//go:embed dist/index.html
 var indexHTML []byte
 
 // Create the routes for the backend
@@ -36,7 +36,7 @@ func createRouter() *http.ServeMux {
 func reactHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Create a file server from the embedded built react project
-	distFS, err := fs.Sub(embeddedFiles, "frontend/dist")
+	distFS, err := fs.Sub(embeddedFiles, "dist")
 
 	if err != nil {
 		log.Fatal(err)
