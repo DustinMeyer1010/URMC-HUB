@@ -13,8 +13,6 @@ func Verify(w http.ResponseWriter, r *http.Request) {
 
 	err := ad.Verify()
 
-	fmt.Println(err)
-
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
