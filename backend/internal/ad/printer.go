@@ -10,8 +10,8 @@ import (
 )
 
 // Matches printer to the search
-func SearchAllPrinters(searchValue string) (printers []models.Printer, err error) {
-	printers = make([]models.Printer, 0)
+func SearchAllPrinters(searchValue string) (printers []models.PrinterSimpleInfo, err error) {
+	printers = make([]models.PrinterSimpleInfo, 0)
 	printersList, err := fetchPrinters()
 
 	if err != nil {
@@ -28,8 +28,8 @@ func SearchAllPrinters(searchValue string) (printers []models.Printer, err error
 }
 
 // Retrieves the printer queue from the server
-func fetchPrinters() (printers []models.Printer, err error) {
-	printers = make([]models.Printer, 0)
+func fetchPrinters() (printers []models.PrinterSimpleInfo, err error) {
+	printers = make([]models.PrinterSimpleInfo, 0)
 	// Make a GET request
 	resp, err := http.Get("https://apps.mc.rochester.edu/ISD/SIG/PrintQueues/PrintQReport.csv")
 
@@ -47,7 +47,7 @@ func fetchPrinters() (printers []models.Printer, err error) {
 	}
 
 	for _, record := range records {
-		printers = append(printers, models.Printer{
+		printers = append(printers, models.PrinterSimpleInfo{
 			Server:         record[0],
 			Queue:          record[1],
 			Model:          record[2],

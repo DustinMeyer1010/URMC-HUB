@@ -1,17 +1,30 @@
 package global
 
 import (
+	_ "embed"
+	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/joho/godotenv"
 )
+
+//go:embed .env
+var enviroment_vairables []byte
 
 var (
 	SERVER1, SERVER2, SERVER3, SERVER4, SERVER5, SERVER6, SERVER7, SERVER8, SERVER9, SERVER10, LOGON, SHARES string
 )
 
 func LoadEnv() {
-	err := godotenv.Load(".env")
+	// Write the embedded .env to a temporary file
+	tmpFile := filepath.Join(os.TempDir(), "embedded.env")
+	err := os.WriteFile(tmpFile, enviroment_vairables, 0600)
+	if err != nil {
+		log.Fatal("Error writing temp env file:", err)
+	}
+
+	err = godotenv.Load(tmpFile)
 
 	if err != nil {
 		panic("Couldn't find .env file to load variables")

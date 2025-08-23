@@ -26,7 +26,7 @@ func SearchConfig(attribute []string, filter string) LDAPSearchConfig {
 		SizeLimit: 0,
 		TimeLimit: 0,
 		TypesOnly: false,
-		Control:   nil,
+		Control:   []ldap.Control{ldap.NewControlPaging(100)},
 	}
 
 }

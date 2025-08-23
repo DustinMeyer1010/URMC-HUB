@@ -10,22 +10,22 @@ import (
 func SearchAllGroups(searchValue string) (matches []models.GroupSimpleInfo, err error) {
 	matches = make([]models.GroupSimpleInfo, 0)
 
-	l, err := connectToLDAP()
+	conn, err := connectToLDAP()
 
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	defer l.Close()
-	defer l.Unbind()
+	defer conn.Close()
+	defer conn.Unbind()
 
 	ldapConfig := SearchConfig(
 		[]string{"cn", "distinguishedName", "sAMAccountName", "description", "info"},
-		fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue),
+		fmt.Sprintf("(&(objectCategory=group)(cn=%s*))", searchValue),
 	)
 
-	results, err := ldapConfig.Search(l)
+	results, err := ldapConfig.Search(conn)
 
 	if results == nil || err != nil {
 		return
@@ -39,8 +39,39 @@ func SearchAllGroups(searchValue string) (matches []models.GroupSimpleInfo, err 
 				Description: entry.GetAttributeValue("description"),
 				Information: entry.GetAttributeValue("info"),
 			})
-
 	}
 
 	return
+}
+
+func PullGroupInfo(group string) (*models.GroupSimpleInfo, error) {
+
+	conn, err := connectToLDAP()
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer conn.Close()
+	defer conn.Unbind()
+
+	ldapConfig := SearchConfig(
+		[]string{"cn", "distinguishedName", "sAMAccountName", "description", "info"},
+		fmt.Sprintf("(&(objectCategory=group)(|(cn=%s))", group),
+	)
+
+	results, err := ldapConfig.Search(conn)
+
+	if results == nil || err != nil {
+		return nil, err
+	}
+
+	entry := results.Entries[0]
+
+	return &models.GroupSimpleInfo{
+		Name:        entry.GetAttributeValue("cn"),
+		Description: entry.GetAttributeValue("description"),
+		Information: entry.GetAttributeValue("info"),
+		OU:          entry.GetAttributeValue("distinguishedName"),
+	}, nil
 }

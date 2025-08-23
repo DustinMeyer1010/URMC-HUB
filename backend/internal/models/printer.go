@@ -1,6 +1,6 @@
 package models
 
-type Printer struct {
+type PrinterSimpleInfo struct {
 	Server         string `json:"server"`
 	Queue          string `json:"queue"`
 	Model          string `json:"model"`

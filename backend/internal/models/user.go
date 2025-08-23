@@ -3,7 +3,6 @@ package models
 import "github.com/go-ldap/ldap/v3"
 
 type UserSimpleInfo struct {
-	Type     string `json:"Type"`
 	Name     string `json:"Name"`
 	Username string `json:"Username"`
 	Email    string `json:"Email"`
@@ -12,10 +11,10 @@ type UserSimpleInfo struct {
 }
 
 func (u *UserSimpleInfo) FillAttributes(user *ldap.Entry) {
-	u.Name = user.GetAttributeValue("Name")
-	u.Username = user.GetAttributeValue("Username")
+	u.Name = user.GetAttributeValue("name")
+	u.Username = user.GetAttributeValue("sAMAccountName")
 	u.Email = user.GetAttributeValue("mail")
-	u.NetID = user.GetAttributeValue("urid")
+	u.NetID = user.GetAttributeValue("uid")
 	u.OU = user.GetAttributeValue("distinguishedName")
 }
 

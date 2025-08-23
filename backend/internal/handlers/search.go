@@ -10,6 +10,26 @@ import (
 )
 
 func AllSearch(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	searchValue := vars["searchValue"]
+
+	matches, err := ad.AllSearch(searchValue)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	jsonData, err := json.Marshal(matches)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 
 }
 
@@ -106,5 +126,7 @@ func ShareDriveShearch(w http.ResponseWriter, r *http.Request) {
 
 	//vars := mux.Vars(r)
 	//searchValue := vars["searchValue"]
+
+	w.Write([]byte("Beign worked on"))
 
 }

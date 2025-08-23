@@ -1,4 +1,4 @@
-package get
+package handlers
 
 import (
 	"encoding/json"
@@ -6,11 +6,10 @@ import (
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/gorilla/mux"
 )
 
 func PullUserInformation(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Println(r.URL)
 
 	user, err := ad.PullUserInformation("dmeyer20")
 
@@ -22,6 +21,19 @@ func PullUserInformation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jsonData, _ := json.Marshal(user)
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
+}
+
+func LockOutStatus(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	username := vars["username"]
+
+	matches := ad.LockoutInfoData(username)
+
+	jsonData, _ := json.Marshal(matches)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
