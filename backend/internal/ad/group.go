@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
-	"github.com/go-ldap/ldap/v3"
 )
 
 // Pull all groups that match the search value returning CN, distinguishedName, description, info for each group
@@ -26,20 +25,7 @@ func SearchAllGroups(searchValue string) (matches []models.GroupSimpleInfo, err 
 		fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue),
 	)
 
-	searchRequest := ldap.NewSearchRequest(
-		ldapConfig.BaseDN,
-		ldapConfig.Scope,
-		ldapConfig.Deref,
-		ldapConfig.SizeLimit,
-		ldapConfig.TimeLimit,
-		ldapConfig.TypesOnly,
-		ldapConfig.Filter,
-		ldapConfig.Attribute,
-		ldapConfig.Control,
-	)
-
-	results, err := l.Search(searchRequest)
-	fmt.Println(err)
+	results, err := ldapConfig.Search(l)
 
 	if results == nil || err != nil {
 		return
@@ -48,7 +34,6 @@ func SearchAllGroups(searchValue string) (matches []models.GroupSimpleInfo, err 
 	for _, entry := range results.Entries {
 		matches = append(matches,
 			models.GroupSimpleInfo{
-				Type:        "Group",
 				Name:        entry.GetAttributeValue("sAMAccountName"),
 				OU:          entry.GetAttributeValue("distinguishedName"),
 				Description: entry.GetAttributeValue("description"),

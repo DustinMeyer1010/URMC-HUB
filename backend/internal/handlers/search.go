@@ -1,12 +1,12 @@
-package get
+package handlers
 
 import (
 	"encoding/json"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/gorilla/mux"
 )
 
 func AllSearch(w http.ResponseWriter, r *http.Request) {
@@ -15,9 +15,8 @@ func AllSearch(w http.ResponseWriter, r *http.Request) {
 
 func UserSearch(w http.ResponseWriter, r *http.Request) {
 
-	urlParse := strings.Split(r.URL.Path, "/")
-
-	searchValue := urlParse[len(urlParse)-1]
+	vars := mux.Vars(r)
+	searchValue := vars["searchValue"]
 
 	searchValue, _ = url.QueryUnescape(searchValue)
 
@@ -38,8 +37,8 @@ func UserSearch(w http.ResponseWriter, r *http.Request) {
 
 func GroupSearch(w http.ResponseWriter, r *http.Request) {
 
-	urlParse := strings.Split(r.URL.Path, "/")
-	searchValue := urlParse[len(urlParse)-1]
+	vars := mux.Vars(r)
+	searchValue := vars["searchValue"]
 
 	searchValue, _ = url.QueryUnescape(searchValue)
 
@@ -61,12 +60,29 @@ func GroupSearch(w http.ResponseWriter, r *http.Request) {
 
 func PrinterSearch(w http.ResponseWriter, r *http.Request) {
 
+	vars := mux.Vars(r)
+	searchValue := vars["searchValue"]
+
+	printerMatches, err := ad.SearchAllPrinters(searchValue)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	jsonData, _ := json.Marshal(printerMatches)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
+
 }
 
 func ComputerSearch(w http.ResponseWriter, r *http.Request) {
 
-	urlParse := strings.Split(r.URL.Path, "/")
-	searchValue := urlParse[len(urlParse)-1]
+	vars := mux.Vars(r)
+	searchValue := vars["searchValue"]
 
 	searchValue, _ = url.QueryUnescape(searchValue)
 
@@ -87,5 +103,8 @@ func ComputerSearch(w http.ResponseWriter, r *http.Request) {
 }
 
 func ShareDriveShearch(w http.ResponseWriter, r *http.Request) {
+
+	//vars := mux.Vars(r)
+	//searchValue := vars["searchValue"]
 
 }

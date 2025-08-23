@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
-	"github.com/go-ldap/ldap/v3"
 )
 
 func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err error) {
@@ -26,19 +25,7 @@ func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err er
 		fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue),
 	)
 
-	searchRequest := ldap.NewSearchRequest(
-		ldapConfig.BaseDN,
-		ldapConfig.Scope,
-		ldapConfig.Deref,
-		ldapConfig.SizeLimit,
-		ldapConfig.TimeLimit,
-		ldapConfig.TypesOnly,
-		ldapConfig.Filter,
-		ldapConfig.Attribute,
-		ldapConfig.Control,
-	)
-
-	results, err := conn.Search(searchRequest)
+	results, err := ldapConfig.Search(conn)
 
 	if results == nil || err != nil {
 		return
@@ -88,19 +75,7 @@ func PullUserInformation(username string) (models.UserFullInfo, error) {
 		fmt.Sprintf("(&(objectCategory=user)(|(SAMAccountName=%s)))", username),
 	)
 
-	searchRequest := ldap.NewSearchRequest(
-		ldapConfig.BaseDN,
-		ldapConfig.Scope,
-		ldapConfig.Deref,
-		ldapConfig.SizeLimit,
-		ldapConfig.TimeLimit,
-		ldapConfig.TypesOnly,
-		ldapConfig.Filter,
-		ldapConfig.Attribute,
-		ldapConfig.Control,
-	)
-
-	results, err := conn.Search(searchRequest)
+	results, err := ldapConfig.Search(conn)
 
 	if results == nil {
 		return user, fmt.Errorf("username not found")

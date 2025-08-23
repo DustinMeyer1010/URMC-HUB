@@ -4,6 +4,8 @@ go 1.24.2
 
 require (
 	github.com/go-ldap/ldap/v3 v3.4.11
+	github.com/gorilla/mux v1.8.1
+	github.com/joho/godotenv v1.5.1
 	modernc.org/sqlite v1.38.0
 )
 

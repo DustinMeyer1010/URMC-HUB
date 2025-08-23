@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"path"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/api/get"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/api/post"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/handlers"
+	"github.com/gorilla/mux"
 )
 
 //go:embed dist/*
@@ -19,16 +19,17 @@ var indexHTML []byte
 
 // Create the routes for the backend
 // "/" is special as it will handle all of the react routes
-func createRouter() *http.ServeMux {
+func createRouter() *mux.Router {
 
-	mux := http.NewServeMux()
+	mux := mux.NewRouter()
 	mux.HandleFunc("/", reactHandler)
-	mux.HandleFunc("/search/users/", get.UserSearch)
-	mux.HandleFunc("/search/groups/", get.GroupSearch)
-	mux.HandleFunc("/search/computers/", get.ComputerSearch)
-	mux.HandleFunc("/user/", get.PullUserInformation)
-	mux.HandleFunc("/user/login", post.Login)
-	mux.HandleFunc("/verify", get.Verify)
+	mux.HandleFunc("/search/users/{searchValue}", handlers.UserSearch).Methods("GET")
+	mux.HandleFunc("/search/groups/{searchValue}", handlers.GroupSearch).Methods("GET")
+	mux.HandleFunc("/search/computers/{searchValue}", handlers.ComputerSearch).Methods("GET")
+	mux.HandleFunc("/search/printers/{searchValue}", handlers.PrinterSearch).Methods("GET")
+	mux.HandleFunc("/user/{URID}", handlers.PullUserInformation).Methods("GET")
+	mux.HandleFunc("/user/login", handlers.Login).Methods("POST")
+	mux.HandleFunc("/verify", handlers.Verify).Methods("GET")
 	return mux
 
 }

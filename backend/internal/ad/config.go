@@ -30,3 +30,19 @@ func SearchConfig(attribute []string, filter string) LDAPSearchConfig {
 	}
 
 }
+
+func (config LDAPSearchConfig) Search(conn *ldap.Conn) (*ldap.SearchResult, error) {
+	searchRequest := ldap.NewSearchRequest(
+		config.BaseDN,
+		config.Scope,
+		config.Deref,
+		config.SizeLimit,
+		config.TimeLimit,
+		config.TypesOnly,
+		config.Filter,
+		config.Attribute,
+		config.Control,
+	)
+
+	return conn.Search(searchRequest)
+}
