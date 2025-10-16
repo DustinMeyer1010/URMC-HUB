@@ -5,4 +5,8 @@ type Agent struct {
 }
 
 type Link struct {
+	Name        string `json:"name"`
+	URL         string `json:"url"`
+	Description string `json:"description"`
+	ImagePath   string `json:"image_path"`
 }

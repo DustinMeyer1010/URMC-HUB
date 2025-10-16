@@ -32,7 +32,11 @@ func Login(user models.UserLogin) error {
 		return fmt.Errorf("Failed to Dail the Server")
 	}
 
-	err = l.Bind(fmt.Sprintf("URMC-sh\\%s", user.Username), user.Password)
+	urmcsh := fmt.Sprintf("URMC-sh\\%s", user.Username)
+
+	fmt.Println(urmcsh)
+
+	err = l.Bind(urmcsh, user.Password)
 
 	if err != nil {
 		return fmt.Errorf("invalid Username or Password")
