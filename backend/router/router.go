@@ -1,4 +1,4 @@
-package server
+package router
 
 import (
 	"embed"
@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"path"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -19,22 +18,26 @@ var indexHTML []byte
 
 // Create the routes for the backend
 // "/" is special as it will handle all of the react routes
-func createRouter() *mux.Router {
+func Create() *mux.Router {
 
 	mux := mux.NewRouter()
-	mux.HandleFunc("/", reactHandler)
-	mux.HandleFunc("/search/users/{searchValue}", handlers.UserSearch).Methods("GET")
-	mux.HandleFunc("/search/groups/{searchValue}", handlers.GroupSearch).Methods("GET")
-	mux.HandleFunc("/search/computers/{searchValue}", handlers.ComputerSearch).Methods("GET")
-	mux.HandleFunc("/search/printers/{searchValue}", handlers.PrinterSearch).Methods("GET")
-	mux.HandleFunc("/search/sharedrive/{searchValue}", handlers.ShareDriveShearch).Methods("GET")
-	mux.HandleFunc("/search/all/{searchValue}", handlers.AllSearch).Methods("GET")
-	mux.HandleFunc("/lockout/{username}", handlers.LockOutStatus).Methods("GET")
-	mux.HandleFunc("/user/{URID}", handlers.PullUserInformation).Methods("GET")
-	mux.HandleFunc("/user/login", handlers.Login).Methods("POST")
-	mux.HandleFunc("/verify", handlers.Verify).Methods("GET")
+
+	createRoutes(mux,
+		searchRoutes,
+		reactRoutes,
+		userRoutes,
+		authRoutes,
+		bookmarksRoutes,
+	)
+
 	return mux
 
+}
+
+func createRoutes(mux *mux.Router, routes ...func(*mux.Router)) {
+	for _, route := range routes {
+		route(mux)
+	}
 }
 
 func reactHandler(w http.ResponseWriter, r *http.Request) {

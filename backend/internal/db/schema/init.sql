@@ -1,6 +1,6 @@
 /* Initats the database with all tables need for the project */
 
-CREATE TABLE IF NOT EXISTS profiles (
+CREATE TABLE IF NOT EXISTS agents (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	username TEXT NOT NULL
 );

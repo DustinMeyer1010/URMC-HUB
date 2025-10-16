@@ -1,8 +1,10 @@
 package main
 
-import "github.com/LostProgrammer1010/URMC-HUB/internal/server"
+import (
+	"github.com/LostProgrammer1010/URMC-HUB/internal/db"
+)
 
 func main() {
-	// db.CreateDatabase()
-	server.Start()
+	db.Init()
+	//server.Start()
 }
