@@ -44,3 +44,18 @@ func LoadEnv() {
 	SHARES = os.Getenv("SHARES")
 
 }
+
+func AllServers() [10]string {
+	return [10]string{
+		SERVER1,
+		SERVER2,
+		SERVER3,
+		SERVER4,
+		SERVER5,
+		SERVER6,
+		SERVER7,
+		SERVER8,
+		SERVER9,
+		SERVER10,
+	}
+}

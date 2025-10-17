@@ -5,6 +5,7 @@ type Agent struct {
 }
 
 type Link struct {
+	Id          int    `json"id"`
 	Name        string `json:"name"`
 	URL         string `json:"url"`
 	Description string `json:"description"`

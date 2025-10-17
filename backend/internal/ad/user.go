@@ -20,9 +20,16 @@ func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err er
 	defer conn.Close()
 	defer conn.Unbind()
 
+	filter := fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue)
+
 	ldapConfig := SearchConfig(
-		[]string{"cn", "name", "sAMAccountName", "distinguishedName", "uid", "mail"},
-		fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue),
+		filter,
+		"cn",
+		"name",
+		"sAMAccountName",
+		"distinguishedName",
+		"uid",
+		"mail",
 	)
 
 	results, err := ldapConfig.Search(conn)
@@ -44,38 +51,27 @@ func PullUserInformation(username string) (models.UserFullInfo, error) {
 
 	var user models.UserFullInfo
 
-	conn, err := connectToLDAP()
-
-	if err != nil {
-		return user, err
-	}
-
-	defer conn.Close()
-	defer conn.Unbind()
-
-	ldapConfig := SearchConfig(
-		[]string{
-			"cn",
-			"name",
-			"sAMAccountName",
-			"distinguishedName",
-			"uid",
-			"mail",
-			"urid",
-			"telephoneNumber",
-			"department",
-			"title",
-			"pwdlastset",
-			"description",
-			"physicalDeliveryOfficeName",
-			"givenName",
-			"memberOf",
-			"sn",
-		},
-		fmt.Sprintf("(&(objectCategory=user)(|(SAMAccountName=%s)))", username),
+	results, err := SearchAllByCategory(
+		"user",
+		"SAMAccountName",
+		username,
+		"cn",
+		"name",
+		"sAMAccountName",
+		"distinguishedName",
+		"uid",
+		"mail",
+		"urid",
+		"telephoneNumber",
+		"department",
+		"title",
+		"pwdlastset",
+		"description",
+		"physicalDeliveryOfficeName",
+		"givenName",
+		"memberOf",
+		"sn",
 	)
-
-	results, err := ldapConfig.Search(conn)
 
 	if results == nil {
 		return user, fmt.Errorf("username not found")
@@ -89,5 +85,5 @@ func PullUserInformation(username string) (models.UserFullInfo, error) {
 
 	user.FillAttributes(foundUser)
 
-	return user, nil
+	return user, err
 }

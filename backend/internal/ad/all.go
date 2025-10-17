@@ -69,7 +69,7 @@ func AllSearch(search string) (result models.AllResults, err error) {
 		case []models.PrinterSimpleInfo:
 			result.Printers = results
 		default:
-			err = fmt.Errorf("Unknown type: %T", results)
+			err = fmt.Errorf("unknown type: %T", results)
 		}
 
 	}

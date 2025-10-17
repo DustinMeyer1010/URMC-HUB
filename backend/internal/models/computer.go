@@ -1,7 +1,17 @@
 package models
 
+import "github.com/go-ldap/ldap/v3"
+
 type ComputerSimpleInfo struct {
-	Name            string `json:"Name"`
-	OU              string `json:"OU"`
-	OperatingSystem string `json:"OperatingSystem"`
+	Name            string `json:"name"`
+	OU              string `json:"ou"`
+	OperatingSystem string `json:"operating_system"`
+}
+
+func ToComputerSimpleInfo(entry *ldap.Entry) ComputerSimpleInfo {
+	return ComputerSimpleInfo{
+		Name:            entry.GetAttributeValue("name"),
+		OU:              entry.GetAttributeValue("distinguishedName"),
+		OperatingSystem: entry.GetAttributeValue("operatingSystem"),
+	}
 }

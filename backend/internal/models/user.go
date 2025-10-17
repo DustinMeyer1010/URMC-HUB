@@ -19,19 +19,19 @@ func (u *UserSimpleInfo) FillAttributes(user *ldap.Entry) {
 }
 
 type UserFullInfo struct {
-	Username           string `json:"Username"`
-	Name               string `json:"Name"`
-	Email              string `json:"Email"`
-	RelationshipStatus string `json:"RelationshipStatus"`
-	Department         string `json:"Department"`
-	Title              string `json:"Title"`
-	Phone              string `json:"Phone"`
-	Location           string `json:"Location"`
-	LastPasswordSet    string `json:"LastPasswordSet"`
-	URID               string `json:"URID"`
-	OU                 string `json:"OU"`
-	NetID              string `json:"NetID"`
-	Description        string `json:"Description"`
+	Username           string `json:"username"`
+	Name               string `json:"name"`
+	Email              string `json:"email"`
+	RelationshipStatus string `json:"relationship_status"`
+	Department         string `json:"department"`
+	Title              string `json:"title"`
+	Phone              string `json:"phone"`
+	Location           string `json:"location"`
+	LastPasswordSet    string `json:"last_password_set"`
+	URID               string `json:"urid"`
+	OU                 string `json:"ou"`
+	NetID              string `json:"net_id"`
+	Description        string `json:"description"`
 }
 
 func (u *UserFullInfo) FillAttributes(user *ldap.Entry) {

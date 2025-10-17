@@ -1,42 +1,28 @@
 package ad
 
 import (
-	"fmt"
-
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func SearchAllComputers(searchValue string) (matches []models.ComputerSimpleInfo, err error) {
-	matches = make([]models.ComputerSimpleInfo, 0)
+func SearchAllComputers(searchValue string) ([]models.ComputerSimpleInfo, error) {
+	matches := make([]models.ComputerSimpleInfo, 0)
 
-	conn, err := connectToLDAP()
-
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	defer conn.Close()
-	defer conn.Unbind()
-
-	ldapConfig := SearchConfig(
-		[]string{"name", "operatingSystem", "distinguishedName"},
-		fmt.Sprintf("(&(objectCategory=computer)(name=%s*))", searchValue),
+	results, err := SearchAllByCategory(
+		"computer",
+		"name",
+		searchValue,
+		"name",
+		"operatingSystem",
+		"distinguishedName",
 	)
 
-	results, err := ldapConfig.Search(conn)
-
 	if results == nil || err != nil {
-		return
+		return matches, err
 	}
+
 	for _, entry := range results.Entries {
-		matches = append(matches, models.ComputerSimpleInfo{
-			Name:            entry.GetAttributeValue("name"),
-			OU:              entry.GetAttributeValue("distinguishedName"),
-			OperatingSystem: entry.GetAttributeValue("operatingSystem"),
-		})
+		matches = append(matches, models.ToComputerSimpleInfo(entry))
 	}
 
-	return
-
+	return matches, err
 }

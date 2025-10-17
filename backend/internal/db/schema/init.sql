@@ -10,8 +10,7 @@ CREATE TABLE IF NOT EXISTS links (
 	title TEXT NOT NULL,
 	link TEXT NOT NULL,
 	image_path TEXT NOT NULL,
-	profile_id INTEGER NOT NULL,
-	favorite BOOLEAN DEFAULT 0,
-	FOREIGN KEY (profile_id) REFERENCES profiles(id)
+	agent REFERENCES agents(id) NOT NULL,
+	favorite BOOLEAN DEFAULT 0
 );
 

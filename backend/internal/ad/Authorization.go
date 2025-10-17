@@ -34,8 +34,6 @@ func Login(user models.UserLogin) error {
 
 	urmcsh := fmt.Sprintf("URMC-sh\\%s", user.Username)
 
-	fmt.Println(urmcsh)
-
 	err = l.Bind(urmcsh, user.Password)
 
 	if err != nil {

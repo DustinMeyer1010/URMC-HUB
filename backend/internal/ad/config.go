@@ -1,6 +1,10 @@
 package ad
 
-import "github.com/go-ldap/ldap/v3"
+import (
+	"fmt"
+
+	"github.com/go-ldap/ldap/v3"
+)
 
 type LDAPSearchConfig struct {
 	BaseDN    string
@@ -15,7 +19,7 @@ type LDAPSearchConfig struct {
 }
 
 // Creates a LDAPSearchConfig for performing a LDAP Search
-func SearchConfig(attribute []string, filter string) LDAPSearchConfig {
+func SearchConfig(filter string, attribute ...string) LDAPSearchConfig {
 
 	return LDAPSearchConfig{
 		BaseDN:    "DC=URMC-sh,DC=rochester,DC=edu",
@@ -45,4 +49,40 @@ func (config LDAPSearchConfig) Search(conn *ldap.Conn) (*ldap.SearchResult, erro
 	)
 
 	return conn.Search(searchRequest)
+}
+
+func SearchAllByCategory(category, attribute, value string, attrs ...string) (*ldap.SearchResult, error) {
+
+	conn, err := connectToLDAP()
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer conn.Close()
+	defer conn.Unbind()
+
+	filter := fmt.Sprintf("(&(objectCategory=%s)(%s=%s*))", category, attribute, value)
+
+	ldapConfig := SearchConfig(filter, attrs...)
+
+	return ldapConfig.Search(conn)
+}
+
+func SearchByCategory(category, attribute, value string, attrs ...string) (*ldap.SearchResult, error) {
+
+	conn, err := connectToLDAP()
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer conn.Close()
+	defer conn.Unbind()
+
+	filter := fmt.Sprintf("(&(objectCategory=%s)(%s=%s))", category, attribute, value)
+
+	ldapConfig := SearchConfig(filter, attrs...)
+
+	return ldapConfig.Search(conn)
 }
