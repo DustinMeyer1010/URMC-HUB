@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Create the authentication routes for server
 func authRoutes(mux *mux.Router) {
 	mux.HandleFunc("/verify", handlers.Verify).Methods("GET")
 }

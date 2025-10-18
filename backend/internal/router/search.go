@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Creates all the search routes
 func searchRoutes(mux *mux.Router) {
 	mux.HandleFunc("/search/users/{searchValue}", handlers.UserSearch).Methods("GET")
 	mux.HandleFunc("/search/groups/{searchValue}", handlers.GroupSearch).Methods("GET")

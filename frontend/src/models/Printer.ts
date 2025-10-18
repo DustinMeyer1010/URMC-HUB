@@ -1,10 +1,10 @@
 export type PrinterCardComponent = {
-    Name?: string,
-    Model?: string
-    IP?: string,
-    Processor?: string,
-    Location?: string,
-    Notes?: string
+    name?: string,
+    model?: string
+    ip?: string,
+    processor?: string,
+    location?: string,
+    notes?: string
     Select: (Type: string, Name: string) => void,
     ItemsSelected: string[],
 

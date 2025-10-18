@@ -8,6 +8,7 @@ type ComputerSimpleInfo struct {
 	OperatingSystem string `json:"operating_system"`
 }
 
+// Converts the ldap entry into the computer simple info
 func ToComputerSimpleInfo(entry *ldap.Entry) ComputerSimpleInfo {
 	return ComputerSimpleInfo{
 		Name:            entry.GetAttributeValue("name"),

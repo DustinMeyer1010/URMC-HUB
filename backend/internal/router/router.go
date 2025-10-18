@@ -4,8 +4,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Create the routes for the backend
-// "/" is special as it will handle all of the react routes
+// Creates All routes for the server
 func Create() *mux.Router {
 
 	mux := mux.NewRouter()

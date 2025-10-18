@@ -1,7 +1,7 @@
 export type ShareDriveComponent = {
-    Server: string,
-    Name: string,
-    Groups: string[],
+    server: string,
+    name: string,
+    groups: string[],
     Select: (Type: string, Name: string) => void,
     ItemsSelected: string[],
 }

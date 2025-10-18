@@ -1,13 +1,13 @@
 export type ComputerCardInfo = {
-    Name?: string;
-    OU?: string;
-    OperatingSystem?: string;
+    name?: string;
+    ou?: string;
+    operating_system?: string;
 }
 
 export type ComputerCardComponent = {
-    Name?: string;
-    OU?: string;
-    OperatingSystem?: string;
+    name?: string;
+    ou?: string;
+    operating_system?: string;
     Select: (Type: string, Name: string) => void,
     ItemsSelected: string[],
 }

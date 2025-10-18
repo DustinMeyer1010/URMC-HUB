@@ -7,12 +7,14 @@ import (
 	"github.com/go-ldap/ldap/v3"
 )
 
+// Lockout information for the frontend to display
 type LockOutStatus struct {
 	Name  string `json:"name"`
 	Count int    `json:"count"`
 	Time  string `json:"time"`
 }
 
+// Convers entry with server to a lockout struct
 func ToLockOutStatus(server string, entry *ldap.Entry) LockOutStatus {
 	count, _ := strconv.Atoi(entry.GetAttributeValue("badPwdCount"))
 	return LockOutStatus{
@@ -22,6 +24,7 @@ func ToLockOutStatus(server string, entry *ldap.Entry) LockOutStatus {
 	}
 }
 
+// Converts the time return from the ldap server into a readable time
 func timeConvert(input string) (output string) {
 	ts, _ := strconv.Atoi(input)
 	// Nanoseconds since 1601-01-01

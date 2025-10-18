@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Create all the user routes
 func userRoutes(mux *mux.Router) {
 	mux.HandleFunc("/lockout/{username}", handlers.LockOutStatus).Methods("GET")
 	mux.HandleFunc("/user/{URID}", handlers.PullUserInformation).Methods("GET")

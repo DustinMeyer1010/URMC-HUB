@@ -9,7 +9,7 @@ import (
 )
 
 func LockoutInfoData(user string) (matches []models.LockOutStatus) {
-	var servers = [...]string{global.SERVER1, global.SERVER2, global.SERVER3, global.SERVER4, global.SERVER5, global.SERVER6, global.SERVER7, global.SERVER8, global.SERVER9, global.SERVER10}
+	var servers = global.AllServers()
 
 	var wg sync.WaitGroup // create a wait group
 

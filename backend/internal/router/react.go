@@ -16,6 +16,7 @@ var EmbeddedFiles embed.FS
 //go:embed dist/index.html
 var indexHTML []byte
 
+// Setups the routes for the react routes
 func reactRoutes(mux *mux.Router) {
 
 	distFS, err := fs.Sub(EmbeddedFiles, "dist")

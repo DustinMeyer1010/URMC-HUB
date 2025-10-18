@@ -15,6 +15,7 @@ type ShareDriveSimpleInfo struct {
 	LocalPath string   `json:"local_path"`
 }
 
+// Finds all share drives that match the searchValues
 func FindShareDrive(searchValue string) (shareDrives []ShareDriveSimpleInfo, err error) {
 	shareDrives = make([]ShareDriveSimpleInfo, 0)
 	searchValue = strings.ToLower(searchValue)
@@ -31,7 +32,6 @@ func FindShareDrive(searchValue string) (shareDrives []ShareDriveSimpleInfo, err
 
 	collection := make(map[string][]string)
 
-	// Loop through the each line of the file
 	for scanner.Scan() {
 		line := scanner.Text()
 		if !strings.Contains(strings.ToLower(line), searchValue) {
@@ -50,12 +50,14 @@ func FindShareDrive(searchValue string) (shareDrives []ShareDriveSimpleInfo, err
 	return
 }
 
+// Takes a line and sperates the group from the share drives on that line
 func seperateGroupFromShareDrives(line string) (string, []string) {
 	splitLine := strings.Split(line, "|")
 	adGroup, sharedrives := splitLine[0][8:], seperateShareDrives(splitLine[1])
 	return adGroup, sharedrives
 }
 
+// Seperates the share drives from eachother on the current line
 func seperateShareDrives(line string) []string {
 	line = strings.ReplaceAll(line, "~", "")
 	sharedrives := strings.Split(line, ",")

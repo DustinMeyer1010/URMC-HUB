@@ -6,6 +6,7 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
 )
 
+// Verify that the users creds are still valid
 func Verify(w http.ResponseWriter, r *http.Request) {
 
 	err := ad.Verify()

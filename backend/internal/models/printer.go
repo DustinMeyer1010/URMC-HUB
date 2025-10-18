@@ -1,5 +1,6 @@
 package models
 
+// Brief summary of the printer information for the search screen
 type PrinterSimpleInfo struct {
 	Server         string `json:"server"`
 	Queue          string `json:"queue"`

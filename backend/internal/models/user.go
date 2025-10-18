@@ -2,6 +2,7 @@ package models
 
 import "github.com/go-ldap/ldap/v3"
 
+// Used for the serach page to show a breif description of the user
 type UserSimpleInfo struct {
 	Name     string `json:"Name"`
 	Username string `json:"Username"`
@@ -10,6 +11,7 @@ type UserSimpleInfo struct {
 	OU       string `json:"OU"`
 }
 
+// Fills in UserFullInfo struct will attributes for ldap search
 func (u *UserSimpleInfo) FillAttributes(user *ldap.Entry) {
 	u.Name = user.GetAttributeValue("name")
 	u.Username = user.GetAttributeValue("sAMAccountName")
@@ -18,6 +20,7 @@ func (u *UserSimpleInfo) FillAttributes(user *ldap.Entry) {
 	u.OU = user.GetAttributeValue("distinguishedName")
 }
 
+// Used for the user page on frontend to display all infromation about the user
 type UserFullInfo struct {
 	Username           string `json:"username"`
 	Name               string `json:"name"`
@@ -34,6 +37,7 @@ type UserFullInfo struct {
 	Description        string `json:"description"`
 }
 
+// Fills in UserFullInfo struct will attributes for ldap search
 func (u *UserFullInfo) FillAttributes(user *ldap.Entry) {
 	u.Name = user.GetAttributeValue("cn")
 	u.Username = user.GetAttributeValue("Username")

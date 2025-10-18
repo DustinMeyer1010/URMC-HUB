@@ -1,5 +1,6 @@
 package models
 
+// Used to return on all search
 type AllResults struct {
 	Users     []UserSimpleInfo       `json:"users"`
 	Computers []ComputerSimpleInfo   `json:"computers"`
