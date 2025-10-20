@@ -1,21 +1,30 @@
 <script lang="ts">
 
-    type Section = 'COMPUTERS' | 'USERS' | "GROUPS" | 'PRINTERS' | 'DRIVES'
-    let selected: Section = $state<Section>('USERS')
+    import type Groups from '@types/filters'
 
-    function toggleActive(name: Section) {
-        selected = name;
-    }
+    let {
+        currentFilter,
+        switchFilter
+    } : {
+        currentFilter: Groups,
+        switchFilter: (newFilter: Groups) => void
+    } = $props();
+
+    let allFilters: Groups[] = ['USERS','COMPUTERS', "GROUPS", 'PRINTERS', 'DRIVES']
+
 
 </script>
 
 
 <section>
-    <button style="order: 4;" class:active={selected === 'COMPUTERS'} onclick={() => toggleActive("COMPUTERS")}>Computers</button>
-    <button style="order: 5;" class:active={selected === 'USERS'} onclick={() => toggleActive("USERS")}>Users</button>
-    <button style="order: 3;" class:active={selected === 'GROUPS'} onclick={() => toggleActive("GROUPS")}>Groups</button>
-    <button style="order: 2;" class:active={selected === 'PRINTERS'} onclick={() => toggleActive("PRINTERS")}>Printers</button>
-    <button style="order: 1;" class:active={selected === 'DRIVES'} onclick={() => toggleActive("DRIVES")}>Share Drives</button>
+    {#each allFilters as filter, idx}
+        <button 
+            style="order {idx}" 
+            class:active={currentFilter == filter} 
+            onclick={() => switchFilter(filter)}>
+            {filter}
+        </button>
+    {/each}
 </section>
 
 
@@ -47,9 +56,9 @@
         color: var(--text)
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 950px) {
         button {
-            width: 100px;
+            width: 120px;
             padding: 5px;
             font-size: 12px;
         }

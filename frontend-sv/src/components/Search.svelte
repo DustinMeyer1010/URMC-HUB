@@ -1,10 +1,23 @@
-<script>
+<script lang="ts">
+    import type Groups from '@types/filters'
+
+    let searchValue: string = $state("")
+
+    let {
+        onsubmit,
+    } : {
+        onsubmit: (e: SubmitEvent, searchValue: string) => void;
+    } = $props();
+
 
 </script>
 
-<form>
-    <input type="text">
-    <button>Search</button>
+<form onsubmit={
+    (e: SubmitEvent) => {
+        onsubmit(e, searchValue)
+    }}>
+    <input type="text" bind:value={searchValue}>
+    <button type="submit">Search</button>
 </form>
 
 <style>
@@ -12,6 +25,7 @@
         display: flex;
         flex-wrap: nowrap;
         gap: 1rem;
+
     }
 
     input {
@@ -21,7 +35,8 @@
         border-radius: 5px;
         font-size: 18px;
         width: 300px;
-        color: var(--text)
+        color: var(--text);
+        transition: 0.3s ease;
     }
 
     input:focus {
