@@ -10,25 +10,22 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//go:embed dist/**
-var EmbeddedFiles embed.FS
+//go:embed build/**
+var frontendFS embed.FS
 
-//go:embed dist/index.html
+//go:embed build/index.html
 var indexHTML []byte
 
 // Setups the routes for the react routes
 func reactRoutes(mux *mux.Router) {
 
-	distFS, err := fs.Sub(EmbeddedFiles, "dist")
+	distFS, err := fs.Sub(frontendFS, "build")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fileServer := http.FileServer(http.FS(distFS))
-	mux.PathPrefix("/assets/").Handler(fileServer)
-	mux.PathPrefix("/static/").Handler(fileServer)
-	mux.PathPrefix("/favicon.ico").Handler(fileServer)
-	mux.PathPrefix("/manifest.json").Handler(fileServer)
+	mux.PathPrefix("/_app/").Handler(fileServer)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		requestPath := path.Clean(r.URL.Path)
@@ -44,5 +41,6 @@ func reactRoutes(mux *mux.Router) {
 		// Otherwise, serve React’s index.html
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.Write(indexHTML)
+
 	})
 }

@@ -14,9 +14,6 @@
         <li>
             <a href="/bookmarks">Bookmarks</a>
         </li>
-        <li>
-            <a href="/Bulk">Bulk Search</a>
-        </li>
     </ul>
 </nav>
 

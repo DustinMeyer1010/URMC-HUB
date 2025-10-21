@@ -10,6 +10,20 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func Bookmarks(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		return
+	case "POST":
+		AddBookmark(w, r)
+		return
+	case "UPDATE":
+		return
+	case "DELETE":
+		RemoveBookmark(w, r)
+	}
+}
+
 func AddBookmark(w http.ResponseWriter, r *http.Request) {
 
 	var link models.Link

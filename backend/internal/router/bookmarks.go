@@ -4,13 +4,28 @@ import (
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/handlers"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/middleware"
 	"github.com/gorilla/mux"
 )
 
+// Creates bookmarks routes
 func bookmarksRoutes(mux *mux.Router) {
-	mux.HandleFunc("/bookmarks", func(w http.ResponseWriter, r *http.Request) {}).Methods("GET")
-	mux.HandleFunc("/bookmarks", handlers.AddBookmark).Methods("POST")
-	mux.HandleFunc("/bookmarks", func(w http.ResponseWriter, r *http.Request) {}).Methods("UPDATE")
-	mux.HandleFunc("/bookmarks/{id}", handlers.RemoveBookmark).Methods("DELETE")
+
+	routes := routes{
+		{
+			methods{"GET", "POST", "UPDATE"},
+			"/bookmarks",
+			http.HandlerFunc(handlers.Bookmarks),
+			middleware.Middleware{middleware.CorsHandler},
+		},
+		{
+			methods{"DELETE"},
+			"bookmarks/{id}",
+			http.HandlerFunc(handlers.Bookmarks),
+			middleware.Middleware{middleware.CorsHandler},
+		},
+	}
+
+	routes.add(mux)
 
 }

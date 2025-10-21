@@ -22,6 +22,8 @@
         let res = await fetch(`http://localhost:8000/search/all/${searchValue}`);
         data = await res.json();
 
+        console.log(data)
+
         switchFilter(filter)
 
     }

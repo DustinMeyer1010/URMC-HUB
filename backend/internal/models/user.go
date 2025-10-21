@@ -4,11 +4,11 @@ import "github.com/go-ldap/ldap/v3"
 
 // Used for the serach page to show a breif description of the user
 type UserSimpleInfo struct {
-	Name     string `json:"Name"`
-	Username string `json:"Username"`
-	Email    string `json:"Email"`
-	NetID    string `json:"NetID"`
-	OU       string `json:"OU"`
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	NetID    string `json:"net_id"`
+	OU       string `json:"ou"`
 }
 
 // Fills in UserFullInfo struct will attributes for ldap search

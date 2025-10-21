@@ -2,12 +2,13 @@ package main
 
 import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/server"
 )
 
 func main() {
-	//db.Init()
-	//server.Start()
 	global.LoadEnv()
-	models.FindShareDrive("medg_palliative")
+	//db.Init()
+	server.Start()
+
+	//models.FindShareDrive("medg_palliative")
 }
