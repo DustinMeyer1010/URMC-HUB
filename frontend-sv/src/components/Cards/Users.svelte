@@ -11,8 +11,8 @@
 
 
 {#if users.length != 0}
-{#each users as u}
-    <ul>
+{#each users as u,i}
+    <ul style="--delay: {Math.min(i * 50, 2000)}ms">
         <li>{u.name}</li>
         <li>{u.username}</li>
         <li>{u.email}</li>

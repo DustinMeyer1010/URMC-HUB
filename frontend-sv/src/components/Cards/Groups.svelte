@@ -11,8 +11,8 @@
 </script>
 
 {#if groups.length != 0}
-{#each groups as g}
-    <ul>
+{#each groups as g,i}
+    <ul style="--delay: {Math.min(i * 50, 2000)}ms">
         <li>{g.name}</li>
         <li>{g.description}</li>
         <li>{g.information}</li>

@@ -11,25 +11,32 @@
 	import type { Results } from '@types/filters';
 
 
+    import { goto } from '$app/navigation'
+
+
+    let data: any | null = $state(null)
     let items: Results = $state([])
     let filter: Groups = $state("USERS")
-    let data: any | null = $state(null)
+    let loading: boolean = $state(true)
 
 
-    async function onsubmit(e: SubmitEvent, searchValue: string) {
-        e.preventDefault()
 
-        let res = await fetch(`http://localhost:8000/search/all/${searchValue}`);
-        data = await res.json();
 
-        console.log(data)
+    async function search(searchValue: string) {
+        goto(`/?search=${searchValue}`, { replaceState: true, keepFocus: true, noScroll: true })
+        data = null
+        let response = await fetch(`http://localhost:8000/search/all/${searchValue}`);
+        data = await response.json();
 
         switchFilter(filter)
 
     }
 
+    $inspect(data)
+
     function switchFilter(newFilter: Groups) {
         filter = newFilter;
+        window.scrollTo(0,0)
         
         // console.log(filter)
         // console.log(data)
@@ -60,12 +67,16 @@
 
 </script>
 
-
 <main>
-    <Cards items={items} {filter}/>
+    {#if loading  && data == null}
+        Loading ...
+    {:else}
+        <Cards items={items} {filter}/>
+    {/if}
+
     <section>
         <Filters currentFilter={filter} switchFilter={switchFilter}/>
-        <Search {onsubmit}/>
+        <Search search={search} bind:loading={loading}/>
     </section>
 </main>
 
@@ -96,8 +107,6 @@
         padding-bottom: 20px;
         bottom: 0px;
         left: 50%;
-        width: 100%;
-        background: green;
         transform: translateX(-50%);
     }
 

@@ -23,7 +23,7 @@
 		--background-surface: #2F324B;
 		--text: #fdebd6;
 		--complement: #ff7300;
-		margin-top: 50px;
+		margin-top: 70px;
 		background: var(--background);
 
 	}

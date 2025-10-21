@@ -5,13 +5,11 @@
     import type { Results } from "@types/filters"
     import type { Groups as GroupFilter } from '@types/filters'
     import type { GroupSimpleInfo } from "@types/group";
-    
+
     import Groups from "./Cards/Groups.svelte";
     import Computers from '@components/Cards/Computers.svelte'
 	import Printers from "./Cards/Printers.svelte";
 	import Users from "./Cards/Users.svelte";
-
-
 
 
     let {
@@ -21,8 +19,6 @@
         filter: GroupFilter,
         items: Results
     } = $props()
-
-
 
 </script>
 
@@ -38,3 +34,23 @@
 
 
 
+<style>
+    :global(ul) {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideIn 0.2s ease-out forwards;
+        animation-delay: var(--delay);
+}
+
+
+    @keyframes slideIn {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+</style>

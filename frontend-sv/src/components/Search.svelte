@@ -1,21 +1,46 @@
 <script lang="ts">
-    import type Groups from '@types/filters'
 
-    let searchValue: string = $state("")
+
+    import { page } from '$app/state';
+	import { onMount } from 'svelte';
+    
+
+    let searchParams = page.url.searchParams;
+    let query = searchParams.get('search') ?? ""
+    let searchValue: string = $state(query)
+
 
     let {
-        onsubmit,
+        search,
+        loading = $bindable(),
     } : {
-        onsubmit: (e: SubmitEvent, searchValue: string) => void;
+        search: (searchValue: string) => void;
+        loading: boolean;
     } = $props();
+
+    onMount(async () => {
+    if (searchValue !== "") {
+        await search(searchValue)
+    }
+    loading = false
+
+    })
+
+    function onsubmit(e: SubmitEvent) {
+        e.preventDefault()
+        search(searchValue)
+    }
+    
+
+
+
+    
+
 
 
 </script>
 
-<form onsubmit={
-    (e: SubmitEvent) => {
-        onsubmit(e, searchValue)
-    }}>
+<form {onsubmit}>
     <input type="text" bind:value={searchValue}>
     <button type="submit">Search</button>
 </form>

@@ -21,6 +21,7 @@
 <style>
     nav {
         display: flex;
+        z-index: 10;
         justify-content: space-between;
         align-items: center;
         position: fixed;
