@@ -1,7 +1,7 @@
 <script lang="ts">
 
 
-    import type Groups from '@types/filters'
+    import type{ Groups } from '@t/filters'
     import { fly } from 'svelte/transition'
     import filterIcon from '$lib/assets/filter-icon.png'
 

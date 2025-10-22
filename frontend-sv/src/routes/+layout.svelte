@@ -21,9 +21,10 @@
 		--primary: #008cff;
 		--background: #212335;
 		--background-surface: #2F324B;
+		--background-surface-lighter: #404358;
 		--text: #fdebd6;
 		--complement: #ff7300;
-		margin-top: 70px;
+		margin-top: 50px;
 		background: var(--background);
 
 	}

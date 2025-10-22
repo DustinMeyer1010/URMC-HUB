@@ -21,7 +21,7 @@ const config = {
 			strict: true
 		}),
 		alias: {
-			'@types': './src/types',
+			'@t': './src/types',
 			'@components': './src/components',
 		},
 	}

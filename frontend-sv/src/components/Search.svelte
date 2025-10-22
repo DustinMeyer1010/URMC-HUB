@@ -1,42 +1,29 @@
 <script lang="ts">
 
 
-    import { page } from '$app/state';
+
 	import { onMount } from 'svelte';
-    
-
-    let searchParams = page.url.searchParams;
-    let query = searchParams.get('search') ?? ""
-    let searchValue: string = $state(query)
-
 
     let {
         search,
         loading = $bindable(),
+        searchValue = $bindable(),
     } : {
-        search: (searchValue: string) => void;
+        search: () => void;
         loading: boolean;
+        searchValue: string;
     } = $props();
 
     onMount(async () => {
-    if (searchValue !== "") {
-        await search(searchValue)
-    }
+    await search()
     loading = false
 
     })
 
-    function onsubmit(e: SubmitEvent) {
+    async function onsubmit(e: SubmitEvent) {
         e.preventDefault()
-        search(searchValue)
+        await search()
     }
-    
-
-
-
-    
-
-
 
 </script>
 
@@ -55,7 +42,10 @@
 
     input {
         border: none;
-        background: var(--background-surface);
+        backdrop-filter: blur(10px);
+        text-align: center;
+        background: rgba(33,35,53, 0.8);
+        border: 2px solid var(--background-surface-lighter);
         padding: 0.5rem;
         border-radius: 5px;
         font-size: 18px;

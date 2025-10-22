@@ -1,15 +1,15 @@
 <script lang="ts">
-    import type { ComputerSimpleInfo } from "@types/computer"
-    import type { PrinterSimpleInfo } from "@types/printer"
-    import type { UserSimpleInfo } from "@types/user";
-    import type { Results } from "@types/filters"
-    import type { Groups as GroupFilter } from '@types/filters'
-    import type { GroupSimpleInfo } from "@types/group";
+    import type { ComputerSimpleInfo } from "@t/computer"
+    import type { PrinterSimpleInfo } from "@t/printer"
+    import type { UserSimpleInfo } from "@t/user";
+    import type { Results } from "@t/filters"
+    import type { Groups as GroupFilter } from '@t/filters'
+    import type { GroupSimpleInfo } from "@t/group";
 
-    import Groups from "./Cards/Groups.svelte";
-    import Computers from '@components/Cards/Computers.svelte'
-	import Printers from "./Cards/Printers.svelte";
-	import Users from "./Cards/Users.svelte";
+    import Group from "./Cards/Group.svelte";
+    import Computer from '@components/Cards/Computer.svelte'
+	import Printer from "./Cards/Printer.svelte";
+	import User from "./Cards/User.svelte";
 
 
     let {
@@ -22,35 +22,37 @@
 
 </script>
 
-{#if filter === 'COMPUTERS'}
-    <Computers computers={items as ComputerSimpleInfo[]}/>
-{:else if filter === 'PRINTERS'}
-    <Printers printers={items as PrinterSimpleInfo[]}/>
-{:else if filter === 'USERS'}
-    <Users users={items as UserSimpleInfo[]}/>
-{:else if filter === 'GROUPS'}
-    <Groups groups={items as GroupSimpleInfo[]}/>
-{/if}
+<div>
+    {#if filter === 'COMPUTERS'}
+        {#each (items as ComputerSimpleInfo[]) as computer, idx}
+            <Computer {computer} {idx}/>
+        {/each}
+    {:else if filter === 'PRINTERS'}
+        {#each (items as PrinterSimpleInfo[]) as printer, idx}
+            <Printer {printer} {idx}/>    
+        {/each}
+    {:else if filter === 'USERS'}
+        {#each (items as UserSimpleInfo[]) as user, idx}
+            <User {user} {idx}/>
+        {/each}
+    {:else if filter === 'GROUPS'}
+        {#each (items as GroupSimpleInfo[]) as group, idx}
+            <Group {group} {idx}/>
+        {/each}
+    {/if}
+    {#if items.length <= 0}
+            No {filter} found
+    {/if}
+</div>
 
 
 
 <style>
-    :global(ul) {
-        opacity: 0;
-        transform: translateY(20px);
-        animation: slideIn 0.2s ease-out forwards;
-        animation-delay: var(--delay);
-}
+    div {
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
 
-
-    @keyframes slideIn {
-	from {
-		opacity: 0;
-		transform: translateY(20px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
 </style>

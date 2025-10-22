@@ -6,5 +6,5 @@ type AllResults struct {
 	Computers []ComputerSimpleInfo   `json:"computers"`
 	Groups    []GroupSimpleInfo      `json:"groups"`
 	Printers  []PrinterSimpleInfo    `json:"printers"`
-	Shares    []ShareDriveSimpleInfo `json:"shares"`
+	Shares    []ShareDriveSimpleInfo `json:"drives"`
 }
