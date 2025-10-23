@@ -3,7 +3,7 @@
 
     import type{ Groups } from '@t/filters'
     import { fly } from 'svelte/transition'
-    import filterIcon from '$lib/assets/filter-icon.png'
+    import filterIcon from '$lib/assets/filter-color-accent.png'
 
     let isFiltersOpen: boolean = $state(true)
 
@@ -21,41 +21,48 @@
 </script>
 
 
-<section>
-    {#each allFilters as filter, idx}
-        {#if isFiltersOpen}
-            <button 
-                style="order {idx}"
-                in:fly={{delay: 80*idx, y:20, x:-20 * idx}}
-                out:fly={{delay: 0, y:20, x:-20 * idx}}
-                class:active={currentFilter == filter}
-                onclick={() => switchFilter(filter)}>
-                {filter}
-            </button>
-        {/if}
-    {/each}
+    <div>
+        {#each allFilters as filter, idx}
+            {#if isFiltersOpen}
 
+                <button 
+                    style="order {idx}"
+                    in:fly={{delay: 80*idx, y:20, x:-20 * idx}}
+                    out:fly={{delay: 0, y:20, x:-20 * idx}}
+                    class:active={currentFilter == filter}
+                    onclick={() => switchFilter(filter)}>
+                    {filter}
+                </button>
+
+            {/if}
+        {/each}
+    </div>  
 
     <button class="open-filters" onclick={() => isFiltersOpen = !isFiltersOpen}>
         <img src={filterIcon} alt="filter">
     </button>
-</section>
 
 <style>
-    section {
+
+
+    div {
         display: flex;
-        gap: 3rem;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap-reverse;
+        gap: 1rem;
+        width: 80%;
+        flex-basis: 100%;
+        order: 0;
     }
 
     .open-filters {
         width: 50px;
-        position: absolute;
-        bottom: 20px;
+        bottom: 25px;
         left: 50%;
         display: flex;
         justify-content: center;
         align-items: center;
-        transform: translateX(calc(-50% - 250px));
     }
 
 
@@ -66,22 +73,28 @@
     button {
         padding: 0.5rem 1rem;
         width: 150px;
-        border: 2px solid var(--complement);
+        border: 2px solid var(--primary-accent);
         border-radius: 20px;
         background: transparent;
         transform-origin: center;
-        color: var(--complement);
+        color: var(--color-accent);
         transition: 0.3s ease;
         font-weight: bold;
         backdrop-filter: blur(10px);
+        transition: 0.5s ease;
     }
 
     button.active {
-        background: rgba(255, 115, 0, 0.2);
+        background: var(--color-accent-focus);
+        color: var(--color-bg)
+    }
+
+    button.active:hover {
+        background: var(--color-accent-focus);
     }
 
     button:hover {
-        background: rgba(255, 115, 0, 0.2);
+        background: var(--color-accent-hover-opacity-20);
     }
 
     @media (max-width: 950px) {
@@ -91,19 +104,8 @@
             font-size: 12px;
         }
 
-        section {
-            flex-wrap: wrap-reverse;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-        }
 
     }
 
-    @media (max-width: 601px) {
-        .open-filters {
-            transform: translateX(calc(-50% - 200px));
-        }
-    }
 
 </style>

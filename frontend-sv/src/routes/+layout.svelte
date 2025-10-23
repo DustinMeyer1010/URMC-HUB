@@ -3,6 +3,14 @@
 
 	import urmc from '$lib/assets/URMC.png';
 	import Nav from '../components/Nav.svelte';
+	import "../global.css"
+
+	import { theme } from "$lib/theme";
+  	import { get } from "svelte/store";
+
+	const current = get(theme);
+
+
 
 	let { children } = $props();
 </script>
@@ -17,17 +25,6 @@
 
 
 <style>
-	:global(:root) {
-		--primary: #008cff;
-		--background: #212335;
-		--background-surface: #2F324B;
-		--background-surface-lighter: #404358;
-		--text: #fdebd6;
-		--complement: #ff7300;
-		margin-top: 50px;
-		background: var(--background);
-
-	}
 
 </style>
 

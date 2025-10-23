@@ -24,6 +24,11 @@ func SearchAllPrinters(searchValue string) (printers []models.PrinterSimpleInfo,
 			printers = append(printers, printer)
 		}
 	}
+	// Only returning the top 100 results
+	if len(printers) > 100 {
+		printers = printers[0:100]
+	}
+
 	return
 }
 

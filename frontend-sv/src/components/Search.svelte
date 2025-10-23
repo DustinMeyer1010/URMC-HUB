@@ -45,7 +45,7 @@
         backdrop-filter: blur(10px);
         text-align: center;
         background: rgba(33,35,53, 0.8);
-        border: 2px solid var(--background-surface-lighter);
+        border: 2px solid var(--color-border);
         padding: 0.5rem;
         border-radius: 5px;
         font-size: 18px;
@@ -60,22 +60,34 @@
 
     button {
         background: transparent;
-        border: 2px solid var(--primary);
+        backdrop-filter: blur(5px);
+        border: 2px solid var(--color-primary);
         border-radius: 5px;
         padding: 0 1rem;
         font-weight: bold;
-        color: var(--primary);
+        color: var(--color-primary);
         transition: 0.3s ease;
     }
 
     button:hover {
-        background: var(--primary);
-        color: var(--text);
+        background: var(--color-primary-hover-opacity-20);
     }
 
     @media (max-width: 601px) {
+
         input {
             width: 200px;
+        }
+    }
+
+    @media (max-width: 400px) {
+
+        input {
+            width: 100px;
+        }
+
+        button {
+            padding: 0 0.2rem;
         }
     }
 </style>

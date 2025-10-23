@@ -1,14 +1,12 @@
 <script lang="ts">
     import type { ComputerSimpleInfo } from "@t/computer";
-    import { copyToClip } from '$lib/helper/copy';
+    import { copyToClip, type CopyState } from '$lib/helper/copy.svelte';
     import outIcon from '$lib/assets/right-arrow-orange.png';
 
-    let copied: string = $state("");
-    let copiedMessage: string = $derived.by(() => {
-        return copied + " has been copied"
-    }); 
-    let timeout: ReturnType<typeof setTimeout> | null = $state(null);
-
+    let copyState: CopyState = $state({
+        copied: "",
+        timeout: null
+    })
 
     let {
         computer,
@@ -18,70 +16,67 @@
         idx: number
     } = $props()
 
-    function copy(text: string) {
-        if (timeout != null) {
-            clearTimeout(timeout)
-        }
-        copyToClip(text)
-        copied = text
-
-        timeout = setTimeout(() => {
-            copied = ""
-            timeout = null
-        }, 2000)
-    }
+    $inspect(copyState)
+    
 
 </script>
 
 <ul class:disabled={computer.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(idx * 50, 2000)}ms">
     <a href={`/computer/${computer.name}`}> <img src={outIcon} alt=""></a>
-    <li class="title">
-        <button 
-        type="button" 
-        class="copy-button" 
-        onclick={() => copy(computer.name)}>
-            {computer.name}
-        </button>
-    </li>
-    <li>                
-        <button 
-        type="button" 
-        class="copy-button" 
-        onclick={() => copy(computer.ou)}>
-            OU: {computer.ou}
-        </button>
-    </li>
-    <li>                
-        <button 
-        type="button" 
-        class="copy-button" 
-        onclick={() => copy(computer.operating_system)}>
-            OS: {computer.operating_system}
-        </button>
-    </li>
-    {#if copied != ""}
-        {copiedMessage}
-    {/if}
+    {#each Object.entries(computer) as key}
+        {#if key[1] != ""}
+            <li class={key[0]}> 
+                <button
+                type="button"
+                onclick={() => copyToClip(key[1], copyState)}>
+                        {#if key[0] != "name"}<b>{key[0].toUpperCase()}:</b>{/if}
+                        {#if copyState.copied == key[1]} 
+                            Copied
+                        {:else}
+                            {key[1]}
+                        {/if}
+                </button>
+            </li>
+        {/if}
+    {/each}
 </ul>
 
 
 
 
-<style>
+<style >
     ul.disabled {
-        color: red
+        color: var(--disabled)
     }
 
     img {
         width: 20px;
     }
 
+    
+    button {
+        background: none;
+        border: none;
+        padding: 0;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    button:focus,
+    button:active{
+        outline: none;
+    }
+
+
     ul {
         display: flex;
         flex-direction: column;
+        word-break: break-all;
         gap: 0.5rem;
         border-radius: 10px;
         padding: 1.5rem;
+        padding-right: 4rem;
         box-sizing: border-box;
         background: var(--background-surface);
         color: var(--text);
@@ -105,7 +100,11 @@
         width: 50px;
     }
 
-    li.title {
+    a:hover {
+        background-color: var(--color-primary-hover-opacity-20);
+    }
+
+    li.name {
         font-weight: bold;
         font-size: 18px;
         margin-bottom: 1rem;
@@ -129,6 +128,8 @@
         border:none;
         outline: none;
     }
+
+
     
     @keyframes slideIn {
         from {

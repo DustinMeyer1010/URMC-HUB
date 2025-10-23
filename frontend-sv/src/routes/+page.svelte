@@ -20,6 +20,9 @@
     let filter: Groups = $state(urlParams.get("filter")?.toUpperCase() as Groups ?? "USERS")
     let loading: boolean = $state(true)
     let searchValue: string = $state(urlParams.get('search') ?? "")
+    let santizedSearch: string = $derived.by(() => {
+        return encodeURIComponent(searchValue)
+    })
 
     
 
@@ -34,9 +37,13 @@
     })
 
     async function search() {
+        if (searchValue == "") {
+            loading = false
+            return
+        }
         loading = true
         data = null
-        let response = await fetch(`http://localhost:8000/search/all/${searchValue}`);
+        let response = await fetch(`http://localhost:8000/search/all/${santizedSearch}`,{mode: "cors"});
         data = await response.json();
 
         switchFilter(filter)
@@ -47,7 +54,7 @@
     $inspect(data)
 
     function setURL() {
-        goto(`/?search=${searchValue}&filter=${filter.toLowerCase()}`, { replaceState: true, keepFocus: true, noScroll: true })
+        goto(`/?search=${santizedSearch}&filter=${filter.toLowerCase()}`, { replaceState: true, keepFocus: true, noScroll: true })
     }
 
     function switchFilter(newFilter: Groups) {
@@ -144,15 +151,19 @@
     section {
         position: fixed;
         display: flex;
-        flex-direction: column;
         justify-content: center;
         align-items: center;
         gap: 2rem;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         padding-bottom: 20px;
+        width: 100%;
         bottom: 0px;
         left: 50%;
         transform: translateX(-50%);
+    }
+
+    @media (max-width: 601px) {
+
     }
 
 

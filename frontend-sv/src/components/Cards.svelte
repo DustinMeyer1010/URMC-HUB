@@ -28,7 +28,7 @@
             <Computer {computer} {idx}/>
         {/each}
     {:else if filter === 'PRINTERS'}
-        {#each (items as PrinterSimpleInfo[]) as printer, idx}
+        {#each (items.slice(0, 100) as PrinterSimpleInfo[]) as printer, idx}
             <Printer {printer} {idx}/>    
         {/each}
     {:else if filter === 'USERS'}
@@ -40,7 +40,7 @@
             <Group {group} {idx}/>
         {/each}
     {/if}
-    {#if items.length <= 0}
+    {#if items == null || items.length <= 0}
             No {filter} found
     {/if}
 </div>

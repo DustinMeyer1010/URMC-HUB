@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 
@@ -13,9 +12,15 @@ import (
 func AllSearch(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	searchValue := vars["searchValue"]
-	fmt.Println(searchValue)
 
-	matches, err := ad.AllSearch(searchValue)
+	decodedSearch, err := url.QueryUnescape(searchValue)
+
+	if err != nil {
+		http.Error(w, "invalid search value", http.StatusBadRequest)
+		return
+	}
+
+	matches, err := ad.AllSearch(decodedSearch)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
