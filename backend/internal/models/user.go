@@ -1,13 +1,16 @@
 package models
 
-import "github.com/go-ldap/ldap/v3"
+import (
+	"github.com/go-ldap/ldap/v3"
+)
 
 // Used for the serach page to show a breif description of the user
 type UserSimpleInfo struct {
 	Name     string `json:"name"`
 	Username string `json:"username"`
-	Email    string `json:"email"`
 	NetID    string `json:"net_id"`
+	URID     string `json:"urid"`
+	Email    string `json:"email"`
 	OU       string `json:"ou"`
 }
 
@@ -17,6 +20,7 @@ func (u *UserSimpleInfo) FillAttributes(user *ldap.Entry) {
 	u.Username = user.GetAttributeValue("sAMAccountName")
 	u.Email = user.GetAttributeValue("mail")
 	u.NetID = user.GetAttributeValue("uid")
+	u.URID = user.GetAttributeValue("URID")
 	u.OU = user.GetAttributeValue("distinguishedName")
 }
 
@@ -42,7 +46,7 @@ func (u *UserFullInfo) FillAttributes(user *ldap.Entry) {
 	u.Name = user.GetAttributeValue("cn")
 	u.Username = user.GetAttributeValue("Username")
 	u.NetID = user.GetAttributeValue("uid")
-	u.URID = user.GetAttributeValue("URID")
+	u.URID = user.GetAttributeValue("urid")
 	u.Email = user.GetAttributeValue("mail")
 	u.Phone = user.GetAttributeValue("telephoneNumber")
 	u.Department = user.GetAttributeValue("department")

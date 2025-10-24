@@ -130,11 +130,17 @@ func ComputerSearch(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func ShareDriveShearch(w http.ResponseWriter, r *http.Request) {
+func ShareDriveSearch(w http.ResponseWriter, r *http.Request) {
 
-	//vars := mux.Vars(r)
-	//searchValue := vars["searchValue"]
+	vars := mux.Vars(r)
+	searchValue := vars["searchValue"]
+	searchValue, _ = url.QueryUnescape(searchValue)
+	driveMatches, _ := ad.SearchAllDrives(searchValue)
 
-	w.Write([]byte("Beign worked on"))
+	jsonData, _ := json.Marshal(driveMatches)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 
 }

@@ -1,1 +1,1 @@
-<h1>Welcome to your bookmarks</h1>
+<h1>Generic Bookmarks</h1>

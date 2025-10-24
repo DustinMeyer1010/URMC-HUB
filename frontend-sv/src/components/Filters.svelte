@@ -24,7 +24,6 @@
     <div>
         {#each allFilters as filter, idx}
             {#if isFiltersOpen}
-
                 <button 
                     style="order {idx}"
                     in:fly={{delay: 80*idx, y:20, x:-20 * idx}}

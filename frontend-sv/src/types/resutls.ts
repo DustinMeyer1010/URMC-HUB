@@ -2,7 +2,7 @@ import type { ComputerSimpleInfo } from "./computer"
 import type { GroupSimpleInfo } from "./group"
 import type { PrinterSimpleInfo } from "./printer"
 import type { UserSimpleInfo } from "./user"
-import type { ShareDriveSimpleInfo } from "./sharedrives"
+import type { ShareDriveSimpleInfo } from "./drive"
 
 
 

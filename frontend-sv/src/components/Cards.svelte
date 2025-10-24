@@ -5,11 +5,13 @@
     import type { Results } from "@t/filters"
     import type { Groups as GroupFilter } from '@t/filters'
     import type { GroupSimpleInfo } from "@t/group";
+	import type { DriveSimpleInfo } from "@t/drive";
 
     import Group from "./Cards/Group.svelte";
     import Computer from '@components/Cards/Computer.svelte'
 	import Printer from "./Cards/Printer.svelte";
 	import User from "./Cards/User.svelte";
+	import Drive from "./Cards/Drive.svelte";
 
 
     let {
@@ -39,6 +41,10 @@
         {#each (items as GroupSimpleInfo[]) as group, idx}
             <Group {group} {idx}/>
         {/each}
+    {:else if filter === 'DRIVES'}
+        {#each (items as DriveSimpleInfo[]) as drive, idx}
+            <Drive {drive} {idx}/>
+        {/each}
     {/if}
     {#if items == null || items.length <= 0}
             No {filter} found
@@ -49,8 +55,9 @@
 
 <style>
     div {
-        padding: 1rem;
+
         display: flex;
+        padding: 1rem;
         flex-direction: column;
         gap: 1rem;
     }

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { UserSimpleInfo } from "@t/user";
     import { copyToClip, type CopyState } from '$lib/helper/copy.svelte';
-    import outIcon from '$lib/assets/right-arrow-orange.png';
+    import outIcon from '$lib/assets/double-right-arrow-primary.png';
+    import copyAllIcon from "$lib/assets/copy-primary.png"
 
     let copyState: CopyState = $state({
         copied: "",
@@ -20,16 +21,18 @@
 
 
 <ul class:disabled={user.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(idx * 50, 2000)}ms">
+    
     <a href={`/user/${user.username}`}> <img src={outIcon} alt=""></a>
-
+    <button class="copy-all"><img src={copyAllIcon} alt=""></button>
     {#each Object.entries(user) as key}
         {#if key[1] != ""}
-            <li class={key[0]}> 
+            <li class={key[0]}>     
                 <button
                 type="button"
                 onclick={() => copyToClip(key[1], copyState)}>
-
-                    {#if key[0] != "name"}<b>{key[0].toUpperCase()}:</b>{/if}
+                    {#if key[0] != "name"}
+                        <b>{key[0].toUpperCase()}:</b>
+                    {/if}
                     {#if copyState.copied == key[1]} 
                         Copied
                     {:else}
@@ -49,7 +52,7 @@ ul.disabled {
     }
 
     img {
-        width: 20px;
+        width: 50px;
     }
 
     
@@ -75,6 +78,7 @@ ul.disabled {
         gap: 0.5rem;
         border-radius: 10px;
         padding: 1.5rem;
+        padding-top: 2.5rem;
         padding-right: 4rem;
         box-sizing: border-box;
         background: var(--background-surface);
@@ -107,6 +111,7 @@ ul.disabled {
         font-weight: bold;
         font-size: 18px;
         margin-bottom: 1rem;
+        position: relative;
     }
 
     li {
@@ -126,6 +131,18 @@ ul.disabled {
     button:focus { 
         border:none;
         outline: none;
+    }
+
+    button.copy-all {
+        position: absolute;
+        top: 0.3rem;
+        left: 0.3rem;
+
+    }
+
+    button.copy-all img {
+        width: 30px;
+        
     }
 
 

@@ -30,6 +30,7 @@
         top: 0;
         left: 0;
         width: 100%;
+        box-shadow: var(--shadow-soft);
         background-color: var(--background-surface);
     }
 

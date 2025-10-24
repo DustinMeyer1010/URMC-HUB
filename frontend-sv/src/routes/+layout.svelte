@@ -25,7 +25,11 @@
 
 
 <style>
-
+ @media (max-width: 500px) {
+	:root {
+		padding-bottom: 80px;
+	}
+ }
 </style>
 
 

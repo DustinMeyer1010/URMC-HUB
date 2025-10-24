@@ -20,5 +20,5 @@ export async function copyToClip(text: string, state: CopyState ) {
     state.timeout = setTimeout(() => {
         state.copied = ""
         state.timeout = null
-    }, 2000)
+    }, 500)
 }

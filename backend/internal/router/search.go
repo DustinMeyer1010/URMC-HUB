@@ -39,7 +39,7 @@ func searchRoutes(mux *mux.Router) {
 		{
 			methods{"GET"},
 			"/search/sharedrive/{searchValue}",
-			http.HandlerFunc(handlers.ShareDriveShearch),
+			http.HandlerFunc(handlers.ShareDriveSearch),
 			middleware.Middleware{middleware.CorsHandler},
 		},
 		{

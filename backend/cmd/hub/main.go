@@ -10,5 +10,4 @@ func main() {
 	//db.Init()
 	server.Start()
 
-	//models.FindShareDrive("medg_palliative")
 }

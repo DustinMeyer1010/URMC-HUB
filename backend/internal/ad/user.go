@@ -30,6 +30,7 @@ func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err er
 		"distinguishedName",
 		"uid",
 		"mail",
+		"urid",
 	)
 
 	results, err := ldapConfig.Search(conn)
@@ -47,14 +48,17 @@ func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err er
 	return
 }
 
-func PullUserInformation(username string) (models.UserFullInfo, error) {
+func PullUserInformation(searchValue string) (models.UserFullInfo, error) {
 
 	var user models.UserFullInfo
 
+	catagory := "user"
+	attribute := "SAMAccountName"
+
 	results, err := SearchAllByCategory(
-		"user",
-		"SAMAccountName",
-		username,
+		catagory,
+		attribute,
+		searchValue,
 		"cn",
 		"name",
 		"sAMAccountName",

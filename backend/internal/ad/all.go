@@ -12,7 +12,7 @@ func AllSearch(search string) (result models.AllResults, err error) {
 	result.Computers = make([]models.ComputerSimpleInfo, 0)
 	result.Groups = make([]models.GroupSimpleInfo, 0)
 	result.Printers = make([]models.PrinterSimpleInfo, 0)
-	result.Shares = make([]models.ShareDriveSimpleInfo, 0)
+	result.Shares = make([]models.DriveSimpleInfo, 0)
 	var wg sync.WaitGroup
 	ch := make(chan any, 5)
 
@@ -46,9 +46,9 @@ func AllSearch(search string) (result models.AllResults, err error) {
 		return result
 	})
 	go thread(&wg, ch, func() any {
-		result, err := SearchallShareDrives(search)
+		result, err := SearchAllDrives(search)
 		if err != nil {
-			return make([]models.ShareDriveSimpleInfo, 0)
+			return make([]models.DriveSimpleInfo, 0)
 		}
 		return result
 	})
@@ -58,7 +58,7 @@ func AllSearch(search string) (result models.AllResults, err error) {
 
 	for results := range ch {
 		switch results := results.(type) {
-		case []models.ShareDriveSimpleInfo:
+		case []models.DriveSimpleInfo:
 			result.Shares = results
 		case []models.ComputerSimpleInfo:
 			result.Computers = results

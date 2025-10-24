@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { GroupSimpleInfo } from "@t/group";
     import { copyToClip, type CopyState } from '$lib/helper/copy.svelte';
-    import outIcon from '$lib/assets/right-arrow-orange.png';
+    import outIcon from '$lib/assets/double-right-arrow-primary.png';
 
     let copyState: CopyState = $state({
         copied: "",
@@ -19,7 +19,7 @@
 </script>
 
 <ul class:disabled={group.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <a href={`/name/${group.name}`}> <img src={outIcon} alt=""></a>
+    <a href={`/group/${group.name}`}> <img src={outIcon} alt=""></a>
     {#each Object.entries(group) as key}
         {#if key[1] != ""}
             <li class={key[0]}> 
@@ -46,7 +46,7 @@
     }
 
     img {
-        width: 20px;
+        width: 50px;
     }
 
     

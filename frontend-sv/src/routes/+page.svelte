@@ -92,7 +92,7 @@
 <main>
     {#if loading  && data == null}
         <div>
-            {#each Array(10).fill(0) as _,x}
+            {#each Array(7).fill(0) as _,x}
                 <span style={`--delay: ${250*x}ms`}></span>
             {/each}
         </div>
@@ -162,9 +162,6 @@
         transform: translateX(-50%);
     }
 
-    @media (max-width: 601px) {
-
-    }
 
 
     
