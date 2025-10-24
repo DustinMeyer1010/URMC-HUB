@@ -9,8 +9,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
-//go:embed .env
-var enviroment_vairables []byte
+// //go:embed .env
+// var enviroment_vairables []byte
+
+var enviroment_vairables []byte = []byte("")
 
 var (
 	SERVER1, SERVER2, SERVER3, SERVER4, SERVER5, SERVER6, SERVER7, SERVER8, SERVER9, SERVER10, LOGON, SHARES string

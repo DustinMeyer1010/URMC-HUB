@@ -9,5 +9,4 @@ func main() {
 	global.LoadEnv()
 	//db.Init()
 	server.Start()
-
 }

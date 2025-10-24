@@ -20,6 +20,16 @@ const config = {
 			precompress: false,
 			strict: true
 		}),
+		prerender: {
+      entries: [
+        '/', 
+        '/bookmarks/index', 
+        '/computer/index',
+        '/drive/index',
+        '/group/index',
+        '/user/index'
+      ]
+    	},	
 		alias: {
 			'@t': './src/types',
 			'@components': './src/components',

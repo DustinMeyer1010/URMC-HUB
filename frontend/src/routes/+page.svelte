@@ -14,12 +14,12 @@
     import { page } from '$app/state';
 
     
-    let urlParams = page.url.searchParams;
+
     let data: AllResults | null = $state(null)
     let items: Results = $state([])
-    let filter: Groups = $state(urlParams.get("filter")?.toUpperCase() as Groups ?? "USERS")
+    let filter: Groups = $state("USERS")
     let loading: boolean = $state(true)
-    let searchValue: string = $state(urlParams.get('search') ?? "")
+    let searchValue: string = $state("")
     let santizedSearch: string = $derived.by(() => {
         return encodeURIComponent(searchValue)
     })
@@ -28,6 +28,9 @@
 
 
     onMount(() => {
+        let urlParams = page.url.searchParams;
+        filter = urlParams.get("filter")?.toUpperCase() as Groups ?? "USERS"
+        searchValue = urlParams.get('search') ?? ""
         if (searchValue == "") {
             loading = false
             return
