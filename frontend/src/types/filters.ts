@@ -1,0 +1,9 @@
+import type { ComputerSimpleInfo } from "./computer"
+import type { PrinterSimpleInfo } from "./printer"
+import type { UserSimpleInfo } from "./user"
+import type { GroupSimpleInfo } from "./group"
+import type { ShareDriveSimpleInfo } from "./drive"
+
+
+export type Groups = 'COMPUTERS' | 'USERS' | "GROUPS" | 'PRINTERS' | 'DRIVES'
+export type Results =  ComputerSimpleInfo[] | PrinterSimpleInfo[] | UserSimpleInfo[] | GroupSimpleInfo[] | ShareDriveSimpleInfo[]

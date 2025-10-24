@@ -1,15 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
 
-
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  build: {
-    outDir: path.resolve(__dirname, '../backend/internal/router/dist'),
-  },
-  base: '/', // VERY important for embedding in Go
-})
-
-
+	plugins: [sveltekit()]
+});
