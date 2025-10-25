@@ -3,7 +3,7 @@
     import goToIcon from '$lib/assets/double-left-arrow-primary.png';
     import copyAllIcon from "$lib/assets/copy-color-text.png"
 	import type { DriveSimpleInfo } from "@t/drive";
-	import { blur, crossfade, draw, fade, fly, scale } from 'svelte/transition';
+	import { blur } from 'svelte/transition';
 
     let copyState: CopyState = $state({
         copied: "",
@@ -12,13 +12,7 @@
 
 
     let searchValue: string = $state("")
-    let showMore: boolean = $state(false)
-    let showMoreMessage: string = $derived.by(() => {
-        if (showMore) {
-            return "Show Less"
-        }
-        return "Show More"
-    })
+
     let {
         drive,
         idx
@@ -28,7 +22,7 @@
     } = $props()
 
     let groups: string[] = $derived.by(() => {
-        if (searchValue == "") {
+        if (!searchValue) {
             return drive.groups
         }
         return drive.groups.filter((group) => group.toUpperCase().includes(searchValue.toUpperCase()))
@@ -65,18 +59,8 @@
         GROUPS: 
         {#if drive.groups.length >= 10}
             <input placeholder="Search For Group" bind:value={searchValue}/> 
-            <span class="show-more">
-                <button  onclick={() => showMore = !showMore}>
-                    {showMoreMessage}
-                    <img 
-                        class="show-more" 
-                        class:more={showMore} 
-                        src={goToIcon} 
-                        alt="">
-                </button>
-            </span>
         {/if}
-        <div class:more={showMore}>
+        <div >
             {#each groups as group,i }
                 <button class:active={copyState.copied === group} onclick={() => copyToClip(group, copyState)} out:blur={{ duration: 200}} class="group-button" style="--delay: {Math.min(i * 20, 2000)}ms">{copyState.copied === group ? `Copied` : group}</button>
             {/each}
@@ -94,18 +78,6 @@
         border-radius: 5px;
     }
 
-    span.show-more {
-        position: absolute;
-        bottom: 0.5rem;
-        left: 50%;
-        font-size: 12px;
-        transform: translateX(-50%);
-    }
-
-    div.more {
-        max-height: 3000px;
-        
-    }
 
     button.active {
         color: var(--color-primary-focus);
@@ -124,7 +96,10 @@
         padding: 0.5rem;
         flex-wrap: wrap;
         max-height: 150px;
-        overflow: hidden;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: thin; 
+        scrollbar-color: rgba(255,255,255,0.3) transparent;
     }
 
     img {
@@ -132,16 +107,6 @@
     }
 
 
-    img.show-more {
-        width: 15px;
-        margin-left: 0.3rem;
-        transform: translateY(2px) rotate(-90deg);
-        transition: var(--transition-normal);
-    }
-
-    img.more {
-        transform: translateY(2px) rotate(90deg);
-    }
 
     button.group-button {
         padding: 0.3rem;
@@ -270,9 +235,6 @@
     }
 
     @media (max-width: 800px) {
-        span.show-more {
-            display: none;
-        }
 
         div {
             overflow-y: scroll;

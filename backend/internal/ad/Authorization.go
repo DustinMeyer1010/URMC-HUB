@@ -11,33 +11,31 @@ import (
 
 func connectToLDAP() (l *ldap.Conn, err error) {
 
-	l, err = ldap.DialURL("ldap://URMC-sh.rochester.edu/")
+	l, err = ldap.DialURL(global.URMC_LDAP)
 
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	err = l.Bind(fmt.Sprintf("URMC-sh\\%s", global.Username), global.Password)
+	err = l.Bind(formatUsername(global.Username), global.Password)
 
 	return
 }
 
 func Login(user models.UserLogin) error {
 
-	l, err := ldap.DialURL("ldap://URMC-sh.rochester.edu/")
+	l, err := ldap.DialURL(global.URMC_LDAP)
 
 	if err != nil {
 		log.Fatal(err)
-		return fmt.Errorf("Failed to Dail the Server")
+		return fmt.Errorf("Failed to connect to URMC ldap server")
 	}
 
-	urmcsh := fmt.Sprintf("URMC-sh\\%s", user.Username)
-
-	err = l.Bind(urmcsh, user.Password)
+	err = l.Bind(formatUsername(user.Username), user.Password)
 
 	if err != nil {
-		return fmt.Errorf("invalid Username or Password")
+		return fmt.Errorf("invalid username or password")
 	}
 
 	global.Username = user.Username
@@ -50,7 +48,7 @@ func Login(user models.UserLogin) error {
 func Verify() error {
 
 	if global.Username == "" || global.Password == "" {
-		return fmt.Errorf("no Username or Password")
+		return fmt.Errorf("no credentials provided")
 	}
 
 	_, err := connectToLDAP()
@@ -60,4 +58,12 @@ func Verify() error {
 	}
 
 	return nil
+}
+
+func formatUsername(username string) string {
+	return fmt.Sprintf(
+		"%s\\%s",
+		global.USERNAME_PREFIX,
+		username,
+	)
 }

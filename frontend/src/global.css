@@ -14,6 +14,7 @@ body {
     --color-bg: #212335;
     --color-surface: #2F324B;
     --color-bg-opacity-30: rgba(33, 35, 53, 0.3);
+    --color-bg-opacity-80: rgba(33, 35, 53, 0.8);
     --color-text: #b4b8d9;
 
     /* ==== Brand Colors ==== */
@@ -50,6 +51,7 @@ body {
 
     /* === AD Colors === */
     --color-ad-disabled: #ca5c65;
+    --color-ad-disabled-light: #cc777e;
     }
 
     /* ==== Light Theme Variant ==== */

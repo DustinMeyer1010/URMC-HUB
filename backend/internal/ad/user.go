@@ -74,6 +74,7 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, error) {
 		"physicalDeliveryOfficeName",
 		"givenName",
 		"memberOf",
+		"URRoleStatus",
 		"sn",
 	)
 

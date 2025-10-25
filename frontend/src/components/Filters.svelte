@@ -74,7 +74,7 @@
         width: 150px;
         border: 2px solid var(--primary-accent);
         border-radius: 20px;
-        background: transparent;
+        background: var(--color-bg-opacity-80);
         transform-origin: center;
         color: var(--color-accent);
         transition: 0.3s ease;

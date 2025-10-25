@@ -32,17 +32,13 @@
             </button>
         </li>
         {#each Object.entries(printer).slice(2) as key}
-            {#if key[1] != ""}
+            {#if key[1]}
                 <li> 
                     <button
                     type="button"
                     onclick={() => copyToClip(key[1], copyState)}>
                             <b>{key[0].toUpperCase()}:</b>
-                            {#if copyState.copied == key[1]} 
-                                Copied
-                            {:else}
-                                {key[1]}
-                            {/if}
+                            {copyState.copied == key[1] ? "Copied" : key[1]}
                     </button>
                 </li>
             {/if}

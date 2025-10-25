@@ -32,7 +32,7 @@
     {/if}
     <a href={`/computer/${computer.name}`}> <img src={goToIcon} alt=""></a>
     {#each Object.entries(computer) as key}
-        {#if key[1] != ""}
+        {#if key[1]}
             <li class={key[0]}> 
                 <button
                 type="button"
@@ -111,7 +111,6 @@
         background: var(--background-surface);
         color: var(--text);
         opacity: 0;
-        overflow-x: hidden;
         transform: translateY(20px);
         animation: slideIn 0.2s ease-out forwards;
         animation-delay: var(--delay);

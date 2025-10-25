@@ -44,7 +44,7 @@
         border: none;
         backdrop-filter: blur(10px);
         text-align: center;
-        background: rgba(33,35,53, 0.8);
+        background: var(--color-bg-opacity-80);
         border: 2px solid var(--color-border);
         padding: 0.5rem;
         border-radius: 5px;
@@ -59,7 +59,7 @@
     }
 
     button {
-        background: transparent;
+        background: var(--color-bg-opacity-80);
         backdrop-filter: blur(5px);
         border: 2px solid var(--color-primary);
         border-radius: 5px;

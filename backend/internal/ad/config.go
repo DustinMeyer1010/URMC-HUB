@@ -3,6 +3,7 @@ package ad
 import (
 	"fmt"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/go-ldap/ldap/v3"
 )
 
@@ -22,7 +23,7 @@ type LDAPSearchConfig struct {
 func SearchConfig(filter string, attribute ...string) LDAPSearchConfig {
 
 	return LDAPSearchConfig{
-		BaseDN:    "DC=URMC-sh,DC=rochester,DC=edu",
+		BaseDN:    global.BASEDN,
 		Scope:     ldap.ScopeWholeSubtree,
 		Deref:     ldap.NeverDerefAliases,
 		Attribute: attribute,

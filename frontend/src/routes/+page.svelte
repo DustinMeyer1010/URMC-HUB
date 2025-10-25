@@ -141,8 +141,6 @@
     }
 
     main {
-        overflow-x: hidden;
-        overflow-y: scroll;
         width: 100%;
         padding-bottom: 120px;
         display: flex;

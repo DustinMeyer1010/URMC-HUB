@@ -8,6 +8,10 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 )
 
+// DriveSimpleInfo contains minimal drive information used for listing or syncing drives.
+// - Groups: The names of AD groups or users with access.
+// - Drive: The mapped drive letter or identifier.
+// - LocalPath: The local system path where the drive is mounted.
 type DriveSimpleInfo struct {
 	Groups    []string `json:"groups"`
 	Drive     string   `json:"drive"`

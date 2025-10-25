@@ -9,13 +9,25 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// //go:embed .env
-// var enviroment_vairables []byte
-
-var enviroment_vairables []byte = []byte("")
+//go:embed .env
+var enviroment_vairables []byte
 
 var (
-	SERVER1, SERVER2, SERVER3, SERVER4, SERVER5, SERVER6, SERVER7, SERVER8, SERVER9, SERVER10, LOGON, SHARES string
+	SERVER1,
+	SERVER2,
+	SERVER3,
+	SERVER4,
+	SERVER5,
+	SERVER6,
+	SERVER7,
+	SERVER8,
+	SERVER9,
+	SERVER10,
+	LOGON,
+	SHARES,
+	BASEDN,
+	USERNAME_PREFIX,
+	URMC_LDAP string
 )
 
 func LoadEnv() {
@@ -44,6 +56,9 @@ func LoadEnv() {
 	SERVER10 = os.Getenv("SERVER10")
 	LOGON = os.Getenv("LOGON")
 	SHARES = os.Getenv("SHARES")
+	BASEDN = os.Getenv("BASEDN")
+	URMC_LDAP = os.Getenv("URMCLDAP")
+	USERNAME_PREFIX = os.Getenv("USERNAME_PREFIX")
 
 }
 

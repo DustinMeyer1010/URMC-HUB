@@ -2,6 +2,7 @@ package ad
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 
@@ -14,9 +15,13 @@ func SearchAllDrives(searchValue string) ([]models.DriveSimpleInfo, error) {
 	allDrives := make([]models.DriveSimpleInfo, 0)
 	mapping, err := getDriveToGroupsMapping()
 
+	fmt.Println(err)
+
 	if err != nil {
 		return allDrives, err
 	}
+
+	fmt.Println(searchValue)
 
 	for drive, groups := range mapping {
 		if strings.Contains(strings.ToLower(drive), strings.ToLower(searchValue)) {

@@ -13,8 +13,38 @@ func AllSearch(search string) (result models.AllResults, err error) {
 	result.Groups = make([]models.GroupSimpleInfo, 0)
 	result.Printers = make([]models.PrinterSimpleInfo, 0)
 	result.Shares = make([]models.DriveSimpleInfo, 0)
-	var wg sync.WaitGroup
+
 	ch := make(chan any, 5)
+	startGoRouteSearch(search, ch)
+
+	for results := range ch {
+		switch results := results.(type) {
+		case []models.DriveSimpleInfo:
+			result.Shares = results
+		case []models.ComputerSimpleInfo:
+			result.Computers = results
+		case []models.UserSimpleInfo:
+			result.Users = results
+		case []models.GroupSimpleInfo:
+			result.Groups = results
+		case []models.PrinterSimpleInfo:
+			result.Printers = results
+		default:
+			err = fmt.Errorf("unknown type: %T", results)
+		}
+
+	}
+
+	return
+}
+
+func thread(wg *sync.WaitGroup, ch chan any, task func() any) {
+	defer wg.Done()
+	ch <- task()
+}
+
+func startGoRouteSearch(search string, ch chan any) {
+	var wg sync.WaitGroup
 
 	wg.Add(5)
 	go thread(&wg, ch, func() any {
@@ -55,29 +85,4 @@ func AllSearch(search string) (result models.AllResults, err error) {
 
 	wg.Wait()
 	close(ch)
-
-	for results := range ch {
-		switch results := results.(type) {
-		case []models.DriveSimpleInfo:
-			result.Shares = results
-		case []models.ComputerSimpleInfo:
-			result.Computers = results
-		case []models.UserSimpleInfo:
-			result.Users = results
-		case []models.GroupSimpleInfo:
-			result.Groups = results
-		case []models.PrinterSimpleInfo:
-			result.Printers = results
-		default:
-			err = fmt.Errorf("unknown type: %T", results)
-		}
-
-	}
-
-	return
-}
-
-func thread(wg *sync.WaitGroup, ch chan any, task func() any) {
-	defer wg.Done()
-	ch <- task()
 }

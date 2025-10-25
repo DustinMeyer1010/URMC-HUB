@@ -10,8 +10,10 @@ import (
 )
 
 func PullUserInformation(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	username := vars["username"]
 
-	user, err := ad.PullUserInformation("dmeyer20")
+	user, err := ad.PullUserInformation(username)
 
 	if err != nil {
 		fmt.Println(err)
