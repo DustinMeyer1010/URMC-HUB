@@ -1,6 +1,7 @@
 package ad
 
 import (
+	"fmt"
 	"sort"
 	"sync"
 
@@ -27,6 +28,8 @@ func LockoutInfoData(user string) (matches []models.LockOutStatus) {
 
 	wg.Wait()
 
+	fmt.Println(matches)
+
 	sort.Slice(matches, func(i, j int) bool {
 		return matches[i].Name < matches[j].Name
 	})
@@ -36,20 +39,24 @@ func LockoutInfoData(user string) (matches []models.LockOutStatus) {
 
 func ServerLockout(server string, user string) (models.LockOutStatus, error) {
 
-	lockout := models.LockOutStatus{}
+	l, err := ConnectToServer("LDAP://" + server)
 
-	results, err := SearchByCategory(
-		"user",
-		"SAMAccountName",
-		user,
+	if err != nil {
+		return models.LockOutStatus{}, err
+	}
+
+	defer l.Close()
+
+	config := SearchConfig(
+		fmt.Sprintf("(&(objectClass=user)(SAMAccountName=%s*))", user),
 		"badPwdCount",
 		"badPasswordTime",
 	)
 
-	if err != nil || results == nil {
-		return lockout, err
+	results, _ := config.Search(l)
+	if results == nil {
+		return models.LockOutStatus{}, fmt.Errorf("no entries found")
 	}
-
 	entry := results.Entries[0]
 
 	return models.ToLockOutStatus(server, entry), err

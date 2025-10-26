@@ -3,12 +3,14 @@
     import { copyToClip, type CopyState } from '$lib/helper/copy.svelte';
     import goToIcon from '$lib/assets/double-left-arrow-primary.png';
     import copyAllIcon from "$lib/assets/copy-color-text.png"
+    import disabledIcon from '$lib/assets/disabled-computer.png'
 
     let copyState: CopyState = $state({
         copied: "",
         timeout: null
     })
-
+    
+    
 
 
     let {
@@ -19,12 +21,15 @@
         idx: number
     } = $props()
 
-    $inspect(copyState)
+    const disabled: boolean = computer.ou.toLowerCase().includes("disabled")
     const allCopyText: string = `Name: ${computer.name}\nOU: ${computer.ou}\nOS: ${computer.operating_system}`;
 
 </script>
 
-<ul class:disabled={computer.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(idx * 50, 2000)}ms">
+<ul class:disabled={disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
+    {#if disabled}
+        <span class="disabled"><img src={disabledIcon} alt="">Computer Disabled</span>
+    {/if}
     {#if copyState.copied != allCopyText}
         <button class="copy-all" title="Copy All" onclick={() => copyToClip(allCopyText, copyState)}><img src={copyAllIcon} alt="Copy All"></button>
     {:else}
@@ -47,8 +52,21 @@
 </ul>
 
 <style >
-    ul.disabled {
-        color: var(--color-ad-disabled)
+    span.disabled {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        color: var(--color-ad-disabled);
+        right: 1rem;
+        bottom: 0.5rem;
+        font-weight: bold;
+        font-size: 12px;
+    }
+
+    span.disabled img {
+        width: 20px;
+        margin-right: 2px;
     }
 
     img {
@@ -69,6 +87,8 @@
     button:active{
         outline: none;
     }
+
+
 
     span.copied-all {
         font-size: 10px;
@@ -118,6 +138,7 @@
         list-style: none;
     }
 
+
     a {
         opacity: 0.8;
         position: absolute;
@@ -163,15 +184,28 @@
         outline: none;
     }
 
+    @media (max-width: 800px) {
+        ul.disabled {
+            padding-bottom: 3rem;
+        }
+
+        span.disabled {
+            left: 50%;
+            right: 0;
+            transform: translateX(-50%);
+            text-wrap: nowrap;
+        }
+    } 
+
     @media (max-width: 400px) {
 
         ul {
             padding-right: 1rem;
 
         }
+
+
     }
-
-
     
     @keyframes slideIn {
         from {

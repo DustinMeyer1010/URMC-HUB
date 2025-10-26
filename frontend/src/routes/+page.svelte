@@ -12,7 +12,7 @@
     import { goto } from '$app/navigation'
 	import { onMount } from 'svelte';
     import { page } from '$app/state';
-
+	import { getSearchValue } from './helper';
     
 
     let data: AllResults | null = $state(null)
@@ -24,17 +24,11 @@
         return encodeURIComponent(searchValue)
     })
 
-    
-
 
     onMount(() => {
         let urlParams = page.url.searchParams;
         filter = urlParams.get("filter")?.toUpperCase() as Groups ?? "USERS"
-        searchValue = urlParams.get('search') ?? ""
-        if (searchValue == "") {
-            loading = false
-            return
-        }
+        searchValue = getSearchValue(urlParams)
         switchFilter(filter)
         search()
     })
@@ -51,10 +45,15 @@
 
         switchFilter(filter)
         setURL()
+        setPreviousSearch()
         loading = false
+
     }
 
-    $inspect(data)
+    function setPreviousSearch() {
+        localStorage.setItem("searchValue", searchValue)
+    }
+
 
     function setURL() {
         goto(`/?search=${santizedSearch}&filter=${filter.toLowerCase()}`, { replaceState: true, keepFocus: true, noScroll: true })
@@ -161,9 +160,5 @@
         bottom: 0px;
         left: 50%;
         transform: translateX(-50%);
-    }
-
-
-
-    
+    }    
 </style>

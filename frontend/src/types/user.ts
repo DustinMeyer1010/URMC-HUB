@@ -25,3 +25,10 @@ export type UserFullInfo = {
     description: string,
     member_of: string[],
 }
+
+
+export type LockoutInfo = {
+    name: string,
+    count: number,
+    time: string,
+}

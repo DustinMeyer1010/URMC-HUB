@@ -53,7 +53,7 @@ func (u *UserFullInfo) FillAttributes(user *ldap.Entry) {
 	u.Department = user.GetAttributeValue("department")
 	u.Title = user.GetAttributeValue("title")
 	u.OU = user.GetAttributeValue("distinguishedName")
-	u.LastPasswordSet = user.GetAttributeValue("pwdLastSet")
+	u.LastPasswordSet = TimeConvert(user.GetAttributeValue("pwdLastSet"))
 	u.RelationshipStatus = user.GetAttributeValue("URRoleStatus")
 	u.Location = user.GetAttributeValue("physicalDeliveryOfficeName")
 	u.Description = user.GetAttributeValue("description")

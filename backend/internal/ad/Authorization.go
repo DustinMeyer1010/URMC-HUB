@@ -45,6 +45,19 @@ func Login(user models.UserLogin) error {
 
 }
 
+func ConnectToServer(URL string) (*ldap.Conn, error) {
+	l, err := ldap.DialURL(URL)
+
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+
+	err = l.Bind(fmt.Sprintf("%s\\%s", global.USERNAME_PREFIX, global.Username), global.Password)
+
+	return l, err
+}
+
 func Verify() error {
 
 	if global.Username == "" || global.Password == "" {

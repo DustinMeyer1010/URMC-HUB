@@ -4,6 +4,7 @@
     import type { Section } from "../types"
 	import type { UserFullInfo } from "@t/user";
     import Profile from "./Profile.svelte"
+	import Lockout from "./Lockout.svelte";
 
     let { data } : { data: UserFullInfo } = $props();
     const duration = 200;
@@ -25,9 +26,7 @@
     {#if shownSection == "PROFILE"}
         <Profile user={data}/>
     {:else if shownSection == "LOCKOUT"}
-    <section in:slide={{delay: delay, duration: duration}} out:slide={{duration: duration}}>
-        LOCKOUT
-    </section>
+        <Lockout username={data.username}/>
     {:else if shownSection == "DRIVES"}
     <section in:slide={{delay: delay, duration: duration}} out:slide={{duration: duration}}>
         DRIVES
@@ -50,6 +49,12 @@
         padding: 0 5rem;
         flex-direction: column;
         gap: 1rem;
+    }
+
+    @media (max-width: 850px) {
+        main {
+            padding: 0 1rem;
+        }
     }
 
 
