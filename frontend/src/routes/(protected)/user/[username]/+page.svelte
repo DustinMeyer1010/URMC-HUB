@@ -5,6 +5,7 @@
 	import type { UserFullInfo } from "@t/user";
     import Profile from "./Profile.svelte"
 	import Lockout from "./Lockout.svelte";
+	import Drive from "./Drive.svelte";
 
     let { data } : { data: UserFullInfo } = $props();
     const duration = 200;
@@ -17,6 +18,8 @@
     function swapSection(section: Section)  {
         shownSection = section
     }
+
+    $inspect(data)
 </script>
 
 
@@ -28,9 +31,7 @@
     {:else if shownSection == "LOCKOUT"}
         <Lockout username={data.username}/>
     {:else if shownSection == "DRIVES"}
-    <section in:slide={{delay: delay, duration: duration}} out:slide={{duration: duration}}>
-        DRIVES
-    </section>
+        <Drive groups={data.member_of}/>
     {:else if shownSection == "GROUPS"}
     <section in:slide={{delay: delay, duration: duration}} out:slide={{duration: duration}}>
         GROUPS

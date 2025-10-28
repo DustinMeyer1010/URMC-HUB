@@ -26,24 +26,24 @@ func (u *UserSimpleInfo) FillAttributes(user *ldap.Entry) {
 
 // Used for the user page on frontend to display all infromation about the user
 type UserFullInfo struct {
-	Username           string   `json:"username"`
-	Email              string   `json:"email"`
-	LastPasswordSet    string   `json:"last_password_set"`
-	NetID              string   `json:"net_id"`
-	Department         string   `json:"department"`
-	Title              string   `json:"title"`
-	URID               string   `json:"urid"`
-	Phone              string   `json:"phone"`
-	Location           string   `json:"location"`
-	RelationshipStatus string   `json:"relationship_status"`
-	Name               string   `json:"name"`
-	OU                 string   `json:"ou"`
-	Description        string   `json:"description"`
-	MemberOf           []string `json:"member_of"`
+	Username           string            `json:"username"`
+	Email              string            `json:"email"`
+	LastPasswordSet    string            `json:"last_password_set"`
+	NetID              string            `json:"net_id"`
+	Department         string            `json:"department"`
+	Title              string            `json:"title"`
+	URID               string            `json:"urid"`
+	Phone              string            `json:"phone"`
+	Location           string            `json:"location"`
+	RelationshipStatus string            `json:"relationship_status"`
+	Name               string            `json:"name"`
+	OU                 string            `json:"ou"`
+	Description        string            `json:"description"`
+	MemberOf           []GroupSimpleInfo `json:"member_of"`
 }
 
 // Fills in UserFullInfo struct will attributes for ldap search
-func (u *UserFullInfo) FillAttributes(user *ldap.Entry) {
+func (u *UserFullInfo) FillAttributes(user *ldap.Entry) []string {
 	u.Name = user.GetAttributeValue("cn")
 	u.Username = user.GetAttributeValue("sAMAccountName")
 	u.NetID = user.GetAttributeValue("uid")
@@ -57,5 +57,6 @@ func (u *UserFullInfo) FillAttributes(user *ldap.Entry) {
 	u.RelationshipStatus = user.GetAttributeValue("URRoleStatus")
 	u.Location = user.GetAttributeValue("physicalDeliveryOfficeName")
 	u.Description = user.GetAttributeValue("description")
-	u.MemberOf = user.GetAttributeValues("memberOf")
+
+	return user.GetAttributeValues("memberOf")
 }

@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/db"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
@@ -20,17 +20,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	err = ad.Login(user)
 
+	fmt.Println(err)
+
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
 		return
 	}
-
-	agent := models.Agent{Username: user.Username}
-
-	db.CreateDBForAgent(agent)
-	db.SetUserID(agent)
-
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Successfully Logged in"))
 }

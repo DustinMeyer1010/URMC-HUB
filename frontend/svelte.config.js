@@ -14,26 +14,29 @@ const config = {
 		adapter: adapter({
 			// default options are shown. On some platforms
 			// these options are set automatically — see below
-			pages: 'build',
-			assets: 'build',
+			pages: "build",
+			assets: "build",
 			fallback: '200.html',
 			precompress: false,
 			strict: true
 		}),
 		prerender: {
-      entries: [
-        '/', 
-        '/bookmarks/index', 
-        '/computer/index',
-        '/drive/index',
-        '/group/index',
-        '/user/index'
-      ]
-    	},	
-		alias: {
-			'@t': './src/types',
-			'@components': './src/components',
-		},
+			entries: [
+				'/',
+				'/bookmarks/index', 
+				'/computer/index',
+				'/drive/index',
+				'/group/index',
+				'/user/index',
+				'/bookmarks',
+				'/login',
+				'/search',
+			]
+			},	
+			alias: {
+				'@t': './src/types',
+				'@components': './src/components',
+			},
 	}
 };
 

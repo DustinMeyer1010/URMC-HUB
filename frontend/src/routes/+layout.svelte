@@ -7,8 +7,8 @@
 
 	import { theme } from "$lib/theme";
   	import { get } from "svelte/store";
-
 	const current = get(theme);
+
 
 
 
@@ -20,20 +20,8 @@
 </svelte:head>
 
 <Nav/>
-
 {@render children?.()}
 
 <style>
 	
 </style>
-
-
-<!--
-Dark Theme
-----------------
-Background: #212335
-Background-Surface: #2F324B
-Primary: #008cff
-On-Primary: #fdebd6
-Complementary: #ff7300
--->

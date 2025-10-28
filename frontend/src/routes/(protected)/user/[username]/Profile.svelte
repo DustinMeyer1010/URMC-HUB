@@ -19,7 +19,7 @@
 
 </script>
 
-<section in:fly={{delay: delay, duration: duration, x: -200, y: 200}} out:fly={{duration: duration, x: 200, y: 200}}>
+<section >
     {#if user.ou.toLocaleLowerCase().includes("disabled")}
         <h1 class="disabled"><img src={disabledIcon} alt=""/>Disabled Account</h1>
     {/if}
@@ -47,6 +47,9 @@
         border-radius: 10px;
         background: var(--color-surface);
         position: relative;
+        animation: slideIn 0.5s forwards;
+        opacity: 0;
+        animation-delay: 50ms;
     }
 
     ul {
@@ -72,6 +75,17 @@
         margin-right: 2px;
         transform: translateY(2px);
         width: 20px;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
 
     @media (max-width: 1200px) {

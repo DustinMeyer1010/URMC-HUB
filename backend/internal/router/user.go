@@ -14,20 +14,26 @@ func userRoutes(mux *mux.Router) {
 	routes := routes{
 		{
 			methods{"GET"},
-			"/user/info/{username}",
+			"/api/user/info/{username}",
 			http.HandlerFunc(handlers.PullUserInformation),
 			middleware.Middleware{middleware.CorsHandler},
 		},
 		{
 			methods{"GET"},
-			"/lockout/{username}",
+			"/api/lockout/{username}",
 			http.HandlerFunc(handlers.LockOutStatus),
 			middleware.Middleware{middleware.CorsHandler},
 		},
 		{
-			methods{"GET"},
-			"/user/login",
+			methods{"POST", "OPTIONS"},
+			"/api/user/login",
 			http.HandlerFunc(handlers.Login),
+			middleware.Middleware{middleware.CorsHandler},
+		},
+		{
+			methods{"POST", "OPTIONS"},
+			"/api/drive/access",
+			http.HandlerFunc(handlers.DriveAccess),
 			middleware.Middleware{middleware.CorsHandler},
 		},
 	}

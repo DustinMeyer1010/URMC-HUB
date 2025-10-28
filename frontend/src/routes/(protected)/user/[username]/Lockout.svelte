@@ -8,6 +8,7 @@
     const delay: number = 250;
 
     let loading: boolean = $state(false)
+    let pageLoading: boolean = $state(true)
 
     let {
         username
@@ -31,7 +32,7 @@
         }
 
         loading = true
-        const response: Response = await fetch(`http://localhost:8000/lockout/${username}`)
+        const response: Response = await fetch(`http://localhost:8000/api/lockout/${username}`)
         data = await response.json()
 
         data.sort((a, b) =>  new Date(b.time).getTime() - new Date(a.time).getTime())
@@ -40,12 +41,13 @@
         refreshedTimeout = setTimeout(() => {
             refreshedMsg = ""
         }, 1000);
+
     }
 
 </script>
 
 
-<section in:fly={{delay: delay, duration: duration, x: -200, y: 200}} out:fly={{duration: duration, x: 200, y: 200}}>
+<section>
     <span>{refreshedMsg}<button class:loading={loading} onclick={refreshLockout}><img src={RefreshIcon} alt=""></button></span>
         <div class="header">
             <div class="remove">Server</div>
@@ -62,7 +64,6 @@
         {/each}
 </section>
 
-
 <style>
     section {
         padding: 2rem 1rem;
@@ -72,6 +73,10 @@
         background: var(--color-surface);
         position: relative;
         min-width: 50%;
+        animation: slideIn 0.5s forwards;
+        transform: translateY(100%);
+        opacity: 0;
+        animation-delay: 50ms;
     }
 
     div.header {
@@ -149,6 +154,17 @@
         padding: 0.5rem;
     }
 
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
 
 </style>

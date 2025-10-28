@@ -1,3 +1,5 @@
+import type { DriveSimpleInfo } from "./drive"
+import type { GroupSimpleInfo } from "./group"
 
 export type UserSimpleInfo = {
     name: string,
@@ -23,7 +25,7 @@ export type UserFullInfo = {
     ou: string,
     net_id: string,
     description: string,
-    member_of: string[],
+    member_of: GroupSimpleInfo[],
 }
 
 

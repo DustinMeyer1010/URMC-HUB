@@ -10,6 +10,9 @@ import (
 )
 
 func connectToLDAP() (l *ldap.Conn, err error) {
+	if global.Username == "" || global.Password == "" {
+		return nil, fmt.Errorf("agent not logged in")
+	}
 
 	l, err = ldap.DialURL(global.URMC_LDAP)
 
@@ -46,6 +49,10 @@ func Login(user models.UserLogin) error {
 }
 
 func ConnectToServer(URL string) (*ldap.Conn, error) {
+	if global.Username == "" || global.Password == "" {
+		return nil, fmt.Errorf("agent not logged in")
+	}
+
 	l, err := ldap.DialURL(URL)
 
 	if err != nil {
@@ -61,7 +68,7 @@ func ConnectToServer(URL string) (*ldap.Conn, error) {
 func Verify() error {
 
 	if global.Username == "" || global.Password == "" {
-		return fmt.Errorf("no credentials provided")
+		return fmt.Errorf("agent not logged in")
 	}
 
 	_, err := connectToLDAP()

@@ -18,6 +18,12 @@ type DriveSimpleInfo struct {
 	LocalPath string   `json:"local_path"`
 }
 
+type DriveAccess struct {
+	Groups []string `json:"groups"`
+	Drive  string   `json:"drive"`
+}
+
+// Get the local path for the provided share drive and then return a copy of that share drive with the localPath in it
 func (d DriveSimpleInfo) GetLocalPath() DriveSimpleInfo {
 	file, err := os.Open(global.SHARES)
 

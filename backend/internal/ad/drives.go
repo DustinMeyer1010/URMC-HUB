@@ -2,7 +2,6 @@ package ad
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strings"
 
@@ -15,13 +14,9 @@ func SearchAllDrives(searchValue string) ([]models.DriveSimpleInfo, error) {
 	allDrives := make([]models.DriveSimpleInfo, 0)
 	mapping, err := getDriveToGroupsMapping()
 
-	fmt.Println(err)
-
 	if err != nil {
 		return allDrives, err
 	}
-
-	fmt.Println(searchValue)
 
 	for drive, groups := range mapping {
 		if strings.Contains(strings.ToLower(drive), strings.ToLower(searchValue)) {
@@ -59,7 +54,7 @@ func checkForGroupMatch(searchValue string, groups []string) bool {
 }
 
 // Finds all share drives that match the searchValues
-func getGroupToDrivesMapping() (map[string][]string, error) {
+func GetGroupToDrivesMapping() (map[string][]string, error) {
 
 	collection := make(map[string][]string)
 

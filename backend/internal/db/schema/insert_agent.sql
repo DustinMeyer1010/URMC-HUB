@@ -1,1 +1,0 @@
-INSERT OR IGNORE INTO agents (username) VALUES (?);

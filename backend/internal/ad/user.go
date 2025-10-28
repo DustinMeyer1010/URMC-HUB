@@ -2,6 +2,8 @@ package ad
 
 import (
 	"fmt"
+	"strings"
+	"sync"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
@@ -86,9 +88,37 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, error) {
 		return user, fmt.Errorf("ldap threw an error: %s", err)
 	}
 
+	if len(results.Entries) == 0 {
+		return user, err
+	}
+
 	foundUser := results.Entries[0]
 
-	user.FillAttributes(foundUser)
+	groups := user.FillAttributes(foundUser)
+	memberOfChan := make(chan models.GroupSimpleInfo, len(groups))
+	var wg sync.WaitGroup
+	for _, group := range groups {
+		wg.Add(1)
+		go func(group string) {
+			defer wg.Done()
+			g := strings.Split(group, ",")[0][3:]
+			found, _ := PullGroupInfo(g)
+			memberOfChan <- found
+		}(group)
+	}
+
+	go func() {
+		wg.Wait()
+		close(memberOfChan)
+	}()
+
+	// Collect all results into a slice
+	var memberOf []models.GroupSimpleInfo
+	for result := range memberOfChan {
+		memberOf = append(memberOf, result)
+	}
+
+	user.MemberOf = memberOf
 
 	return user, err
 }

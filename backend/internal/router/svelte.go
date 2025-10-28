@@ -10,13 +10,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//go:embed build/*
+//go:embed build/**
 var frontendFS embed.FS
 
 //go:embed build/200.html
 var fallbackHTML []byte
 
-//go:embed build/index.html
+//go:embed build/200.html
 var indexHTML []byte
 
 // Setups the routes for the react routes
