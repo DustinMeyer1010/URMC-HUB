@@ -46,23 +46,24 @@
 
 </script>
 
-
-<section>
-    <span>{refreshedMsg}<button class:loading={loading} onclick={refreshLockout}><img src={RefreshIcon} alt=""></button></span>
-        <div class="header">
-            <div class="remove">Server</div>
-            <div>Attempts</div>
-            <div>Last Attempt</div>
-        </div>
-        {#each data as server}
-        <div class="row">
-            <div class="remove">{server.name}</div>
-            <div>{server.count}</div>
-            <div>{server.time}</div>
-        </div>
-            
-        {/each}
-</section>
+{#if !loading}
+    <section>
+        <span>{refreshedMsg}<button class:loading={loading} onclick={refreshLockout}><img src={RefreshIcon} alt=""></button></span>
+            <div class="header">
+                <div class="remove">Server</div>
+                <div>Attempts</div>
+                <div>Last Attempt</div>
+            </div>
+            {#each data as server}
+            <div class="row">
+                <div class="remove">{server.name}</div>
+                <div>{server.count}</div>
+                <div>{server.time}</div>
+            </div>
+                
+            {/each}
+    </section>
+{/if}
 
 <style>
     section {

@@ -6,24 +6,16 @@ import (
 	"net/url"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 	"github.com/gorilla/mux"
 )
 
 func AllSearch(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	searchValue := vars["searchValue"]
 
-	decodedSearch, err := url.QueryUnescape(searchValue)
+	matches, err := service.AllSearch(r)
 
 	if err != nil {
-		http.Error(w, "invalid search value", http.StatusBadRequest)
-		return
-	}
-
-	matches, err := ad.AllSearch(decodedSearch)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
@@ -36,7 +28,6 @@ func AllSearch(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-
 	w.Write(jsonData)
 
 }
@@ -65,20 +56,19 @@ func UserSearch(w http.ResponseWriter, r *http.Request) {
 
 func GroupSearch(w http.ResponseWriter, r *http.Request) {
 
-	vars := mux.Vars(r)
-	searchValue := vars["searchValue"]
-
-	searchValue, _ = url.QueryUnescape(searchValue)
-
-	groupMatches, err := ad.SearchAllGroups(searchValue)
+	groupMatches, err := service.SearchAllGroups(r)
 
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(err.Error()))
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
-	jsonData, _ := json.Marshal(groupMatches)
+	jsonData, err := json.Marshal(groupMatches)
+
+	if err != nil {
+		http.Error(w, "failed to parse response to json", http.StatusInternalServerError)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

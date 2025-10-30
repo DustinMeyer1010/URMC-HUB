@@ -29,7 +29,6 @@
         gap: 1rem;
         padding: 0rem 1rem;
         width: 100%;
-
     }
 
     button {
@@ -47,12 +46,20 @@
 
     @media (max-width: 1000px) {
         nav {
-            padding: 0rem 1rem;
+            width: 90%;
             justify-content: center;
-            flex-wrap: wrap-reverse;
+            flex-wrap: wrap;
         }
         button {
             padding: 1rem 2rem;
+            width: fit-content;
+            flex-grow: 1;
         }
     }
+
+    @media (max-width: 800px) {
+        button {
+            padding: 1rem;
+        }
+    } 
 </style>

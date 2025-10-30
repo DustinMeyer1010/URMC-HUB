@@ -2,11 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -15,18 +14,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&user)
 
 	if err != nil {
-		panic(err)
-	}
-
-	err = ad.Login(user)
-
-	fmt.Println(err)
-
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(err.Error()))
+		http.Error(w, "invalid body", http.StatusBadRequest)
 		return
 	}
+
+	if err := service.Login(user); err != nil {
+		http.Error(w, "invalid login", http.StatusUnauthorized)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Successfully Logged in"))
+	w.Write([]byte("Successful Login"))
 }

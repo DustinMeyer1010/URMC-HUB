@@ -42,7 +42,7 @@
 
         {#each data as access, idx}
             <div style="--delay: {idx * 50}ms">
-                <h1>{access.drive}</h1>
+                <h1 class="title">{access.drive}</h1>
                 <ul>
                     {#each access.groups as group}
                         <li>{group}</li>
@@ -67,8 +67,13 @@
         border-radius: 10px;
         width: 90%;
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 1rem;
+        align-items: stretch;
+    }
+
+    h1.title {
+        font-weight: bolder;
     }
 
     h1.no-access {
@@ -78,18 +83,13 @@
     h1 {
         font-size: 18px;
         height: 30px;
-        overflow-y: auto;
-        margin: 0;
+        margin: 1rem;
         padding: 0;
-        text-align: center;
-    }
-
-    ul {
-        margin: 0;
+        text-align: left;
     }
 
     div {
-        height: 100px;
+        height: fit-content;
         padding: 1rem;
         border-radius: 10px;
         background: var(--background-surface);
@@ -103,6 +103,22 @@
         animation: pulse 3s infinite;
         animation-delay: var(--delay);
 
+    }
+
+    ul {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin: 0;
+        padding: 0;
+        gap: 1rem;
+        list-style: none;
+    }
+
+    li {
+        border-radius: 3px;
+        padding: 0.2rem;
+        background: var(--color-bg-opacity-30);
     }
 
 
@@ -127,6 +143,19 @@
             transform: translateY(0);
             opacity: 1;
         }
+    }
+
+    @media (max-width: 1010px) {
+
+
+
+    }
+
+    @media (max-width: 800px) {
+        section {
+            grid-template-columns: 1fr;
+        }
+
     }
 
 

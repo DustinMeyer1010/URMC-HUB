@@ -21,6 +21,7 @@
 
 </script>
 
+<input/>
 <ul 
 class:disabled={group.ou.toLowerCase().includes("disabled")} 
 style="--delay: {Math.min(idx * 50, 2000)}ms">
