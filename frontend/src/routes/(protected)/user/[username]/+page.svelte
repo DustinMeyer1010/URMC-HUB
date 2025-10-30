@@ -32,6 +32,8 @@
         <Drive groups={data.member_of}/>
     {:else if shownSection == "GROUPS"}
         <Groups groups={data.member_of}/>
+    {:else if shownSection == "ADD"}
+    {:else if shownSection == "REMOVE"}
     {/if}
 </main>
 

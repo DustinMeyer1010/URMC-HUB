@@ -36,6 +36,18 @@ func userRoutes(mux *mux.Router) {
 			http.HandlerFunc(handlers.DriveAccess),
 			middleware.Middleware{middleware.CorsHandler},
 		},
+		{
+			methods{"POST", "OPTIONS"},
+			"/api/user/group/add",
+			http.HandlerFunc(handlers.AddGroup),
+			middleware.Middleware{middleware.CorsHandler},
+		},
+		{
+			methods{"POST", "OPTIONS"},
+			"/api/user/group/remove",
+			http.HandlerFunc(handlers.RemoveGroup),
+			middleware.Middleware{middleware.CorsHandler},
+		},
 	}
 
 	routes.add(mux)

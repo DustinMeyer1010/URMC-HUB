@@ -8,3 +8,9 @@ type AllResults struct {
 	Printers  []PrinterSimpleInfo  `json:"printers"`
 	Shares    []DriveSimpleInfo    `json:"drives"`
 }
+
+type GroupModifyResults struct {
+	Group      string `json:"group"`
+	Message    string `json:"message"`
+	Successful bool   `json:"successful"`
+}

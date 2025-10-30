@@ -17,7 +17,8 @@
     <button onclick={() => swapSection("LOCKOUT")}>Lockout</button>
     <button onclick={() => swapSection("DRIVES")}>Drives</button>
     <button onclick={() => swapSection("GROUPS")}>Groups</button>
-    <button onclick={() => swapSection("GROUPS")}>Add/Remove</button>
+    <button onclick={() => swapSection("ADD")}>Add</button>
+    <button onclick={() => swapSection("REMOVE")}>Remove</button>
 </nav>
 
 

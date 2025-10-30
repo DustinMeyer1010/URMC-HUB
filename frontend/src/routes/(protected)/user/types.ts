@@ -1,1 +1,1 @@
-export type Section = "PROFILE" | "LOCKOUT" | "DRIVES" | "GROUPS"
+export type Section = "PROFILE" | "LOCKOUT" | "DRIVES" | "GROUPS" | "ADD" | "REMOVE"

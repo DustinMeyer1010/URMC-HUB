@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { copyToClip, type CopyState } from "$lib/helper/copy.svelte";
 	import type { GroupSimpleInfo } from "@t/group";
+	import { fly, slide } from "svelte/transition";
 
     let copyState: CopyState = $state({
         copied: "",
@@ -13,13 +14,30 @@
         groups: GroupSimpleInfo[]
     } = $props();
 
+
+    let filter: string = $state("")
+    let filteredGroups: GroupSimpleInfo[] = $state(groups)
+
+    $effect(() => {
+        if (filter == "") {
+            filteredGroups = groups
+            return
+        }
+
+        filteredGroups = groups.filter((group) => 
+        group.name.toLowerCase().includes(filter.toLowerCase()) 
+        || group.information.toLocaleLowerCase().includes(filter.toLowerCase())
+        || group.description.toLocaleLowerCase().includes(filter.toLowerCase())
+        )
+    })
+
 </script>
 
 
 <section>
-    <input/>
-    {#each groups as group, idx }
-        <ul style="--delay: {Math.min(idx * 50, 2000)}ms">
+    <input bind:value={filter} placeholder="Search For Groupazu"/>
+    {#each filteredGroups as group, idx }
+        <ul style="--delay: {Math.min(idx * 50, 2000)}ms" out:fly={{x: 100}}>
             <button onclick={() => copyToClip(group.name, copyState)} class="name"><li>{group.name === copyState.copied ? "Copied" : group.name}</li></button>
             {#if group.description != ""}
                 <button onclick={() => copyToClip(group.description, copyState)}>
@@ -50,19 +68,35 @@
     section{ 
         position: relative;
         padding-top: 50px;
+        display: flex;
+        gap: 1rem;
+        width: 90%;
+        flex-direction: column;
+        justify-content: center;
     }
 
     input {
         position: fixed;
-        top: 230px;
+        top: 215px;
         left: 50%;
-        width: 100px;
+        width: 300px;
+        padding: 1rem;
         transform: translateX(-50%);
+        color: var(--color-text);
         z-index: 1;
+        background: var(--color-bg-opacity-80);
+        border: 1px solid var(--color-primary-focus);
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+    }
+
+    input:focus {
+        outline: none;
     }
 
     ul {
         display: flex;
+        flex-grow: 1;
         flex-direction: column;
         gap: 0.5rem;
         list-style: none;
@@ -71,6 +105,11 @@
         padding: 1rem 1rem;
         border-radius: 10px;
         background: var(--background-surface);
+        margin: 0;
+    }
+
+    li {
+        word-break: break-all;
     }
 
     button.name {
@@ -96,6 +135,22 @@
         to {
             opacity: 1;
             transform: translateY(0px);
+        }
+    }
+
+    @media (max-width: 520px) {
+        input {
+            top: 275px;
+        }
+
+        section {
+            padding-top: 130px;
+        }
+
+        button {
+            flex-direction: column;
+            justify-content: flex-start;
+            text-align: left;
         }
     }
 

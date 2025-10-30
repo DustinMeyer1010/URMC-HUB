@@ -68,7 +68,7 @@ func ConnectToServer(URL string) (*ldap.Conn, error) {
 func Verify() error {
 
 	if global.Username == "" || global.Password == "" {
-		return fmt.Errorf("agent not logged in")
+		return fmt.Errorf("%s", "Agent Not Logged In")
 	}
 
 	_, err := connectToLDAP()

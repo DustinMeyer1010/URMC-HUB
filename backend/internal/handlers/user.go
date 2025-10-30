@@ -40,3 +40,11 @@ func LockOutStatus(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
 }
+
+func RemoveGroup(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func AddGroup(w http.ResponseWriter, r *http.Request) {
+
+}
