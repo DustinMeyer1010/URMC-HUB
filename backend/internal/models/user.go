@@ -60,3 +60,8 @@ func (u *UserFullInfo) FillAttributes(user *ldap.Entry) []string {
 
 	return user.GetAttributeValues("memberOf")
 }
+
+type GroupModify struct {
+	Users  []string `json:"users"`
+	Groups []string `json:"groups"`
+}

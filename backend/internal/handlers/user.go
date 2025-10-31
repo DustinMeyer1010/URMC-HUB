@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/gorilla/mux"
 )
 
@@ -43,8 +44,60 @@ func LockOutStatus(w http.ResponseWriter, r *http.Request) {
 
 func RemoveGroup(w http.ResponseWriter, r *http.Request) {
 
+	var groupModify models.GroupModify
+
+	err := json.NewDecoder(r.Body).Decode(&groupModify)
+
+	if err != nil {
+		http.Error(w, "Invalid body", http.StatusBadRequest)
+		return
+	}
+
+	modifyResults, err := ad.RemoveGroup(groupModify.Users, groupModify.Groups)
+
+	if err != nil {
+		http.Error(w, "Unable to remove group", http.StatusInternalServerError)
+		return
+	}
+
+	res, err := json.Marshal(modifyResults)
+
+	if err != nil {
+		http.Error(w, "Failed to parse into JSON", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(res)
 }
 
 func AddGroup(w http.ResponseWriter, r *http.Request) {
+	var groupModify models.GroupModify
+
+	err := json.NewDecoder(r.Body).Decode(&groupModify)
+
+	if err != nil {
+		http.Error(w, "Invalid body", http.StatusBadRequest)
+		return
+	}
+
+	modifyResults, err := ad.AddGroup(groupModify.Users, groupModify.Groups)
+
+	if err != nil {
+		http.Error(w, "Unable to remove group", http.StatusInternalServerError)
+		return
+	}
+
+	res, err := json.Marshal(modifyResults)
+
+	if err != nil {
+		http.Error(w, "Failed to parse into JSON", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(res)
 
 }
