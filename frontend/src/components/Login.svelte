@@ -8,6 +8,8 @@
         password: string,
     }
 
+    let error: boolean = $state(false)
+
 
 
     let form: LoginForm = $state({username: "", password: ""})
@@ -20,9 +22,15 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(form)
         });
+
         if (res.status == 200) {
             goto("/", {invalidateAll: true})
+            return
         }
+
+        error = true
+
+
 
 
     }
@@ -31,14 +39,20 @@
 
 <form onsubmit={(e) => onsubmit(e)} action="login">
     <h1>Login</h1>
+
     <span>
         <label for="username">Username</label>
-        <input type="text" id="username" bind:value={form.username}>
+        <input class:error={error} type="text" id="username" bind:value={form.username}>
     </span>
     <span>
         <label for="password">Password</label>
-        <input type="password" id="password" bind:value={form.password}>
+        <input class:error={error} type="password" id="password" bind:value={form.password}>
+
     </span>
+
+    {#if error}
+        <span class="error">Invalid Username or password</span>
+    {/if}
     <button type="submit">Login</button>
 </form>
 
@@ -75,6 +89,16 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+    }
+
+    span.error {
+        font-size: 12px;
+        font-weight: bold;
+        color: var(--color-error);
+    }
+
+    input.error {
+        border: 1px solid var(--color-error);
     }
 
     span {

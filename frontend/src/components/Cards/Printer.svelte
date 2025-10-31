@@ -22,33 +22,33 @@
 
 </script>
 
-    <ul style="--delay: {Math.min(idx * 50, 2000)}ms">
-        {#if copyState.copied != allCopyText}
-            <button class="copy-all" title="Copy All" onclick={() => copyToClip(allCopyText, copyState)}><img src={copyAllIcon} alt="Copy All"></button>
-        {:else}
-            <span class="copied-all">ALL COPIED</span>
-        {/if}
-        <li class="name">
-            <button
-            type="button"
-            onclick={() => copyToClip(`\\\\${printer.server}\\${printer.queue}`, copyState)}>
+<ul style="--delay: {Math.min(idx * 50, 2000)}ms">
+    {#if copyState.copied != allCopyText}
+        <button class="copy-all" title="Copy All" onclick={() => copyToClip(allCopyText, copyState)}><img src={copyAllIcon} alt="Copy All"></button>
+    {:else}
+        <span class="copied-all">ALL COPIED</span>
+    {/if}
+    <li class="name">
+        <button
+        type="button"
+        onclick={() => copyToClip(`\\\\${printer.server}\\${printer.queue}`, copyState)}>
 
-                {copyState.copied == `\\\\${printer.server}\\${printer.queue}` ? "Copied" : `\\\\${printer.server}\\${printer.queue}`}
-            </button>
-        </li>
-        {#each Object.entries(printer).slice(2) as key}
-            {#if key[1]}
-                <li> 
-                    <button
-                    type="button"
-                    onclick={() => copyToClip(key[1], copyState)}>
-                            <b>{key[0].toUpperCase()}:</b>
-                            {copyState.copied == key[1] ? "Copied" : key[1]}
-                    </button>
-                </li>
-            {/if}
-        {/each}
-    </ul>
+            {copyState.copied == `\\\\${printer.server}\\${printer.queue}` ? "Copied" : `\\\\${printer.server}\\${printer.queue}`}
+        </button>
+    </li>
+    {#each Object.entries(printer).slice(2) as key}
+        {#if key[1]}
+            <li> 
+                <button
+                type="button"
+                onclick={() => copyToClip(key[1], copyState)}>
+                        <b>{key[0].toUpperCase()}:</b>
+                        {copyState.copied == key[1] ? "Copied" : key[1]}
+                </button>
+            </li>
+        {/if}
+    {/each}
+</ul>
 
 
 

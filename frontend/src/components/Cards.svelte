@@ -28,28 +28,39 @@
     {#if filter === 'COMPUTERS'}
         {#each (items as ComputerSimpleInfo[]) as computer, idx}
             <Computer {computer} {idx}/>
+        {:else}
+            {@render NotFound(filter)} 
         {/each}
     {:else if filter === 'PRINTERS'}
         {#each (items.slice(0, 100) as PrinterSimpleInfo[]) as printer, idx}
-            <Printer {printer} {idx}/>    
+            <Printer {printer} {idx}/>
+        {:else}
+            {@render NotFound(filter)}    
         {/each}
     {:else if filter === 'USERS'}
         {#each (items as UserSimpleInfo[]) as user, idx}
             <User {user} {idx}/>
+        {:else}
+            {@render NotFound(filter)}
         {/each}
     {:else if filter === 'GROUPS'}
         {#each (items as GroupSimpleInfo[]) as group, idx}
             <Group {group} {idx}/>
+        {:else}
+            {@render NotFound(filter)}
         {/each}
     {:else if filter === 'DRIVES'}
         {#each (items as DriveSimpleInfo[]) as drive, idx}
             <Drive {drive} {idx}/>
+        {:else}
+            {@render NotFound(filter)}
         {/each}
     {/if}
-    {#if items == null || items.length <= 0}
-            No {filter} found
-    {/if}
 </div>
+
+{#snippet NotFound(filter: GroupFilter)}
+    <span>No {filter} Found</span>
+{/snippet}
 
 
 

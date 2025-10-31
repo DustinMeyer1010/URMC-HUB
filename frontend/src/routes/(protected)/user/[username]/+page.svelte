@@ -6,6 +6,7 @@
 	import Lockout from "./Lockout.svelte";
 	import Drive from "./Drive.svelte";
 	import Groups from "./Groups.svelte";
+	import Add from "./Add.svelte";
 
     let { data } : { data: UserFullInfo } = $props();
 
@@ -33,6 +34,7 @@
     {:else if shownSection == "GROUPS"}
         <Groups groups={data.member_of}/>
     {:else if shownSection == "ADD"}
+    <Add/>
     {:else if shownSection == "REMOVE"}
     {/if}
 </main>

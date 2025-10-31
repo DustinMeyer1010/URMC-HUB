@@ -94,7 +94,7 @@
 <main>
     {#if loading  && data == null}
         <div>
-            {#each Array(7).fill(0) as _,x}
+            {#each {length: 7} as _,x}
                 <span style={`--delay: ${250*x}ms`}></span>
             {/each}
         </div>
