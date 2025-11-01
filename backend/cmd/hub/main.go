@@ -1,12 +1,13 @@
 package main
 
 import (
+	"github.com/LostProgrammer1010/URMC-HUB/internal/db"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/server"
 )
 
 func main() {
 	global.LoadEnv()
-	//db.Init()
+	db.Init()
 	server.Start()
 }

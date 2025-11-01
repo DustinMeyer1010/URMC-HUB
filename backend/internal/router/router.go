@@ -16,7 +16,7 @@ func Create() *mux.Router {
 		userRoutes,
 		authRoutes,
 		bookmarksRoutes,
-		reactRoutes,
+		reactSvelte,
 	)
 
 	mux.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

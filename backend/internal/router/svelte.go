@@ -20,7 +20,7 @@ var fallbackHTML []byte
 var indexHTML []byte
 
 // Setups the routes for the react routes
-func reactRoutes(mux *mux.Router) {
+func reactSvelte(mux *mux.Router) {
 
 	distFS, err := fs.Sub(frontendFS, "build")
 	if err != nil {
