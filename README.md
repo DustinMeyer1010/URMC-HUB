@@ -54,8 +54,8 @@ Instructions on what is needed and how to build the project for development work
 ## Required
 
 - GO v1.24.2
-- NODE v23.11.0
-- NPM 10.9.2
+- NODE v22.20.0
+- NPX 10.9.2
 
 
 ## Build Instructions
