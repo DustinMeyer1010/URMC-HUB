@@ -26,19 +26,19 @@ func searchRoutes(mux *mux.Router) {
 		},
 		{
 			methods{"GET"},
-			"/api/search/computer/{searchValue}",
+			"/api/search/computers/{searchValue}",
 			http.HandlerFunc(handlers.ComputerSearch),
 			middleware.Middleware{middleware.CorsHandler},
 		},
 		{
 			methods{"GET"},
-			"/api/search/printer/{searchValue}",
+			"/api/search/printers/{searchValue}",
 			http.HandlerFunc(handlers.PrinterSearch),
 			middleware.Middleware{middleware.CorsHandler},
 		},
 		{
 			methods{"GET"},
-			"/api/search/sharedrive/{searchValue}",
+			"/api/search/drives/{searchValue}",
 			http.HandlerFunc(handlers.ShareDriveSearch),
 			middleware.Middleware{middleware.CorsHandler},
 		},

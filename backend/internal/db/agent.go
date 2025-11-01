@@ -28,12 +28,10 @@ func AgentDatabaseInit() error {
 
 	fmt.Printf("%s - Create/Open Successfuly\n", fmt.Sprintf("%s.db", global.Username))
 
+	// best solution I have right now for not running this everytime someone logins
 	if !initalized {
 		createTables(db)
 		addAgent(db)
-		if !genericBookmarksCreated(db) {
-			addGenericBookMarks(db)
-		}
 		initalized = true
 	}
 
@@ -66,18 +64,17 @@ func addAgent(db *sql.DB) error {
 
 }
 
-func genericBookmarksCreated(db *sql.DB) bool {
-	var alreadyCreate bool
-	query := "SELECT generic_bookmarks FROM agent WHERE username = ?"
-	err := db.QueryRow(query, global.Username).Scan(&alreadyCreate)
+func createGenericAgent(db *sql.DB) error {
+
+	query := "INSERT INTO agent (username) VALUES (?)"
+
+	_, err := db.Exec(query, "generic")
 
 	if err != nil {
-		return true
+		fmt.Println(err)
+		return err
 	}
 
-	if alreadyCreate {
-		return true
-	}
+	return nil
 
-	return false
 }

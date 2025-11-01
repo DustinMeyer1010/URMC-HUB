@@ -27,7 +27,8 @@ var (
 	SHARES,
 	BASEDN,
 	USERNAME_PREFIX,
-	URMC_LDAP string
+	URMC_LDAP,
+	ADMIN string
 )
 
 func LoadEnv() {
@@ -59,6 +60,7 @@ func LoadEnv() {
 	BASEDN = os.Getenv("BASEDN")
 	URMC_LDAP = os.Getenv("URMCLDAP")
 	USERNAME_PREFIX = os.Getenv("USERNAME_PREFIX")
+	ADMIN = os.Getenv("ADMIN")
 
 }
 

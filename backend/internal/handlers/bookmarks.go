@@ -15,5 +15,17 @@ func AddBookmark(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	return
+}
+
+func GenerateGenericBookmarks(w http.ResponseWriter, r *http.Request) {
+
+	err := service.GenerateGenericBookmarks()
+
+	if err != nil {
+		http.Error(w, fmt.Sprintf("failed to generate generics \n%s", err.Error()), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Generated Generics"))
 }
