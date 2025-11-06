@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Login from "@components/Login.svelte";
+	import Nav from "@components/Nav.svelte";
     import { onMount } from "svelte";
 
 
@@ -25,9 +26,14 @@
         <Login/>
     </div>
 {/if}
+
+<Nav/>
 {@render children?.()}
 
 <style>
+    :root {
+		margin-top: 50px;
+	}
     div {
         position: absolute;
         top: 50%;
