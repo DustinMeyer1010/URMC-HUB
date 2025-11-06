@@ -1,7 +1,7 @@
 
 
-<script lang="ts">  
-	import type { Section } from "./section";
+<script lang="ts">
+    import type { Section } from "./section"    
 
     let {
         sections,
@@ -14,11 +14,13 @@
 
 </script>
 
+
 <nav>
     {#each sections as section}
         <button onclick={() => swapSection(section)}>{section}</button>
     {/each}
 </nav>
+
 
 
 <style>

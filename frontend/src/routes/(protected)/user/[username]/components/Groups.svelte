@@ -1,22 +1,31 @@
 <script lang="ts">
 	import { copyToClip, type CopyState } from "$lib/helper/copy.svelte";
 	import type { GroupSimpleInfo } from "@t/group";
-	import { fly, slide } from "svelte/transition";
+	import { fly } from "svelte/transition";
+	import Remove from "./Remove.svelte";
+	import { goto } from "$app/navigation";
 
     let copyState: CopyState = $state({
         copied: "",
         timeout: null
     })
 
+
     let {
-        groups
+        groups,
+        currentUser
     } : {
+        currentUser: string
         groups: GroupSimpleInfo[]
     } = $props();
 
+    $inspect(groups)
+
 
     let filter: string = $state("")
-    let filteredGroups: GroupSimpleInfo[] = $state(groups)
+    let filteredGroups: GroupSimpleInfo[] = $state(groups.sort((a, b) => a.name.localeCompare(b.name)))
+
+    
 
     $effect(() => {
         if (filter == "") {
@@ -25,19 +34,36 @@
         }
 
         filteredGroups = groups.filter((group) => 
-        group.name.toLowerCase().includes(filter.toLowerCase()) 
-        || group.information.toLocaleLowerCase().includes(filter.toLowerCase())
-        || group.description.toLocaleLowerCase().includes(filter.toLowerCase())
-        )
+        group.name.toLowerCase().includes(filter.toLowerCase()))
+
     })
+
+    const removeGroup = async (group: string) => {
+        const res = await fetch("http://localhost:8000/api/user/group/remove", {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+                users: [currentUser],
+                groups: [group]
+            })
+        })
+
+        const data = await res.json()
+
+        console.log(data)
+
+        goto(location.href, { invalidateAll: true, replaceState: true });
+    }
 
 </script>
 
 
+
 <section>
-    <input bind:value={filter} placeholder="Search For Groupazu"/>
+    <input oncontextmenu={(e: Event) => {e.preventDefault();filter=""}} bind:value={filter} placeholder="Search For Group"/>
     {#each filteredGroups as group, idx }
         <ul style="--delay: {Math.min(idx * 50, 2000)}ms" out:fly={{x: 100}}>
+            <Remove group={group.name} removeGroup={removeGroup}/>
             <button onclick={() => copyToClip(group.name, copyState)} class="name"><li>{group.name === copyState.copied ? "Copied" : group.name}</li></button>
             {#if group.description != ""}
                 <button onclick={() => copyToClip(group.description, copyState)}>
@@ -63,11 +89,12 @@
 </section>
 
 
+
 <style>
 
     section{ 
         position: relative;
-        padding-top: 50px;
+        padding-top: 65px;
         display: flex;
         gap: 1rem;
         width: 90%;
@@ -78,10 +105,9 @@
     input {
         position: fixed;
         top: 215px;
-        left: 50%;
+        left: calc(10%-10px);
         width: 300px;
         padding: 1rem;
-        transform: translateX(-50%);
         color: var(--color-text);
         z-index: 1;
         background: var(--color-bg-opacity-80);
@@ -103,6 +129,7 @@
         animation: slideIn 0.5s forwards var(--delay);
         opacity: 0;
         padding: 1rem 1rem;
+        padding-right: 150px;
         border-radius: 10px;
         background: var(--background-surface);
         margin: 0;
@@ -117,6 +144,7 @@
         font-size: 18px;
     }
 
+
     button {
         background: transparent;
         display: flex;
@@ -127,6 +155,7 @@
         font-size: 15px;
         color: var(--color-text)
     }
+
     @keyframes slideIn {
         from {
             opacity: 0;
@@ -138,6 +167,18 @@
         }
     }
 
+    @media (max-width: 850px) {
+        button {
+            flex-direction: column;
+            justify-content: flex-start;
+            text-align: left;
+        }
+
+        ul {
+            padding-right: 100px;
+        }
+    }
+
     @media (max-width: 520px) {
         input {
             top: 275px;
@@ -145,12 +186,6 @@
 
         section {
             padding-top: 130px;
-        }
-
-        button {
-            flex-direction: column;
-            justify-content: flex-start;
-            text-align: left;
         }
     }
 

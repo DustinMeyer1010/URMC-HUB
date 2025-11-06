@@ -1,11 +1,14 @@
 <script lang="ts">
 	import type { UserFullInfo } from "@t/user";
-	import { fly } from "svelte/transition";
     import  disabledIcon  from '$lib/assets/disabled-color-disabled.png'
+	import { copyToClip, type CopyState } from "$lib/helper/copy.svelte";
 
-    const duration = 200;
-    const delay = 250;
     const notWantedAttributes = ["member_of", "name"]
+
+    let copyState: CopyState = $state({
+        copied: "",
+        timeout: null
+    })
 
     
 
@@ -27,8 +30,16 @@
         {#each Object.entries(user) as key}
             {#if !notWantedAttributes.includes(key[0].toLocaleLowerCase())}
                 <li>
-                    <span><b>{key[0].toUpperCase()}: </b> </span>
-                    <span>{key[1] ? key[1] : "NA"}</span>
+                    <button onclick={() => copyToClip(key[1] ? key[1] as string : "NA", copyState)}>
+                        <span><b>{key[0].toUpperCase()}: </b> </span>
+                        <span>
+                            {#if copyState.copied === key[1] && key[1] !== ""}
+                                Copied
+                            {:else}
+                                {key[1] ? key[1] : "NA"}
+                            {/if}
+                        </span>
+                    </button>
                 </li>
             {/if}
 
@@ -50,6 +61,13 @@
         animation: slideIn 0.5s forwards;
         opacity: 0;
         animation-delay: 50ms;
+    }
+
+    button {
+        background: none;
+        border: none;
+        color: var(--color-text);
+        font-size: 15px;
     }
 
     ul {

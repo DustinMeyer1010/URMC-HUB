@@ -1,14 +1,9 @@
 <script lang="ts">
 	import type { LockoutInfo } from "@t/user";
 	import { onMount } from "svelte";
-	import { fly } from "svelte/transition";
     import RefreshIcon from '$lib/assets/Refresh-color-text.png'
 
-    const duration: number = 200;
-    const delay: number = 250;
-
     let loading: boolean = $state(false)
-    let pageLoading: boolean = $state(true)
 
     let {
         username
@@ -25,7 +20,7 @@
         refreshLockout()
     })
 
-    async function refreshLockout() {
+    const refreshLockout = async () => {
         if (refreshedTimeout != null) {
             clearTimeout(refreshedTimeout)
             refreshedMsg = ""
@@ -46,7 +41,6 @@
 
 </script>
 
-{#if !loading}
     <section>
         <span>{refreshedMsg}<button class:loading={loading} onclick={refreshLockout}><img src={RefreshIcon} alt=""></button></span>
             <div class="header">
@@ -63,7 +57,6 @@
                 
             {/each}
     </section>
-{/if}
 
 <style>
     section {

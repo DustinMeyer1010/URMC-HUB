@@ -15,20 +15,20 @@
     } = $props();
 
     onMount(async () => {
-    await search()
+    search()
     loading = false
 
     })
 
     async function onsubmit(e: SubmitEvent) {
         e.preventDefault()
-        await search()
+        search()
     }
 
 </script>
 
 <form {onsubmit}>
-    <input type="text" bind:value={searchValue}>
+    <input oncontextmenu={(e: Event) => {e.preventDefault();searchValue=""}} type="text" bind:value={searchValue}>
     <button type="submit">Search</button>
 </form>
 

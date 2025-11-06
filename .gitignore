@@ -28,3 +28,4 @@ creds.go
 *.sw?
 *.env
 *.db
+notes.md

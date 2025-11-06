@@ -17,8 +17,6 @@
         loading = true
         const names = groups.map((group) => group.name)
 
-        console.log(names)
-
         const res = await fetch("http://localhost:8000/api/drive/access", {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },

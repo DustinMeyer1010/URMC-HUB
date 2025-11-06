@@ -32,6 +32,7 @@ body {
 
     /* ==== Status Colors ==== */
     --color-success: #3DDC97;
+    --color-success-opacity-20: rgba(61, 220, 151, 0.2);
     --color-warning: #F5C156;
     --color-error: #E63946;
 
@@ -51,6 +52,7 @@ body {
 
     /* === AD Colors === */
     --color-ad-disabled: #ca5c65;
+    --color-ad-disabled-opacity-20: rgba(202, 92, 101, 0.20);
     --color-ad-disabled-light: #cc777e;
     }
 

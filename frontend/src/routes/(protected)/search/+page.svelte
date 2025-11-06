@@ -33,7 +33,7 @@
         search()
     })
 
-    async function search() {
+    const search = async () => {
         if (searchValue == "") {
             loading = false
             return
@@ -50,16 +50,16 @@
 
     }
 
-    function setPreviousSearch() {
+    const setPreviousSearch = () => {
         localStorage.setItem("searchValue", searchValue)
     }
 
 
-    function setURL() {
+    const setURL = () => {
         goto(`?search=${santizedSearch}&filter=${filter.toLowerCase()}`, { replaceState: true, keepFocus: true, noScroll: true })
     }
 
-    function switchFilter(newFilter: Groups) {
+    const switchFilter = (newFilter: Groups) => {
         filter = newFilter;
         window.scrollTo(0,0)
         
