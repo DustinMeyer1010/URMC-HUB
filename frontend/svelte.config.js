@@ -31,7 +31,20 @@ const config = {
 				'/bookmarks',
 				'/search',
 				'/api',
-				'/api/introduction'
+				'/api/introduction',
+				'/api/search/printers',
+				'/api/search/all',
+				'/api/search/users',
+				'/api/search/drives',
+				'/api/search/groups',
+				'/api/auth/login',
+				'/api/auth/verify',
+				'/api/user/add_group',
+				'/api/user/drive_access',
+				'/api/user/information',
+				'/api/user/lockout',
+				'/api/user/remove_group',
+
 			]
 			},	
 			alias: {
