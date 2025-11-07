@@ -6,7 +6,7 @@
 
 	import { theme } from "$lib/theme";
   	import { get } from "svelte/store";
-	const current = get(theme);
+	get(theme);
 
 	let { children } = $props();
 </script>
@@ -19,5 +19,6 @@
 {@render children?.()}
 
 <style>
+
 
 </style>

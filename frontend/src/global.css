@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Arsenal:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
-body {
+body, html {
     background: var(--color-bg);
 }
 
@@ -12,9 +12,12 @@ body {
     /* ==== Base Colors ==== */
     --color-bg: #212335;
     --color-surface: #2F324B;
+    --color-surface-lighter: #383B5C;
     --color-bg-opacity-30: rgba(33, 35, 53, 0.3);
+    --color-bg-opacity-50: rgba(33, 35, 53, 0.5);
     --color-bg-opacity-80: rgba(33, 35, 53, 0.8);
     --color-text: #b4b8d9;
+    --color-text-opacity-80: rgba(180, 184, 217, 0.8);
 
     /* ==== Brand Colors ==== */
     --color-primary: #E458A2; 

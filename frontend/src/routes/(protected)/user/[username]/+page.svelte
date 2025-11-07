@@ -71,7 +71,7 @@
         flex-direction: column;
         gap: 1rem;
         margin-top: 150px;
-        height: calc(100vh - 150px - 7rem);
+
     }
 
     nav {

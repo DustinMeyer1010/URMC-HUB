@@ -10,8 +10,6 @@ import (
 // Verify that the users creds are still valid
 func Verify(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Println("Verifing...")
-
 	err := ad.Verify()
 
 	if err != nil {
@@ -19,6 +17,5 @@ func Verify(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	fmt.Println("Authorized")
 	w.WriteHeader(http.StatusOK)
 }

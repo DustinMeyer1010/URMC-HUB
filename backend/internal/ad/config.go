@@ -36,6 +36,7 @@ func SearchConfig(filter string, attribute ...string) LDAPSearchConfig {
 
 }
 
+// Searches ldap based on the config struct that is provided
 func (config LDAPSearchConfig) Search(conn *ldap.Conn) (*ldap.SearchResult, error) {
 	searchRequest := ldap.NewSearchRequest(
 		config.BaseDN,

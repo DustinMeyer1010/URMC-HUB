@@ -29,8 +29,9 @@ const config = {
 				'/group/index',
 				'/user/index',
 				'/bookmarks',
-				'/login',
 				'/search',
+				'/api',
+				'/api/introduction'
 			]
 			},	
 			alias: {
