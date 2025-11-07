@@ -1,57 +1,50 @@
 <script lang="ts">
-
-
-    let needsToBeConfirmed: boolean = $state(false)
+    let needsToBeConfirmed = $state(false)
 
     let {
-        group,
-        removeGroup
+        name,
+        title,
+        value,
+        action
     } : {
-        group: string;
-        removeGroup: (group: string) => void;
+        name: string
+        title: string
+        value: string
+        action: (name: string) => void
     } = $props()
 
-    const OpenConfirmMenu = () => {
-        needsToBeConfirmed = true
-    }
-
     const yes = () => {
-        removeGroup(group)
         needsToBeConfirmed = false
+        action(name)
     }
 
     const no = () => {
-        needsToBeConfirmed = false
+        needsToBeConfirmed = false  
     }
-
-
 
 </script>
 
+
 <div>
-    
     {#if !needsToBeConfirmed}
-        <button title={`REMOVE ${group}`} class="remove" onclick={OpenConfirmMenu}>X</button>
+        <button title={`add ${name}`} class="add" onclick={() => needsToBeConfirmed = true}>{value}</button>
     {:else}
-        <span>Remove Group?</span>
+        <span>{title}</span>
         <button class="yes" onclick={yes}>Yes</button>
         <button class="no" onclick={no}>No</button>
     {/if}
 </div>
 
 
-
 <style>
-
+    
     div {
         position: absolute;
-        top: 0;
-        right: 0;
-        height: 100%;
+        bottom: 5px;
+        right: 5px;
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
-        padding: 10px;
         gap: 3px;
     }
 
@@ -63,15 +56,14 @@
         height: 100%;
         min-width: 30px;
         text-align: center;
-        font-size: 15px;
+        color: var(--color-success);
+        font-size: 12px;
     }
 
-    button.remove,
     button.no {
         color: var(--color-ad-disabled);
     }
 
-    button.remove:hover,
     button.no:hover {
         background: var(--color-ad-disabled-opacity-20);
     }

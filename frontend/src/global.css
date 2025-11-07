@@ -20,10 +20,10 @@ body, html {
     --color-text-opacity-80: rgba(180, 184, 217, 0.8);
 
     /* ==== Brand Colors ==== */
-    --color-primary: #E458A2; 
+    --color-primary: #B45C82; 
     --color-primary-hover: #D1478F;
     --color-primary-focus: #F16EB0;
-    --color-primary-hover-opacity-20: rgba(209, 71, 143, 0.2);
+    --color-primary-hover-opacity-10: rgba(209, 71, 143, 0.1);
 
     --color-accent: #3DDC97;  
     --color-accent-hover: #33C688;

@@ -1,4 +1,5 @@
 <script lang="ts">
+    // === TYPES ===
     import type { ComputerSimpleInfo } from "@t/computer"
     import type { PrinterSimpleInfo } from "@t/printer"
     import type { UserSimpleInfo } from "@t/user";
@@ -6,7 +7,8 @@
     import type { Groups as GroupFilter } from '@t/filters'
     import type { GroupSimpleInfo } from "@t/group";
 	import type { DriveSimpleInfo } from "@t/drive";
-
+    
+    // === COMPONENTS ===
     import Group from "./Cards/Group.svelte";
     import Computer from '@components/Cards/Computer.svelte'
 	import Printer from "./Cards/Printer.svelte";

@@ -1,9 +1,17 @@
 <script lang="ts">
-	import Code from "@components/Docs/Code.svelte";
+
+    // === LIBRARIES ===
     import Prism from "prismjs"
-	import { endpoint, information, response, responses } from "./details";
+    import 'prismjs/components/prism-json';
+    import 'prismjs/components/prism-http';
+
+    // === COMPONENTS ===
+    import Code from "@components/Docs/Code.svelte";
 	import Description from "@components/Docs/Description.svelte";
 	import Response from "@components/Docs/Response.svelte";
+
+    // === CONSTANTS ===
+    import { endpoint, information, response, responses } from "./details";
 
 
 </script>

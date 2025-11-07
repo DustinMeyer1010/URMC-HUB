@@ -1,6 +1,6 @@
 export const prerender = true;
 
-import { error, redirect } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 import type { UserFullInfo } from '@t/user';
 

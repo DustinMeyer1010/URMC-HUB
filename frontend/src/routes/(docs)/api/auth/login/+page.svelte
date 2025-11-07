@@ -1,13 +1,18 @@
 <script lang="ts">
+    // === LIBRARIES ===
     import Prism from "prismjs"
 	import 'prismjs/components/prism-json';
     import 'prismjs/components/prism-http';
 	import 'prismjs/themes/prism-tomorrow.css';
-	import { endpoint, information, objects, response, request, responses } from "./details";
+
+    // === COMPONENTS ===
 	import Code from "@components/Docs/Code.svelte";
 	import Object from "@components/Docs/Object.svelte";
 	import Description from "@components/Docs/Description.svelte";
 	import Response from "@components/Docs/Response.svelte";
+    
+    // === CONSTANTS ===
+    import { endpoint, information, objects, response, request, responses } from "./details";
 
 </script>
 

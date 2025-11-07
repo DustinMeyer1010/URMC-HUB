@@ -70,7 +70,7 @@
     }
 
     button:hover {
-        background: var(--color-primary-hover-opacity-20);
+        background: var(--color-primary-hover-opacity-10);
     }
 
     @media (max-width: 601px) {

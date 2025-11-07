@@ -1,17 +1,17 @@
 <script lang="ts">
-	import Nav from "../Nav.svelte";
-    import Profile from "./components/Profile.svelte"
-	import Lockout from "./components/Lockout.svelte";
-	import Drive from "./components/Drive.svelte";
-	import Groups from "./components/Groups.svelte";
-	import Add from "./components/Add.svelte";
+	import Nav from "@components/User/Nav.svelte";
+    import Profile from "@components/User/Profile.svelte"
+	import Lockout from "@components/User/Lockout.svelte";
+	import Drive from "@components/User/Drive.svelte";
+	import Groups from "@components/User/Groups.svelte";
+	import Add from "@components/User/Add.svelte";
 
 	import { onMount } from "svelte";
 	import { page } from "$app/state";
 	import { goto } from "$app/navigation";
     import type { UserFullInfo } from "@t/user";
 
-    import  { type Section, Sections } from "../section";
+    import  { type Section, Sections } from "@t/section";
 
     let { data } : { data: UserFullInfo } = $props();
     let shownSection: Section = $state("PROFILE")
@@ -53,7 +53,7 @@
         {:else if shownSection == "GROUPS"}
             <Groups currentUser={data.username} groups={data.member_of}/>
         {:else if shownSection == "ADD"}
-            <Add/>
+            <Add currentUser={data.username}/>
         {/if}
     </main>
 {/if}
