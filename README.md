@@ -2,7 +2,7 @@
 # Introduction
 
 ![Static Badge](https://img.shields.io/badge/-gray?style=for-the-badge&logo=Go&logoSize=auto)
-![Static Badge](https://img.shields.io/badge/React-gray?style=for-the-badge&logo=React&logoSize=auto)
+![Static Badge](https://img.shields.io/badge/Svelte-gray?style=for-the-badge&logo=Svelte&logoSize=auto)
 ![Static Badge](https://img.shields.io/badge/Vite-gray?style=for-the-badge&logo=Vite&logoSize=auto)
 ![Static Badge](https://img.shields.io/badge/Tyepscript-gray?style=for-the-badge&logo=Typescript&logoSize=auto)
 ![Static Badge](https://img.shields.io/badge/CSS-gray?style=for-the-badge&logo=CSS&logoSize=auto)
@@ -11,41 +11,49 @@
 
 
 
-The URMC-HUB is a simple web applications that converts tools for the URMC service desk into one fast application.
+URMC-HUB a tool for service desk agents to gather information for making information gathering easier. Converting multiple tools into one web application.
 
-- Active Directory Searching
-- Network Drive Searching
-- Network Printer Searching
-- Bookmarks for common links
-- System summary index for common KBs
+# Uses
+
+- Active Directory Searching (User, Groups, Computer)
+- Adding & Removing Groups for users
+- Finding Network Drives
+- Finding Network Printers
+- Custom bookmarks and articles
+- Bulk user information
+- Bulk Network drive access
 
 # Motivation
 
-URMC Service desk agents are requred to use many application that are slow, require other information before getting what is needed and require a ton of application open to get all information. Since most of our work flow in done in the browser. A better solution to this was building an application that was faster, requiring less clicks and can be used in one spot.
+Working at the URMC Service Desk, I realized that many of the applications we used were outdated and slow. On top of that, I often needed to open multiple tools just to look up one piece of information. To make things easier, I decided to build a single application that could handle everything, so I didn’t need to keep so many programs open at once.
 
 
 # What's different from 1.0
 
-Since the release of URMC-HUB 1.0. There are many things that can be changed to better manage the project and for better usage.
+I built the first version of the application using Go with plain JavaScript, HTML, and CSS. It worked, but as I added features, the code became hard to maintain. The JS and HTML/CSS structure wasn’t organized well, so even small updates became messy. After seeing what worked and what didn’t, I decided to rebuild the frontend from scratch and clean up the backend so the project would be easier to maintain and improve going forward.
 
-## Frontend moved to React
+## Frontend moved to Svelte
 
-The application was hard to manage with all the files being static html, css, and js files. The project will be in react to better manage the files.
+I really like how Svelte handles components and keeps the CSS scoped to each one. So I rebuilt the entire frontend using Svelte. Now the structure is much cleaner, and making changes is a lot easier because everything is organized and readable.
 
 ## Frontend being served from backend
 
-Orginally the files were sitting on the share drive and to open the project you would just click on an .html file. New version will have the files embedding in the final .exe. Leaving the project to just one file rather than a bunch of files.
+Originally, the frontend was just a static set of files on a shared drive, and it made requests to a backend API. This setup caused performance issues, because the server had to navigate through multiple file paths to serve the HTML files, which slowed everything down. It was also confusing for other agents, since they had to open two separate things for the application to work. To fix this, I embedded the frontend directly into the backend server and now serve the UI locally, which makes everything faster and easier to run.
 
 ## Adding a database
 
-There will now be a sqlite database for storing information about each service desk agent for them to customize parts inside of the tool. Like having custom links on the bookmarks page.
+I ran into some issues with the database setup. Since each computer was making read and write requests to the same file, SQLite couldn’t handle the concurrent access well. I also didn’t have a dedicated server to host a central database. To work around this, each computer now has its own local SQLite database. When information is needed from another machine, it can read from that machine’s database instead.
 
 ## New Features
 
-- New layout and appearnce for better readability
-- Ability to add, remove, and update links
-- Login is now done on website itself
-- Adding a queue for searches to cycle through for look for information
+- New layout and appearance
+- Add & Remove & Edit personal bookmarks
+- Login done on the web application
+- Search page now has filters for the different results
+- Bulk search lookup
+- Bulk add/remove groups from users
+- Actual feedback for add and removal of groups
+- MemberOf Groups now showing
 
 # Installation
 
@@ -68,7 +76,7 @@ cd backend/server/frontend
 ```sh
 npm install
 ```
-### Build the react project
+### Build the svelte project
 ```sh
 npm run build
 ```
