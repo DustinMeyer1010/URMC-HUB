@@ -63,7 +63,7 @@
     <input oncontextmenu={(e: Event) => {e.preventDefault();filter=""}} bind:value={filter} placeholder="Search For Group"/>
     {#each filteredGroups as group, idx }
         <ul style="--delay: {Math.min(idx * 50, 2000)}ms" out:fly={{x: 100}}>
-            <Remove group={group.name} removeGroup={removeGroup}/>
+            
             <button onclick={() => copyToClip(group.name, copyState)} class="name"><li>{group.name === copyState.copied ? "Copied" : group.name}</li></button>
             {#if group.description != ""}
                 <button onclick={() => copyToClip(group.description, copyState)}>
@@ -83,6 +83,7 @@
                     <li>{group.ou === copyState.copied ? "Copied" : group.ou}</li>
                 </button>
             {/if}
+            <Remove group={group.name} removeGroup={removeGroup}/>
         </ul>
     {/each}
 
@@ -94,7 +95,6 @@
 
     section{ 
         position: relative;
-        padding-top: 65px;
         display: flex;
         gap: 1rem;
         width: 90%;
@@ -104,9 +104,10 @@
 
     input {
         position: fixed;
-        top: 215px;
-        left: calc(10%-10px);
-        width: 300px;
+        bottom: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 75%;
         padding: 1rem;
         color: var(--color-text);
         z-index: 1;
@@ -129,9 +130,9 @@
         animation: slideIn 0.5s forwards var(--delay);
         opacity: 0;
         padding: 1rem 1rem;
-        padding-right: 150px;
+        padding-right: 120px;
         border-radius: 10px;
-        background: var(--background-surface);
+        background: var(--color-surface);
         margin: 0;
     }
 
@@ -175,18 +176,10 @@
         }
 
         ul {
-            padding-right: 100px;
-        }
-    }
-
-    @media (max-width: 520px) {
-        input {
-            top: 275px;
+            padding-right: 1rem;
         }
 
-        section {
-            padding-top: 130px;
-        }
     }
+
 
 </style>

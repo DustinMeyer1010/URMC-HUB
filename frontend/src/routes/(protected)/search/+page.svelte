@@ -120,7 +120,7 @@
     }
 
     span {
-        background-color: var(--background-surface);
+        background-color: var(--color-surface);
         width: 100%;
         height: 100px;
         border-radius: 10px;
@@ -131,10 +131,10 @@
 
     @keyframes flash {
         from {
-            background-color: #4c4e6d;
+            background-color: var(--color-bg-flash);
         }
         to {
-            background-color: var(--background-surface);
+            background-color: var(--color-surface);
         }
     }
 
@@ -159,5 +159,12 @@
         bottom: 0px;
         left: 50%;
         transform: translateX(-50%);
-    }    
+    }
+    
+    @media (max-width: 800px) {
+        section {
+            gap: 10px
+        }
+
+    }
 </style>

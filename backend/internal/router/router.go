@@ -13,6 +13,7 @@ func Create() *mux.Router {
 
 	createRoutes(mux,
 		searchRoutes,
+		printerRoutes,
 		userRoutes,
 		authRoutes,
 		bookmarksRoutes,

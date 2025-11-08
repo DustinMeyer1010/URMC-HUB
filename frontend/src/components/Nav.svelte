@@ -1,12 +1,14 @@
 <script>
 
     import urmc from '$lib/assets/URMC.png';
+	import ToggleTheme from './ToggleTheme.svelte';
 
 </script>
 
 
 <nav>
     <a href="/"><img src={urmc} alt=""></a>
+    <ToggleTheme/>
     <ul>
         <li>
             <a href="/">Search</a>
@@ -31,7 +33,7 @@
         left: 0;
         width: 100%;
         box-shadow: var(--shadow-soft);
-        background-color: var(--background-surface);
+        background-color: var(--color-surface);
     }
 
     img {
@@ -46,14 +48,14 @@
     }
 
     a {
-        color: var(--text);
+        color: var(--color-text);
         text-decoration: none;
         font-size: 18px;
         transition: color 0.3s ease;
     }
 
     a:visited {
-        color: var(--text);
+        color: var(--color-text);
     }
 
     a:hover {

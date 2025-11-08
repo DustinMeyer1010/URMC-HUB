@@ -1,7 +1,7 @@
 
 
 <script lang="ts">  
-	import type { Section } from "./section";
+	import type { Section } from "../../types/section";
 
     let {
         sections,
@@ -27,13 +27,14 @@
         align-items: center;
         justify-content: space-evenly;
         gap: 1rem;
-        padding: 0rem 1rem;
-        width: 100%;
+        width: 90%;
     }
 
     button {
         padding: 1rem;
         font-size: 15px;
+        min-width: 130px; 
+        max-width: 200px;
         width: 200px;
         background: var(--color-surface);
         border: none;
@@ -48,6 +49,7 @@
         nav {
             width: 90%;
             justify-content: center;
+            box-sizing: border-box;
             flex-wrap: wrap;
         }
         button {

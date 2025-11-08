@@ -81,7 +81,7 @@
         position: absolute;
         display: flex;
         flex-direction: column;
-        background: var(--background-surface);
+        background: var(--color-surface);
         padding: 1.5rem;
         gap: 1rem;
         border-radius: 10px;

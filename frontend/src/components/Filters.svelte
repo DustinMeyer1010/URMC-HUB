@@ -19,12 +19,11 @@
 
 
 </script>
-
-
     <div>
         {#each allFilters as filter, idx}
             {#if isFiltersOpen}
                 <button 
+                    class="filter-options"
                     style="order {idx}"
                     in:fly={{delay: 80*idx, y:20, x:-20 * idx}}
                     out:fly={{delay: 0, y:20, x:-20 * idx}}
@@ -32,7 +31,6 @@
                     onclick={() => switchFilter(filter)}>
                     {filter}
                 </button>
-
             {/if}
         {/each}
     </div>  
@@ -56,23 +54,29 @@
     }
 
     .open-filters {
-        width: 50px;
+        min-width: 25px;
+        border-radius: 10px;
+        padding: 10px;
+        box-sizing: border-box;
         bottom: 25px;
         left: 50%;
         display: flex;
         justify-content: center;
         align-items: center;
+        border: none;
+        background: var(--color-bg-opacity-80);
     }
+
 
 
     img {
-        width: 15px;
+        width: 20px;
     }
 
-    button {
+    button.filter-options {
         padding: 0.5rem 1rem;
         width: 150px;
-        border: 2px solid var(--primary-accent);
+        border: 2px solid var(--color-accent);
         border-radius: 20px;
         background: var(--color-bg-opacity-80);
         transform-origin: center;
@@ -97,7 +101,7 @@
     }
 
     @media (max-width: 950px) {
-        button {
+        button.filter-options {
             width: 120px;
             padding: 5px;
             font-size: 12px;

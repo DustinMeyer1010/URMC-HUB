@@ -27,7 +27,9 @@
     {#if disabled}
         <span class="disabled"><img src={disabledIcon} alt="">Disabled Account</span>
     {/if}
+    {#if user.username != ""}
     <a href={`/user/${user.username}`}> <img src={outIcon} alt=""></a>
+    {/if}
     {#if copyState.copied != allCopyText}
         <button class="copy-all" title="Copy All" onclick={() => copyToClip(allCopyText, copyState)}><img src={copyAllIcon} alt="Copy All"></button>
     {:else}
@@ -78,7 +80,7 @@
         border: none;
         padding: 0;
         font: inherit;
-        color: inherit;
+        color: var(--color-text);
         cursor: pointer;
     }
 
@@ -129,8 +131,8 @@
         padding-left: 1.5rem;
         padding-right: 3rem;
         box-sizing: border-box;
-        background: var(--background-surface);
-        color: var(--text);
+        background: var(--color-surface);
+        color: var(--color-text);
         opacity: 0;
         transform: translateY(20px);
         animation: slideIn 0.2s ease-out forwards;

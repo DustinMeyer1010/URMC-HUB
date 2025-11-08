@@ -112,8 +112,8 @@
         padding-left: 1.5rem;
         padding-right: 3rem;
         box-sizing: border-box;
-        background: var(--background-surface);
-        color: var(--text);
+        background: var(--color-surface);
+        color: var(--color-text);
         opacity: 0;
         overflow-x: hidden;
         transform: translateY(20px);

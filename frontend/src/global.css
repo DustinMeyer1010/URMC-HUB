@@ -2,17 +2,86 @@
 
 body, html {
     background: var(--color-bg);
+        transition: 0.3s ease;
 }
 
 :root{
     background: var(--color-bg);
     color: var(--color-text);
     font-family: Roboto;
+    transition: 0.3s ease;
 
-    /* ==== Base Colors ==== */
+
+
+    /* ==== Shadows ==== */
+    --shadow-inset: 0 2px 6px rgba(0, 0, 0, 0.15);
+    --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.25);
+    --shadow-strong: 0 4px 14px rgba(0, 0, 0, 0.35);
+
+    /* ==== Transitions ==== */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s ease;
+
+
+}
+
+    /* ==== Light Theme Variant ==== */
+[data-theme="light"] {
+    --color-bg: #42455f;
+    --color-surface: #606585;
+    --color-surface-lighter: rgb(47, 51, 82);
+    --color-text: #b4b8d9;
+
+    /* === AD Colors === */
+    --color-ad-disabled: #ca5c65;
+    --color-ad-disabled-opacity-20: rgba(202, 92, 101, 0.20);
+    --color-ad-disabled-light: #cc777e;
+
+        /* ==== Base Colors ==== */
+    --color-bg-flash: #4c4e6d;
+    --color-bg-opacity-30: rgba(66, 69, 95, 0.3);
+    --color-bg-opacity-50: rgba(66, 69, 95, 0.5);
+    --color-bg-opacity-80: rgba(66, 69, 95, 0.8);
+    --color-text-opacity-80: rgba(180, 184, 217, 0.8);
+
+    /* ==== Brand Colors ==== */
+    --color-primary: #B45C82; 
+    --color-primary-hover: #D1478F;
+    --color-primary-focus: #F16EB0;
+    --color-primary-hover-opacity-10: rgba(209, 71, 143, 0.1);
+
+    --color-accent: #8bd3b4;  
+    --color-accent-hover: #8ed3b6;
+    --color-accent-focus: #a4d6c1;
+    --color-accent-hover-opacity-20: rgba(51, 198, 136, 0.2);
+    --color-accent-hover-opacity-30: rgba(51, 198, 136, 0.3);
+    --color-accent-hover-opacity-40: rgba(51, 198, 136, 0.4);
+
+    /* ==== Status Colors ==== */
+    --color-success: #3DDC97;
+    --color-success-opacity-20: rgba(61, 220, 151, 0.2);
+    --color-warning: #F5C156;
+    --color-error: #E63946;
+
+    /* ==== UI Elements ==== */
+    --color-border: #383B57;
+    --color-muted: #A4A6BA;
+    --color-disabled: #555876;
+
+    }
+
+
+[data-theme='dark'] {
+    /* === AD Colors === */
+    --color-ad-disabled: #ca5c65;
+    --color-ad-disabled-opacity-20: rgba(202, 92, 101, 0.20);
+    --color-ad-disabled-light: #cc777e;
+
+        /* ==== Base Colors ==== */
     --color-bg: #212335;
     --color-surface: #2F324B;
     --color-surface-lighter: #383B5C;
+    --color-bg-flash: #4c4e6d;
     --color-bg-opacity-30: rgba(33, 35, 53, 0.3);
     --color-bg-opacity-50: rgba(33, 35, 53, 0.5);
     --color-bg-opacity-80: rgba(33, 35, 53, 0.8);
@@ -42,49 +111,4 @@ body, html {
     --color-border: #383B57;
     --color-muted: #A4A6BA;
     --color-disabled: #555876;
-
-    /* ==== Shadows ==== */
-    --shadow-inset: 0 2px 6px rgba(0, 0, 0, 0.15);
-    --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.25);
-    --shadow-strong: 0 4px 14px rgba(0, 0, 0, 0.35);
-
-    /* ==== Transitions ==== */
-    --transition-fast: 0.15s ease;
-    --transition-normal: 0.3s ease;
-
-    /* === AD Colors === */
-    --color-ad-disabled: #ca5c65;
-    --color-ad-disabled-opacity-20: rgba(202, 92, 101, 0.20);
-    --color-ad-disabled-light: #cc777e;
-    }
-
-    /* ==== Light Theme Variant ==== */
-    [data-theme="light"] {
-    --color-bg: #F8F9FC;
-    --color-surface: #FFFFFF;
-    --color-text: #1D1E29;
-
-    --color-primary: #D1478F;
-    --color-primary-hover: #E458A2;
-    --color-accent: #2BBF87;
-
-    --color-border: #D7DAE6;
-    --color-muted: #63677F;
-    --color-disabled: #C2C4D1;
-    background: var(--color-bg);
-}
-
-
-
-
-[data-theme='dark'] {
-    --primary: #008cff;
-	--background: #212335;
-	--background-surface: #2F324B;
-	--background-surface-lighter: #4DD0E1;
-	--text: #b4b8d9;
-    --disabled: #E63946;
-	--primary: #E458A2;
-    --primary-accent: #3DDC97;
-
 }

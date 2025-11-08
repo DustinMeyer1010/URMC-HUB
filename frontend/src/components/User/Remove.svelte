@@ -36,6 +36,7 @@
         <span>Remove Group?</span>
         <button class="yes" onclick={yes}>Yes</button>
         <button class="no" onclick={no}>No</button>
+
     {/if}
 </div>
 
@@ -82,13 +83,30 @@
         background: var(--color-success-opacity-20);
     }
 
-    @media (max-width: 800px) {
+
+    @media (max-width: 850px) {
         div {
-            width: 100px;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            align-self: center;
             text-align: center;
+            margin-top: 5px;
+            width: 100%;
+            padding: 0 1rem;
+            gap: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            flex-grow: 1;
+        }
+
+        input {
+            width: 100%;
         }
     }
-
 
 
 

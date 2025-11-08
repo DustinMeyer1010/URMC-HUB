@@ -65,3 +65,20 @@ func fetchPrinters() (printers []models.PrinterSimpleInfo, err error) {
 
 	return
 }
+
+func PullSinglePrinterInformation(printer string) (models.PrinterSimpleInfo, error) {
+	printersList, err := fetchPrinters()
+
+	if err != nil {
+		return models.PrinterSimpleInfo{}, err
+	}
+
+	for _, p := range printersList {
+		if fmt.Sprintf("\\\\%s\\%s", p.Server, p.Queue) == printer {
+			return p, nil
+		}
+	}
+
+	return models.PrinterSimpleInfo{}, fmt.Errorf("%s", "Printer not found")
+
+}

@@ -2,13 +2,13 @@
     import type { PrinterSimpleInfo } from "@t/printer";
     import { copyToClip, type CopyState  } from '$lib/helper/copy.svelte'
     import copyAllIcon from '$lib/assets/copy-color-text.png'
+    import outIcon from '$lib/assets/double-left-arrow-primary.png';
 
 
     let copyState: CopyState = $state({
         copied: "",
         timeout: null
     })
-
     let {
         printer,
         idx
@@ -16,6 +16,8 @@
         printer: PrinterSimpleInfo
         idx: number
     } = $props()
+
+    const printerName = `${printer.server}?queue=${printer.queue}`;
 
     const allCopyText: string = `Name: \\\\${printer.server}\\${printer.queue}\nModel: ${printer.model}\nIP: ${printer.ip}\nPrint_Processor: ${printer.print_processor}\nLocation: ${printer.location}\nNotes: ${printer.notes}`;
 
@@ -28,6 +30,7 @@
     {:else}
         <span class="copied-all">ALL COPIED</span>
     {/if}
+    <a href={`/printer/${printerName}`}> <img src={outIcon} alt=""></a>
     <li class="name">
         <button
         type="button"
@@ -56,6 +59,26 @@
 
     img {
         width: 25px;
+    }
+
+    a {
+        opacity: 0.8;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 0.3rem;
+        right: -0.5rem;
+        width: 50px;
+    }
+
+    a img {
+        transition: var(--transition-fast);
+        transform: rotate(130deg);
+    }
+
+    a:hover img {
+        transform: rotate(130deg) translate(-3px, -1px);
     }
 
     
@@ -111,8 +134,8 @@
         padding-left: 1.5rem;
         padding-right: 3rem;
         box-sizing: border-box;
-        background: var(--background-surface);
-        color: var(--text);
+        background: var(--color-surface);
+        color: var(--color-text);
         opacity: 0;
         transform: translateY(20px);
         animation: slideIn 0.2s ease-out forwards;

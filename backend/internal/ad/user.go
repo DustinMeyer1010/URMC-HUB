@@ -90,7 +90,7 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, error) {
 	}
 
 	if len(results.Entries) == 0 {
-		return user, err
+		return user, fmt.Errorf("%s", "No accounts found")
 	}
 
 	foundUser := results.Entries[0]

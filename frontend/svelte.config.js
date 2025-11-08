@@ -28,6 +28,7 @@ const config = {
 				'/drive/index',
 				'/group/index',
 				'/user/index',
+				'/printer/index',
 				'/bookmarks',
 				'/search',
 				'/api',

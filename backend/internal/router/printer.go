@@ -1,0 +1,24 @@
+package router
+
+import (
+	"net/http"
+
+	"github.com/LostProgrammer1010/URMC-HUB/internal/handlers"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/middleware"
+	"github.com/gorilla/mux"
+)
+
+func printerRoutes(mux *mux.Router) {
+
+	routes := routes{
+		{
+			methods{"GET"},
+			"/api/printer/info/{server}",
+			http.HandlerFunc(handlers.PrinterInformation),
+			middleware.Middleware{middleware.CorsHandler},
+		},
+	}
+
+	routes.add(mux)
+
+}

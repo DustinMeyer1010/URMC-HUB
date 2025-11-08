@@ -45,12 +45,12 @@
         backdrop-filter: blur(10px);
         text-align: center;
         background: var(--color-bg-opacity-80);
-        border: 2px solid var(--color-border);
+        border: 2px solid var(--color-surface-lighter);
         padding: 0.5rem;
         border-radius: 5px;
         font-size: 18px;
         width: 300px;
-        color: var(--text);
+        color: var(--color-text);
         transition: 0.3s ease;
     }
 
@@ -83,7 +83,7 @@
     @media (max-width: 400px) {
 
         input {
-            width: 100px;
+            width: 150px;
         }
 
         button {

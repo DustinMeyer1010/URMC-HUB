@@ -60,12 +60,18 @@
                 <li><b>OU:</b> {group.ou !== "" ? group.ou : "NA"}</li>
                 <Confirm name={group.name} title={"Add Group?"} value={"Add"} action={addGroup}/>
             </ul>
+        {:else}
+         <h1>Lookup Group To Add</h1>
         {/each}
 </section>
 
 
 
 <style>
+
+    h1 {
+        text-align: center;
+    }
 
     section {
         height: 100%;
@@ -79,14 +85,14 @@
 
     form {
         position: fixed;
-        bottom: 30px;
+        bottom: 50px;
         left: 50%;
         transform: translateX(-50%);
         display: flex;
         justify-content: center;
-        align-items: center;
         gap: 10px;
         z-index: 10;
+        width: 50%;
     }
 
 
@@ -96,9 +102,9 @@
         background-color: var(--color-bg-opacity-80);
         border: 2px solid var(--color-primary);
         color: var(--color-text);
+        width: 100%;
         font-size: 15px;
         border-radius: 10px;
-        text-align: center;
     }
 
     input:focus,
@@ -112,6 +118,8 @@
         padding: 1rem;
         border-radius: 10px;
         gap: 10px;
+        padding-right: 100px;
+        word-break: break-all;
         list-style: none;
         background: var(--color-surface);
         animation: slideIn 0.5s ease forwards;
@@ -141,6 +149,17 @@
         to {
             opacity: 1;
             transform: translateY(0px);
+        }
+    }
+
+    @media (max-width: 800px) {
+
+        ul {
+            padding-right: 1rem;
+        }
+
+        form {
+            width: 75%;
         }
     }
 

@@ -60,6 +60,10 @@
         font-size: 12px;
     }
 
+    span {
+        word-break: keep-all;
+    }
+
     button.no {
         color: var(--color-ad-disabled);
     }
@@ -78,9 +82,20 @@
 
     @media (max-width: 800px) {
         div {
-            width: 100px;
+            flex-direction: row;
+            position: relative;
+            align-self: center;
             text-align: center;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            gap: 10px;
+            padding: 0 1rem;
         }
+        button {
+            flex-grow: 1;
+        }
+
     }
 
 

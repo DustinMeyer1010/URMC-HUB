@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
@@ -17,7 +16,6 @@ func PullUserInformation(w http.ResponseWriter, r *http.Request) {
 	user, err := ad.PullUserInformation(username)
 
 	if err != nil {
-		fmt.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Failed"))
 		return
