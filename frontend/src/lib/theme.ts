@@ -14,7 +14,7 @@ function getInitialTheme(): Theme {
       : "light";
   }
 
-  return "light"; // default fallback
+  return "dark"; // default fallback
 }
 
 export const theme = writable<Theme>(getInitialTheme());

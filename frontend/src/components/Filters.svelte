@@ -3,9 +3,16 @@
 
     import type{ Groups } from '@t/filters'
     import { fly } from 'svelte/transition'
-    import filterIcon from '$lib/assets/filter-color-accent.png'
+    import filterIconDark from '$lib/assets/filter-color-accent-dark.png'
+    import filterIconLight from '$lib/assets/filter-color-accent-light.png'
+    import { get } from 'svelte/store';
+    import { theme } from '$lib/theme';
 
     let isFiltersOpen: boolean = $state(true)
+
+    let currentTheme = get(theme)
+
+
 
     let {
         currentFilter,
@@ -36,7 +43,7 @@
     </div>  
 
     <button class="open-filters" onclick={() => isFiltersOpen = !isFiltersOpen}>
-        <img src={filterIcon} alt="filter">
+        <img src={currentTheme === "dark"? filterIconDark : filterIconLight} alt="filter">
     </button>
 
 <style>

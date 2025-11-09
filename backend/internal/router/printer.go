@@ -17,6 +17,12 @@ func printerRoutes(mux *mux.Router) {
 			http.HandlerFunc(handlers.PrinterInformation),
 			middleware.Middleware{middleware.CorsHandler},
 		},
+		{
+			methods{"GET"},
+			"/api/printer/ping/{ip}",
+			http.HandlerFunc(handlers.PingPrinter),
+			middleware.Middleware{middleware.CorsHandler},
+		},
 	}
 
 	routes.add(mux)

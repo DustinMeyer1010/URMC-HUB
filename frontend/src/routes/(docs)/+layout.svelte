@@ -20,6 +20,7 @@
 </main>
 
 <style>
+
 	nav {
 		position: fixed;
 		display: flex;
@@ -37,7 +38,7 @@
 
 
 	main {
-		padding-top: 40px;
+		margin-top: -50px;
 		padding-left: 270px;
 	}
 

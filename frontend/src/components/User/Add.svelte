@@ -97,13 +97,12 @@
 
 
     input {
-        padding: 0.6rem 1rem;
         border: none;
         background-color: var(--color-bg-opacity-80);
         border: 2px solid var(--color-primary);
         color: var(--color-text);
-        width: 100%;
-        font-size: 15px;
+        width: 400px;
+        padding: 1rem;
         border-radius: 10px;
     }
 

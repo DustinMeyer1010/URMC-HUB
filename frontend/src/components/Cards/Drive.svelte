@@ -109,12 +109,14 @@
 
 
     button.group-button {
-        padding: 0.3rem;
-        background: var(--color-bg-opacity-30);
-        border-radius: 5px;
+        padding: 0.5rem 0.6rem;
+        background: var(--color-bg-opacity-50);
+        border-radius: 50px;
         animation: 0.3s fillin forwards;
         animation-delay: var(--delay);
         opacity: 0;
+        max-width: 49%;
+        flex: 1 0 49%;
     }
 
     

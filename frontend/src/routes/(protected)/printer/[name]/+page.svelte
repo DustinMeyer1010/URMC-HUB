@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import PrinterStatus from '@components/Printer/PrinterStatus.svelte';
 	import type { PrinterSimpleInfo } from '@t/printer';
 	import { onMount } from 'svelte';
 
 
     let printer: PrinterSimpleInfo | null = $state(null)
+    let isOnline: boolean = $state(false)
+    let eRecordPrinter: boolean = $state(false)
 
     let {
         data
@@ -32,14 +35,78 @@
 
         printer = await res.json() as PrinterSimpleInfo
 
-        console.log(printer)
-    })
+        res = await fetch(`http://localhost:8000/api/printer/ping/${printer.ip.replace(/_.*/, "")}`)
 
+
+        const str = await res.text();
+        isOnline = str.includes("Successfully")
+        eRecordPrinter = printer.server.includes("eRcd-CPA")
+    })
 
 
 </script>
 
 {#if printer != null}
-    <h1>{`\\\\${printer.server}\\${printer.queue}`}</h1>
-    <a href={`http://${printer.ip.replace(/_.*/, "")}`} target="_blank">Open Printer Settings</a>
+    <section>
+        <header>
+            <h1>{`\\\\${printer.server}\\${printer.queue}`}</h1>
+            <sup><PrinterStatus {isOnline} {eRecordPrinter} ip={printer.ip}/></sup>
+        </header>
+        <div>
+            <span><b>Location: </b>{printer.location}</span>
+            <span>
+                {#if isOnline && !eRecordPrinter}
+                    <b>IP: </b><a href={`http://${printer.ip.replace(/_.*/, "")}`}>{printer.ip}</a>
+                {:else}
+                    <b>IP: </b>{printer.ip}
+                {/if}
+            </span>
+            <span><b>Print Processor:</b>{printer.print_processor}</span>
+            <span><b>Notes: </b>{printer.notes}</span>
+        </div>
+    </section>
 {/if}
+
+<style>
+
+    section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    header {
+        display: flex;
+        justify-content: center;
+        position: relative;
+        gap: 5px;
+    }
+
+    div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    span {
+        display: flex;
+        gap: 10px;
+    }
+
+    a {
+        color: var(--color-text)
+    }
+
+    a:visited {
+        color: var(--color-text);
+    }
+
+    a:hover {
+        color: var(--color-text-opacity-80)
+    }
+
+
+</style>
+

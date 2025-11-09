@@ -93,21 +93,21 @@
     @media (max-width: 800px) {
         main {
             margin-top: 175px;
-            padding: 0 4rem;
+            padding: 0 3rem;
         }
     }
 
     @media (max-width: 784px) {
         main {
             margin-top: 250px;
-            padding: 0 3rem;
+            padding: 0 2rem;
         }
     }
 
     @media (max-width: 465px) {
         main {
             margin-top: 300px;
-            padding: 0 2rem;
+            padding: 0 1rem;
         }
     }
 

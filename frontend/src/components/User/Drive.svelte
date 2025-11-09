@@ -64,8 +64,8 @@
         padding: 2rem 4rem;
         border-radius: 10px;
         width: 90%;
-        display: grid;
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
         gap: 1rem;
         align-items: stretch;
     }
@@ -87,13 +87,16 @@
     }
 
     div {
-        height: fit-content;
         padding: 1rem;
         border-radius: 10px;
-        background: var(--background-surface);
+        background: var(--color-surface);
         animation: slideIn 0.3s forwards;
         animation-delay: var(--delay);
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
         opacity: 0;
+        margin-top: 10px;
     }
 
     div.loading {
@@ -114,8 +117,8 @@
     }
 
     li {
-        border-radius: 3px;
-        padding: 0.2rem;
+        border-radius: 10px;
+        padding: 0.2rem 1rem;
         background: var(--color-bg-opacity-30);
     }
 
@@ -143,11 +146,6 @@
         }
     }
 
-    @media (max-width: 1010px) {
-
-
-
-    }
 
     @media (max-width: 800px) {
         section {

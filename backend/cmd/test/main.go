@@ -1,7 +1,13 @@
 package main
 
-import "github.com/LostProgrammer1010/URMC-HUB/internal/db"
+import (
+	"fmt"
+
+	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
+)
 
 func main() {
-	db.Init()
+	err := service.PingPrinter("172.16.244.107")
+
+	fmt.Println(err)
 }

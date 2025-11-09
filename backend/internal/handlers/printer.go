@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
@@ -36,4 +37,20 @@ func PrinterInformation(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonData)
+}
+
+func PingPrinter(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	ip := vars["ip"]
+
+	err := service.PingPrinter(ip)
+
+	if err != nil {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "Failed to Ping: %s", ip)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "Successfully Pinged: %s", ip)
 }

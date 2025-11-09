@@ -45,6 +45,10 @@
         white-space: nowrap;
     }
 
+    button:hover {
+        background: var(--color-surface-hover);
+    }
+
     @media (max-width: 1000px) {
         nav {
             width: 90%;

@@ -107,7 +107,7 @@
         bottom: 50px;
         left: 50%;
         transform: translateX(-50%);
-        width: 75%;
+        width: 400px;
         padding: 1rem;
         color: var(--color-text);
         z-index: 1;
