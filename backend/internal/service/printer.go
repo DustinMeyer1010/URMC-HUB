@@ -23,3 +23,7 @@ func PingPrinter(ip string) error {
 	conn.Close()
 	return nil
 }
+
+func RelatedPrinters(ip string) ([]models.PrinterSimpleInfo, error) {
+	return ad.RelatedPrinters(ip)
+}

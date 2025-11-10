@@ -33,7 +33,7 @@
 {#if !breakDown}
 <nav>
     <a href="/"><img src={urmc} alt=""></a>
-    <ToggleTheme/>
+
     <ul>
         <li>
             <a href="/">Search</a>
@@ -49,7 +49,7 @@
                     <a href="/Bulk_Add">Bulk User Add</a>
                     <a href="/Bulk_Remove">Bulk User Remove</a>
                     <a href="/Bulk_Lookup">Bulk User Lookup</a>
-
+                    <ToggleTheme/>
                 </div>
                 
             {/if}
@@ -59,7 +59,7 @@
 {:else}
 <nav>
     <a href="/"><img src={urmc} alt=""></a>
-    <ToggleTheme/>
+    
     <ul>
         <li class="dropdown">
             <button onclick={() => showMenu = !showMenu}><img src={menuIcon} alt=""></button>
@@ -71,6 +71,7 @@
                     <a href="/Bulk_Add">Bulk User Add</a>
                     <a href="/Bulk_Remove">Bulk User Remove</a>
                     <a href="/Bulk_Lookup">Bulk User Lookup</a>
+                    <ToggleTheme/>
                 </div>
                 
             {/if}

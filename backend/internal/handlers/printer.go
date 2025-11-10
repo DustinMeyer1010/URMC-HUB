@@ -54,3 +54,26 @@ func PingPrinter(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "Successfully Pinged: %s", ip)
 }
+
+func RelatedPrinters(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	ip := vars["ip"]
+
+	printers, err := service.RelatedPrinters(ip)
+
+	if err != nil {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "Failed to Ping: %s", ip)
+		return
+	}
+
+	jsonData, err := json.Marshal(printers)
+
+	if err != nil {
+		http.Error(w, "Error Creating Resposne", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
+}

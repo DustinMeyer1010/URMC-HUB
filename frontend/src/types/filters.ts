@@ -6,4 +6,5 @@ import type { DriveSimpleInfo } from "./drive"
 
 
 export type Groups = 'COMPUTERS' | 'USERS' | "GROUPS" | 'PRINTERS' | 'DRIVES'
+export const AllFilters: string[] = ['COMPUTERS' , 'USERS' , "GROUPS" , 'PRINTERS' , 'DRIVES']
 export type Results =  ComputerSimpleInfo[] | PrinterSimpleInfo[] | UserSimpleInfo[] | GroupSimpleInfo[] | DriveSimpleInfo[]

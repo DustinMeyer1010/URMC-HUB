@@ -12,7 +12,8 @@
     import { goto } from '$app/navigation'
 	import { onMount } from 'svelte';
     import { page } from '$app/state';
-	import { getSearchValue } from '../../helper';
+	import { getFilter, getSearchValue } from '../../helper';
+	import CardLoading from '@components/CardLoading.svelte';
     
 
     let data: AllResults | null = $state(null)
@@ -27,8 +28,9 @@
 
     onMount(() => {
         let urlParams = page.url.searchParams;
-        filter = urlParams.get("filter")?.toUpperCase() as Groups ?? "USERS"
         searchValue = getSearchValue(urlParams)
+        $inspect(filter)
+        filter = getFilter(urlParams)
         switchFilter(filter)
         search()
     })
@@ -52,6 +54,7 @@
 
     const setPreviousSearch = () => {
         localStorage.setItem("searchValue", searchValue)
+        localStorage.setItem("filter", filter)
     }
 
 
@@ -93,11 +96,7 @@
 
 <main>
     {#if loading  && data == null}
-        <div>
-            {#each {length: 7} as _,x}
-                <span style={`--delay: ${250*x}ms`}></span>
-            {/each}
-        </div>
+        <CardLoading />
     {:else}
         <Cards items={items} {filter}/>
     {/if}

@@ -82,3 +82,20 @@ func PullSinglePrinterInformation(printer string) (models.PrinterSimpleInfo, err
 	return models.PrinterSimpleInfo{}, fmt.Errorf("%s", "Printer not found")
 
 }
+
+func RelatedPrinters(ip string) ([]models.PrinterSimpleInfo, error) {
+	printerList, err := fetchPrinters()
+	var relatedPrinters []models.PrinterSimpleInfo
+
+	if err != nil {
+		return relatedPrinters, err
+	}
+
+	for _, p := range printerList {
+		if p.IP == ip {
+			relatedPrinters = append(relatedPrinters, p)
+		}
+	}
+
+	return relatedPrinters, nil
+}
