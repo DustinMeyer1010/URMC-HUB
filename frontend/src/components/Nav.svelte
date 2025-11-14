@@ -104,6 +104,7 @@
         background: var(--color-surface);
         top: 50px;
         right: 0px;
+        z-index: 10;
         min-width: 300px;
         box-sizing: border-box;
         box-shadow: var(--shadow-strong);

@@ -61,11 +61,11 @@
 <style>
 
     section {
-        padding: 2rem 4rem;
         border-radius: 10px;
         width: 90%;
         display: flex;
         flex-direction: column;
+        flex-wrap: wrap;
         gap: 1rem;
         align-items: stretch;
     }
@@ -80,7 +80,6 @@
 
     h1 {
         font-size: 18px;
-        height: 30px;
         margin: 1rem;
         padding: 0;
         text-align: left;
@@ -94,9 +93,9 @@
         animation-delay: var(--delay);
         display: flex;
         flex-direction: column;
+        word-break: break-all;
         flex-wrap: wrap;
         opacity: 0;
-        margin-top: 10px;
     }
 
     div.loading {
@@ -110,7 +109,7 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        margin: 0;
+        margin-top: 20px;
         padding: 0;
         gap: 1rem;
         list-style: none;

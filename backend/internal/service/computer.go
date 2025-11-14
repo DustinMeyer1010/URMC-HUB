@@ -43,9 +43,14 @@ func Ping(host string) (string, error) {
 
 func parsePingInformation(output string) {
 
-	out := strings.Split(output, "\r\n\r\n")
+	out := strings.SplitSeq(output, "\r\n\r\n")
 
-	fmt.Println(out)
+	for line := range out {
+		split := strings.SplitSeq(line, "\r\n")
+		for section := range split {
+			fmt.Printf("Section: %s\n", section)
+		}
+	}
 
 	/*
 		re := regexp.MustCompile(`\[(.*?)\]`)
@@ -54,4 +59,12 @@ func parsePingInformation(output string) {
 
 		fmt.Println(matches)
 	*/
+}
+
+type PingResults struct {
+	DNS        string
+	IP         string
+	Reply      string
+	Statistics string
+	Packets    string
 }

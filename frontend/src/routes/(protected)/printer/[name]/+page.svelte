@@ -97,7 +97,7 @@
                     <CopyButton label={"IP"} value={printer.ip}/>
                 {/if}
             {/if}
-                        <CopyButton label={"LOCATION"} value={printer.location ? printer.location : "NA"} />
+            <CopyButton label={"LOCATION"} value={printer.location ? printer.location : "NA"} />
             <CopyButton label={"PRINT_PROCESSOR"} value={printer.print_processor ? printer.print_processor : "NA"}/>
             <CopyButton label={"NOTES"} value={printer.notes ? printer.notes : "NA"}/>
         </div>

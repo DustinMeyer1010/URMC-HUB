@@ -86,7 +86,7 @@
         gap: 1rem;
         width: 100%;
         margin-bottom: 1rem;
-        z-index: 10;
+        z-index: 3;
         background: var(--color-bg);
     }
 
