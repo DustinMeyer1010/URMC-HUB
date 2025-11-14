@@ -33,8 +33,7 @@
         return encodeURIComponent(drive.drive)
     })
 
-    $inspect(copyState)
-    const allCopyText: string = `Name: ${drive.drive}\nLocal_Path: ${drive.local_path}\nGroups:\n${drive.groups.join("\n")}`;
+    let allCopyText: string = $derived(`Name: ${drive.drive}\nLocal_Path: ${drive.local_path}\nGroups:\n${groups.join("\n")}`);
 
 </script>
 
@@ -111,12 +110,11 @@
     button.group-button {
         padding: 0.5rem 0.6rem;
         background: var(--color-bg-opacity-50);
-        border-radius: 50px;
+        border-radius: 20px;
+        font-size: 12px;
         animation: 0.3s fillin forwards;
         animation-delay: var(--delay);
         opacity: 0;
-        max-width: 49%;
-        flex: 1 0 49%;
     }
 
     

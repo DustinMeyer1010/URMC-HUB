@@ -184,5 +184,17 @@
     }
 
 
+    @media (max-width: 800px) {
+        header {
+            word-break: break-all;
+            flex-direction: column;
+        }
+
+        div.related-printers {
+            width: 90%;
+        }
+    }
+
+
 </style>
 

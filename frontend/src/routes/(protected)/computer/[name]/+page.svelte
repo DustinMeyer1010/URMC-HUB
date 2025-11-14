@@ -80,6 +80,7 @@
         text-align: left;
         gap: 1rem;
         font-size: 15px;
+        word-break: break-all;
     }
 
     section {
@@ -145,6 +146,13 @@
 
     img {
         width: 20px;
+    }
+
+    @media (max-width: 800px) {
+        div.main ul {
+            padding: 1rem;
+            margin: 0;
+        }
     }
 
 </style>
