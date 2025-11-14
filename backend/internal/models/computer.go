@@ -16,3 +16,9 @@ func ToComputerSimpleInfo(entry *ldap.Entry) ComputerSimpleInfo {
 		OperatingSystem: entry.GetAttributeValue("operatingSystem"),
 	}
 }
+
+type ComputerPageInfo struct {
+	ComputerInfo ComputerSimpleInfo `json:"computer_info"`
+	IsOnline     bool               `json:"is_online"`
+	PingResults  string             `json:"ping_results"`
+}

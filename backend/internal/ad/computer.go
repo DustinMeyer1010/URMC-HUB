@@ -1,6 +1,8 @@
 package ad
 
 import (
+	"fmt"
+
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
@@ -25,4 +27,27 @@ func SearchAllComputers(searchValue string) ([]models.ComputerSimpleInfo, error)
 	}
 
 	return matches, err
+}
+
+func PullComputerInformation(comptuer string) (models.ComputerSimpleInfo, error) {
+
+	results, err := SearchByCategory(
+		"computer",
+		"name",
+		comptuer,
+		"name",
+		"operatingSystem",
+		"distinguishedName",
+	)
+
+	if err != nil {
+		return models.ComputerSimpleInfo{}, err
+	}
+
+	if len(results.Entries) == 0 {
+		return models.ComputerSimpleInfo{}, fmt.Errorf("%s", "No Results Found")
+	}
+
+	return models.ToComputerSimpleInfo(results.Entries[0]), nil
+
 }
