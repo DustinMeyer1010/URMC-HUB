@@ -48,6 +48,12 @@ func userRoutes(mux *mux.Router) {
 			http.HandlerFunc(handlers.RemoveGroup),
 			middleware.Middleware{middleware.CorsHandler},
 		},
+		{
+			methods{"POST", "OPTION"},
+			"/api/users/bulk/lookup",
+			http.HandlerFunc(handlers.BulkUserSearchFile),
+			middleware.Middleware{middleware.CorsHandler},
+		},
 	}
 
 	routes.add(mux)

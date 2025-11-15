@@ -46,9 +46,9 @@
             {#if showMenu}
                 <div>
                     <a href="/api">API Docs</a>
-                    <a href="/Bulk_Add">Bulk User Add</a>
-                    <a href="/Bulk_Remove">Bulk User Remove</a>
-                    <a href="/Bulk_Lookup">Bulk User Lookup</a>
+                    <a href="/bulk_add">Bulk User Add</a>
+                    <a href="/bulk_remove">Bulk User Remove</a>
+                    <a href="/bulk_lookup">Bulk User Lookup</a>
                     <ToggleTheme/>
                 </div>
                 
@@ -68,9 +68,9 @@
                     <a href="/">Search</a>
                     <a href="/bookmarks">Bookmarks</a>
                     <a href="/api">API Docs</a>
-                    <a href="/Bulk_Add">Bulk User Add</a>
-                    <a href="/Bulk_Remove">Bulk User Remove</a>
-                    <a href="/Bulk_Lookup">Bulk User Lookup</a>
+                    <a href="/bulk_add">Bulk User Add</a>
+                    <a href="/bulk_remove">Bulk User Remove</a>
+                    <a href="/bulk_lookup">Bulk User Lookup</a>
                     <ToggleTheme/>
                 </div>
                 

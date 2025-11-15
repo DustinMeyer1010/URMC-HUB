@@ -6,6 +6,7 @@ import (
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 	"github.com/gorilla/mux"
 )
 
@@ -97,5 +98,21 @@ func AddGroup(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(res)
+
+}
+
+func BulkUserSearchFile(w http.ResponseWriter, r *http.Request) {
+	r.ParseMultipartForm(1 << 20)
+
+	uploadedfiles, ok := r.MultipartForm.File["file"]
+
+	if !ok {
+		http.Error(w, "No Files Provided", http.StatusBadRequest)
+		return
+	}
+
+	service.BulkUserSearch(uploadedfiles)
+
+	w.Write([]byte("File uploaded successfully"))
 
 }
