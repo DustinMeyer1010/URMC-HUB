@@ -1,12 +1,6 @@
 <script lang="ts">
     // === TYPES ===
-    import type { ComputerSimpleInfo } from "@t/computer"
-    import type { PrinterSimpleInfo } from "@t/printer"
-    import type { UserSimpleInfo } from "@t/user";
-    import type { Results } from "@t/filters"
-    import type { Groups as GroupFilter } from '@t/filters'
-    import type { GroupSimpleInfo } from "@t/group";
-	import type { DriveSimpleInfo } from "@t/drive";
+    import type { Filters } from '@t/filters'
     
     // === COMPONENTS ===
     import Group from "./Cards/Group.svelte";
@@ -14,53 +8,39 @@
 	import Printer from "./Cards/Printer.svelte";
 	import User from "./Cards/User.svelte";
 	import Drive from "./Cards/Drive.svelte";
+	import type { AllResults } from "@t/resutls";
+	import type { Component } from 'svelte';
 
 
     let {
-        items,
+        data,
         filter
     } : {
-        filter: GroupFilter,
-        items: Results
+        filter: Filters,
+        data: AllResults
     } = $props()
+
+    const FilterMap: Record<string, { items: any[], Component: Component<{item: any, idx: number}> }> = {
+        COMPUTERS: { items: data.computers, Component: Computer },
+        PRINTERS:  { items: data.printers, Component: Printer },
+        USERS:     { items: data.users, Component: User },
+        GROUPS:    { items: data.groups, Component: Group },
+        DRIVES:    { items: data.drives, Component: Drive },
+    };
+    let Card = $derived(FilterMap[filter].Component)
 
 </script>
 
 <div>
-    {#if filter === 'COMPUTERS'}
-        {#each (items as ComputerSimpleInfo[]) as computer, idx}
-            <Computer {computer} {idx}/>
-        {:else}
-            {@render NotFound(filter)} 
-        {/each}
-    {:else if filter === 'PRINTERS'}
-        {#each (items.slice(0, 100) as PrinterSimpleInfo[]) as printer, idx}
-            <Printer {printer} {idx}/>
-        {:else}
-            {@render NotFound(filter)}    
-        {/each}
-    {:else if filter === 'USERS'}
-        {#each (items as UserSimpleInfo[]) as user, idx}
-            <User {user} {idx}/>
+        {#each FilterMap[filter].items as item, idx}
+            <Card item={item} idx={idx}/>
         {:else}
             {@render NotFound(filter)}
         {/each}
-    {:else if filter === 'GROUPS'}
-        {#each (items as GroupSimpleInfo[]) as group, idx}
-            <Group {group} {idx}/>
-        {:else}
-            {@render NotFound(filter)}
-        {/each}
-    {:else if filter === 'DRIVES'}
-        {#each (items as DriveSimpleInfo[]) as drive, idx}
-            <Drive {drive} {idx}/>
-        {:else}
-            {@render NotFound(filter)}
-        {/each}
-    {/if}
 </div>
 
-{#snippet NotFound(filter: GroupFilter)}
+
+{#snippet NotFound(filter: Filters)}
     <span>No {filter} Found</span>
 {/snippet}
 

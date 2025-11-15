@@ -10,4 +10,4 @@ func ParseCSV(file multipart.File) {
 
 }
 
-func ParsePlainText(file multipart.File)
+func ParsePlainText(file multipart.File) {}

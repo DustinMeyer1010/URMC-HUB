@@ -1,40 +1,31 @@
 <script lang="ts">
 	import FileUpload from "@components/FileUpload.svelte";
+	import { allowedExtensions, BulkLookUpStateClass } from "./state.svelte";
 
+    let BulkLookupState: BulkLookUpStateClass = new BulkLookUpStateClass()
 
-    let names: string = $state("")
-    let files: File[] = $state([])
-
-    const allowedExtensions = [".txt", ".xlsx", ".csv"];
-
-    $inspect(files)
-
-    const updateFiles = (selectedFiles: File[]) => {
-      files = selectedFiles
-    }
-
+    $inspect(BulkLookupState)
 
 </script>
 
 
 <section>
 
-  <FileUpload extensions={allowedExtensions} updateFiles={updateFiles}/>
-    <textarea bind:value={names} oninput={() => {
-        names = names.split("\n").map(line => line.trimStart().replaceAll("\t", " ")).join("\n")
-    }}></textarea>
+  <FileUpload extensions={allowedExtensions} updateFiles={BulkLookupState.updateFiles}/>
+  <h1>OR</h1>
+  <span>Manully enter values</span>
+    <textarea bind:value={BulkLookupState.textValues} oninput={BulkLookupState.parseTextValueInput}></textarea>
 </section>
 
 
 
 <style>
 
-
-
     section {
         display: flex;
         flex-direction: column;
         align-items: center;
+        padding-top: 50px;
     }
 
     textarea {
@@ -43,7 +34,7 @@
         color: var(--color-text);
         padding: 0.3rem;
         width: 90%;
-        height: 200px;
+        height: 400px;
         white-space: pre-wrap;
     }
 

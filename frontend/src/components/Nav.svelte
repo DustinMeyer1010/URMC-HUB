@@ -6,11 +6,13 @@
 	import { onMount } from 'svelte';
 
     let showMenu: boolean = $state(false)
+    let button: HTMLButtonElement | undefined = $state(undefined)
 
     let width = $state(0);
     
 
     onMount(() => {
+        button = document.createElement("button")
         width = window.innerWidth;
 
         const handleResize = () => {
@@ -18,6 +20,12 @@
         }
 
         window.addEventListener("resize", handleResize);
+
+        document.addEventListener("click", (e) => {
+            if (!button?.contains(e.target as Node | null)) {
+                showMenu = false
+            }
+        })
 
         return () => window.removeEventListener("resize", handleResize);
     });
@@ -42,7 +50,7 @@
             <a href="/bookmarks">Bookmarks</a>
         </li>
         <li class="dropdown">
-            <button onclick={() => showMenu = !showMenu}><img src={menuIcon} alt=""></button>
+            <button bind:this={button} onclick={() => showMenu = !showMenu}><img src={menuIcon} alt=""></button>
             {#if showMenu}
                 <div>
                     <a href="/api">API Docs</a>
@@ -62,7 +70,7 @@
     
     <ul>
         <li class="dropdown">
-            <button onclick={() => showMenu = !showMenu}><img src={menuIcon} alt=""></button>
+            <button bind:this={button} onclick={() => showMenu = !showMenu}><img src={menuIcon} alt=""></button>
             {#if showMenu}
                 <div>
                     <a href="/">Search</a>

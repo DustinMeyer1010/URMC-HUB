@@ -1,0 +1,72 @@
+import { goto } from "$app/navigation";
+import type { Filters, Results } from "@t/filters";
+import type { AllResults } from "@t/resutls";
+
+const emptyResults: AllResults = {
+    users: [],
+    computers: [],
+    groups: [],
+    printers: [],
+    drives: [],
+}
+
+interface SearchStateInterface {
+    data: AllResults 
+    currentFilterItems: Results
+    filter: Filters
+    loading: boolean
+    searchValue: string
+    santizedSearch: string
+    Search: () => Promise<void>
+    SwitchFilter: (newFilter: Filters) => void
+
+}
+
+
+
+export class SearchStateClass implements SearchStateInterface {
+    data: AllResults = $state(emptyResults)
+
+
+    constructor() {
+        $inspect(this.currentFilterItems)
+    }
+
+    currentFilterItems: Results = $state([])
+    filter: Filters = $state("USERS")
+    loading: boolean = $state(true)
+    searchValue: string = $state("")
+    santizedSearch: string = $derived.by(() => {
+        return encodeURIComponent(this.searchValue)
+    });
+    
+
+
+    Search = async () => {
+        this.loading = true
+        if (this.searchValue == "") {
+            this.loading = false
+            return
+        }
+        const response = await fetch(`http://localhost:8000/api/search/all/${this.santizedSearch}`,{mode: "cors"});
+
+        if (response.status != 200) {
+            this.data = emptyResults
+            return
+        }
+        this.data = await response.json()
+        this.SwitchFilter(this.filter)
+        this.loading = false
+    }
+
+    SwitchFilter = (newFilter: Filters) => {
+        this.filter = newFilter;
+        window.scrollTo(0,0)
+        this.SetURL()
+    };
+
+    SetURL() {
+        goto(`?search=${this.santizedSearch}&filter=${this.filter.toLowerCase()}`, { replaceState: true, keepFocus: true, noScroll: true })
+    }
+
+}

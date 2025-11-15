@@ -10,19 +10,19 @@
     })
 
     let {
-        group,
+        item,
         idx
     } : {
-        group: GroupSimpleInfo
+        item: GroupSimpleInfo
         idx: number
     } = $props()
 
-    const allCopyText: string = `Name: ${group.name}\nInformation: ${group.information !== "" ? group.information : "NA"}\nDescription: ${group.description !== "" ? group.description : "NA"}\nOU: ${group.ou}`
+    const allCopyText: string = `Name: ${item.name}\nInformation: ${item.information !== "" ? item.information : "NA"}\nDescription: ${item.description !== "" ? item.description : "NA"}\nOU: ${item.ou}`
 
 </script>
 
 
-<ul class:disabled={group.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(idx * 50, 2000)}ms">
+<ul class:disabled={item.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(idx * 50, 2000)}ms">
     {#if copyState.copied != allCopyText}
         <button 
         class="copy-all" 
@@ -33,8 +33,8 @@
     {:else}
         <span class="copied-all">ALL COPIED</span>
     {/if}
-    <a href={`/group/${group.name}`}> <img src={outIcon} alt=""></a>
-    {#each Object.entries(group) as key}
+    <a href={`/group/${item.name}`}> <img src={outIcon} alt=""></a>
+    {#each Object.entries(item) as key}
         {#if key[1]}
             <li class={key[0]}> 
                 <button

@@ -1,11 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-
-
-    let inputField: HTMLInputElement | undefined = $state(undefined);
-    let dragging: boolean = $state(false)
-    let error: string = $state("")
-    let files: File[] = $state([])
+	import { FileUploadStateClass } from "./FileUploadState.svelte";
 
     let {
         extensions,
@@ -15,60 +10,16 @@
         updateFiles: (selectedFiles: File[]) => void
     } = $props()
 
-    onMount(() => {
-        inputField = document.createElement("input")
-        inputField.type = "file"
-        inputField.multiple = true;
-        inputField.accept = extensions.join(",");
+    let FileUploadState: FileUploadStateClass = new FileUploadStateClass(extensions)
 
-        inputField.addEventListener("change", (e) => {
-            const selectedFiles = (e.target as HTMLInputElement).files;
-            if (selectedFiles) {
-                files = selectedFiles
-            }
-        })
+
+    onMount(() => {
+        FileUploadState.createInputField()
     })
 
     $effect(() => {
-        updateFiles(files)
+        updateFiles(FileUploadState.files)
     })
-
-    const isAllowed = (file: File) => {
-        const ext = file.name.toLowerCase().slice(file.name.lastIndexOf("."))
-        return extensions.includes(ext);
-    }
-
-    const OpenMenu = () => {
-        if (inputField) {
-            inputField.click()
-        }
-    }
-
-    const handleDrop = (e: DragEvent) => {
-        e.preventDefault()
-        error = ""
-        const dropped = Array.from(e.dataTransfer?.files ?? []);
-        const valid = dropped.filter(isAllowed)
-        const invalid = dropped.filter(f => !isAllowed(f))
-
-        if (invalid.length) {
-            error = `Invalid files: ${invalid.map(f => f.name).join(", ")}`;
-        }
-
-        files = valid
-        dragging = false
-    }
-
-    const handleDragOver = (e: DragEvent) => {
-        e.preventDefault();
-        dragging = true
-    }
-
-    const handleDragLeave = () => {
-        dragging = false
-    }
-
-
 
 
 </script>
@@ -78,24 +29,24 @@
     <div
     role="button"
     tabindex="0"
-    onclick={OpenMenu}
-    class="dropzone {dragging ? 'dragging' : ''}"
-    ondragover={handleDragOver}
-    ondragleave={handleDragLeave}
-    ondrop={handleDrop}
+    onclick={FileUploadState.openFileMenu}
+    class="dropzone {FileUploadState.dragging ? 'dragging' : ''}"
+    ondragover={FileUploadState.handleDragOver}
+    ondragleave={FileUploadState.handleDragLeave}
+    ondrop={FileUploadState.handleDrop}
     >
         <strong>Drop files here</strong><br>
         or click to browse
     </div>
-    {#if error}
-        {error}
+    {#if FileUploadState.error}
+        {FileUploadState.error}
         <span>Files must be of type .csv, .xlsx, .txt</span>
     {/if}
-    {#if files.length}
+    {#if FileUploadState.files.length}
         <h3>Uploaded Files</h3>
 
         <ul>
-            {#each files as file}
+            {#each FileUploadState.files as file}
             <li>{file.name} — {file.size} bytes</li>
             {/each}
         </ul>
@@ -107,10 +58,18 @@
 
 
 <style>
+    section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 50%;
+        gap: 20px;
+    }
+
   .dropzone {
     width: 100%;
-    max-width: 400px;
-    padding: 40px;
+    padding: 100px;
     border: 4px dashed var(--color-surface);
     border-radius: 14px;
     background: transparent;
@@ -118,6 +77,7 @@
     transition: background 0.2s, border-color 0.2s;
     cursor: pointer;
   }
+
   .dropzone.dragging {
     border-color: var(--color-text);
     background: var(--color-surface-lighter);

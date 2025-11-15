@@ -8,7 +8,6 @@ import (
 )
 
 func BulkUserSearch(files []*multipart.FileHeader) error {
-
 	for _, header := range files {
 		fileExtension := strings.Split(header.Filename, ".")[1]
 		file, err := header.Open()

@@ -10,16 +10,16 @@
         timeout: null
     })
     let {
-        printer,
+        item,
         idx
     } : {
-        printer: PrinterSimpleInfo
+        item: PrinterSimpleInfo
         idx: number
     } = $props()
 
-    const printerName = `${printer.server}?queue=${printer.queue}`;
+    const printerName = `${item.server}?queue=${item.queue}`;
 
-    const allCopyText: string = `Name: \\\\${printer.server}\\${printer.queue}\nModel: ${printer.model}\nIP: ${printer.ip}\nPrint_Processor: ${printer.print_processor}\nLocation: ${printer.location}\nNotes: ${printer.notes}`;
+    const allCopyText: string = `Name: \\\\${item.server}\\${item.queue}\nModel: ${item.model}\nIP: ${item.ip}\nPrint_Processor: ${item.print_processor}\nLocation: ${item.location}\nNotes: ${item.notes}`;
 
 
 </script>
@@ -34,12 +34,12 @@
     <li class="name">
         <button
         type="button"
-        onclick={() => copyToClip(`\\\\${printer.server}\\${printer.queue}`, copyState)}>
+        onclick={() => copyToClip(`\\\\${item.server}\\${item.queue}`, copyState)}>
 
-            {copyState.copied == `\\\\${printer.server}\\${printer.queue}` ? "Copied" : `\\\\${printer.server}\\${printer.queue}`}
+            {copyState.copied == `\\\\${item.server}\\${item.queue}` ? "Copied" : `\\\\${item.server}\\${item.queue}`}
         </button>
     </li>
-    {#each Object.entries(printer).slice(2) as key}
+    {#each Object.entries(item).slice(2) as key}
         {#if key[1]}
             <li> 
                 <button

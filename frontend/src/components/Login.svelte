@@ -7,6 +7,12 @@
         password: string,
     }
 
+    let {
+        login
+    } : {
+        login: () => void
+    } = $props()
+
     let error: boolean = $state(false)
 
 
@@ -23,7 +29,8 @@
         });
 
         if (res.status == 200) {
-            goto("/", {invalidateAll: true})
+            goto(window.location.pathname, {invalidateAll: true})
+            login()
             return
         }
 

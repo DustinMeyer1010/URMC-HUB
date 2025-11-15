@@ -19,11 +19,15 @@
 
 
     })
+
+    const login = () => {
+        isLoggedIn = true
+    }
 </script>
 
 {#if !isLoggedIn}
     <div>
-        <Login/>
+        <Login login={login} />
     </div>
 {/if}
 

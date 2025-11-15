@@ -4,116 +4,47 @@
     import Filters from '@components/Filters.svelte'
     import Cards from '@components/Cards.svelte';
 
-
-    import type { Groups } from '@t/filters'
-	import type { Results } from '@t/filters';
-	import type { AllResults } from '@t/resutls';
-
-    import { goto } from '$app/navigation'
 	import { onMount } from 'svelte';
     import { page } from '$app/state';
 	import { getFilter, getSearchValue } from '../../helper';
 	import CardLoading from '@components/CardLoading.svelte';
-    
+	import { SearchStateClass } from './state.svelte';
 
-    let data: AllResults | null = $state(null)
-    let items: Results = $state([])
-    let filter: Groups = $state("USERS")
-    let loading: boolean = $state(true)
-    let searchValue: string = $state("")
-    let santizedSearch: string = $derived.by(() => {
-        return encodeURIComponent(searchValue)
-    })
+
+    let SearchState: SearchStateClass = new SearchStateClass()
 
 
     onMount(() => {
         let urlParams = page.url.searchParams;
-        searchValue = getSearchValue(urlParams)
-        $inspect(filter)
-        filter = getFilter(urlParams)
-        switchFilter(filter)
-        search()
+        SearchState.searchValue = getSearchValue(urlParams)
+        SearchState.filter = getFilter(urlParams)
+        SearchState.SwitchFilter(SearchState.filter)
+        SearchState.Search()
     })
 
-    const search = async () => {
-        if (searchValue == "") {
-            loading = false
-            return
-        }
-        loading = true
-        data = null
-        let response = await fetch(`http://localhost:8000/api/search/all/${santizedSearch}`,{mode: "cors"});
-        data = await response.json();
-
-        switchFilter(filter)
-        setURL()
-        setPreviousSearch()
-        loading = false
-
-    }
 
     const setPreviousSearch = () => {
-        localStorage.setItem("searchValue", searchValue)
-        localStorage.setItem("filter", filter)
+        localStorage.setItem("searchValue", SearchState.searchValue)
+        localStorage.setItem("filter", SearchState.filter)
     }
 
-
-    const setURL = () => {
-        goto(`?search=${santizedSearch}&filter=${filter.toLowerCase()}`, { replaceState: true, keepFocus: true, noScroll: true })
-    }
-
-    const switchFilter = (newFilter: Groups) => {
-        filter = newFilter;
-        window.scrollTo(0,0)
-        
-        if (data === null) {
-            return 
-        }
-
-        switch (filter) {
-            case "COMPUTERS":
-                items = data.computers
-                break
-            case "PRINTERS":
-                items = data.printers
-                break
-            case "USERS":
-                items = data.users 
-                break
-            case "GROUPS":
-                items = data.groups
-                break
-            case "DRIVES":
-                items = data.drives
-                break
-            default:
-                filter = "USERS"
-                items = data.users 
-        }
-        setURL()
-    }
 </script>
 
 <main>
-    {#if loading  && data == null}
+    {#if SearchState.loading}
         <CardLoading />
     {:else}
-        <Cards items={items} {filter}/>
+        <Cards data={SearchState.data} filter={SearchState.filter}/>
     {/if}
 
     <section>
-        <Filters currentFilter={filter} switchFilter={switchFilter}/>
-        <Search search={search} bind:searchValue={searchValue} bind:loading={loading}/>
+        <Filters currentFilter={SearchState.filter} switchFilter={SearchState.SwitchFilter}/>
+        <Search search={SearchState.Search} bind:searchValue={SearchState.searchValue} bind:loading={SearchState.loading}/>
     </section>
 </main>
 
 
-
-
 <style>
-
-
-
 
     main {
         width: 100%;

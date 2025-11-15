@@ -11,15 +11,15 @@
     })
 
     let {
-        user,
+        item,
         idx
     } : {
-        user: UserSimpleInfo
+        item: UserSimpleInfo
         idx: number
     } = $props();
 
-    const allCopyText: string = `Name: ${user.name}\nUsername: ${user.username}\nNet_ID: ${user.net_id}\nURID: ${user.urid}\nEmail: ${user.email}\nOU: ${user.ou}\n`;
-    const disabled = user.ou.toLowerCase().includes("disabled")
+    const allCopyText: string = `Name: ${item.name}\nUsername: ${item.username}\nNet_ID: ${item.net_id}\nURID: ${item.urid}\nEmail: ${item.email}\nOU: ${item.ou}\n`;
+    const disabled = item.ou.toLowerCase().includes("disabled")
 </script>
 
 
@@ -27,15 +27,15 @@
     {#if disabled}
         <span class="disabled"><img src={disabledIcon} alt="">Disabled Account</span>
     {/if}
-    {#if user.username != ""}
-    <a href={`/user/${user.username}`}> <img src={outIcon} alt=""></a>
+    {#if item.username != ""}
+    <a href={`/user/${item.username}`}> <img src={outIcon} alt=""></a>
     {/if}
     {#if copyState.copied != allCopyText}
         <button class="copy-all" title="Copy All" onclick={() => copyToClip(allCopyText, copyState)}><img src={copyAllIcon} alt="Copy All"></button>
     {:else}
         <span class="copied-all">ALL COPIED</span>
     {/if}
-    {#each Object.entries(user) as key}
+    {#each Object.entries(item) as key}
         {#if key[1] != ""}
             <li class={key[0]}>     
                 <button

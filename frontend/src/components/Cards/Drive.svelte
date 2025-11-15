@@ -14,26 +14,26 @@
     let searchValue: string = $state("")
 
     let {
-        drive,
+        item,
         idx
     } : {
-        drive: DriveSimpleInfo
+        item: DriveSimpleInfo
         idx: number
     } = $props()
 
     let groups: string[] = $derived.by(() => {
         if (!searchValue) {
-            return drive.groups
+            return item.groups
         }
-        return drive.groups.filter((group) => group.toUpperCase().includes(searchValue.toUpperCase()))
+        return item.groups.filter((group) => group.toUpperCase().includes(searchValue.toUpperCase()))
     })
 
 
     let santizedDrive: string = $derived.by(() => {
-        return encodeURIComponent(drive.drive)
+        return encodeURIComponent(item.drive)
     })
 
-    let allCopyText: string = $derived(`Name: ${drive.drive}\nLocal_Path: ${drive.local_path}\nGroups:\n${groups.join("\n")}`);
+    let allCopyText: string = $derived(`Name: ${item.drive}\nLocal_Path: ${item.local_path}\nGroups:\n${groups.join("\n")}`);
 
 </script>
 
@@ -45,18 +45,18 @@
     {/if}
     <a href={`/drive/${santizedDrive}`}> <img src={goToIcon} alt=""></a>
     <li class="name">
-        <button onclick={() => copyToClip(drive.drive, copyState)}>
-            {copyState.copied === drive.drive ? "Copied" : drive.drive}
+        <button onclick={() => copyToClip(item.drive, copyState)}>
+            {copyState.copied === item.drive ? "Copied" : item.drive}
         </button>
     </li>
     <li>
-        <button onclick={() => copyToClip(drive.local_path, copyState)}>
-            LOCAL_PATH: {copyState.copied === drive.local_path ? "Copied" : drive.local_path}
+        <button onclick={() => copyToClip(item.local_path, copyState)}>
+            LOCAL_PATH: {copyState.copied === item.local_path ? "Copied" : item.local_path}
         </button>
     </li>
     <li>
         GROUPS: 
-        {#if drive.groups.length >= 10}
+        {#if item.groups.length >= 10}
             <input placeholder="Search For Group" bind:value={searchValue}/> 
         {/if}
         <div >
@@ -187,7 +187,7 @@
         position: absolute;
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-item: center;
         top: 0.3rem;
         right: -0.5rem;
         width: 50px;

@@ -14,15 +14,15 @@
 
 
     let {
-        computer,
+        item,
         idx
     } : {
-        computer: ComputerSimpleInfo
+        item: ComputerSimpleInfo
         idx: number
     } = $props()
 
-    const disabled: boolean = computer.ou.toLowerCase().includes("disabled")
-    const allCopyText: string = `Name: ${computer.name}\nOU: ${computer.ou}\nOS: ${computer.operating_system}`;
+    const disabled: boolean = item.ou.toLowerCase().includes("disabled")
+    const allCopyText: string = `Name: ${item.name}\nOU: ${item.ou}\nOS: ${item.operating_system}`;
 
 </script>
 
@@ -35,8 +35,8 @@
     {:else}
         <span class="copied-all">ALL COPIED</span>
     {/if}
-    <a href={`/computer/${computer.name}`}> <img src={goToIcon} alt=""></a>
-    {#each Object.entries(computer) as key}
+    <a href={`/computer/${item.name}`}> <img src={goToIcon} alt=""></a>
+    {#each Object.entries(item) as key}
         {#if key[1]}
             <li class={key[0]}> 
                 <button
