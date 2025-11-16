@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
@@ -111,8 +113,16 @@ func BulkUserSearchFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	service.BulkUserSearch(uploadedfiles)
+	f := service.BulkUserSearch(uploadedfiles)
 
-	w.Write([]byte("File uploaded successfully"))
+	buf := new(bytes.Buffer)
+	if err := f.Write(buf); err != nil {
+		http.Error(w, "Failed to generate Excel file", http.StatusInternalServerError)
+		return
+	}
 
+	w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	w.Header().Set("Content-Disposition", `attachment; filename="example.xlsx"`)
+	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(buf.Bytes())))
+	w.Write(buf.Bytes())
 }

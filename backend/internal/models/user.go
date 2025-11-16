@@ -65,3 +65,15 @@ type GroupModify struct {
 	Users  []string `json:"users"`
 	Groups []string `json:"groups"`
 }
+
+type UserDetails struct {
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+}
+
+func (u *UserDetails) FillAttributes(user *ldap.Entry) {
+	u.Name = user.GetAttributeValue("name")
+	u.Username = user.GetAttributeValue("sAMAccountName")
+	u.Email = user.GetAttributeValue("mail")
+}

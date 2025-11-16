@@ -257,3 +257,64 @@ func GetGroupsDN(groups []string, l *ldap.Conn) ([]string, error) {
 
 	return groupsDN, nil
 }
+
+var persistConn *ldap.Conn
+
+func UserDetails(input string) ([]models.UserDetails, error) {
+
+	foundUser := make([]models.UserDetails, 0)
+
+	config := SearchConfig(
+		fmt.Sprintf("(&(objectClass=user)(anr=%s))", input),
+		"name",
+		"mail",
+		"sAMAccountName",
+	)
+
+	if persistConn == nil {
+		return []models.UserDetails{}, fmt.Errorf("connection to Ldap is nil")
+	}
+
+	results, err := config.Search(persistConn)
+
+	if err != nil {
+		return []models.UserDetails{}, err
+	}
+
+	if len(results.Entries) == 0 {
+		return []models.UserDetails{}, fmt.Errorf("NOT_FOUND")
+	}
+
+	for _, entry := range results.Entries {
+		var user models.UserDetails
+		if entry.GetAttributeValue("mail") == "" {
+			continue
+		}
+		user.FillAttributes(entry)
+		foundUser = append(foundUser, user)
+	}
+
+	return foundUser, nil
+}
+
+func CreatePresistantConn() (err error) {
+	persistConn, err = connectToLDAP()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DisconnectPresistantConn() error {
+	err := persistConn.Unbind()
+
+	if err != nil {
+		return err
+	}
+
+	err = persistConn.Close()
+
+	return err
+
+}

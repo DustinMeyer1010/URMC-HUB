@@ -5,9 +5,10 @@ import (
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/utils"
+	excel "github.com/xuri/excelize/v2"
 )
 
-func BulkUserSearch(files []*multipart.FileHeader) error {
+func BulkUserSearch(files []*multipart.FileHeader) *excel.File {
 	for _, header := range files {
 		fileExtension := strings.Split(header.Filename, ".")[1]
 		file, err := header.Open()
@@ -18,7 +19,9 @@ func BulkUserSearch(files []*multipart.FileHeader) error {
 
 		switch fileExtension {
 		case "xlsx":
-			utils.ParseXLSX(file)
+			f := utils.ParseXLSX(file)
+
+			return f
 		case "txt":
 			utils.ParsePlainText(file)
 		case "csv":
@@ -33,20 +36,5 @@ func BulkUserSearch(files []*multipart.FileHeader) error {
 }
 
 /*
-	data, _ := io.ReadAll(file)
 
-	f, err := excelize.OpenReader(bytes.NewReader(data))
-	sheetNames := f.GetSheetList()
-	rows, err := f.GetRows(sheetNames[0])
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for i, row := range rows {
-		if i == 1 {
-			fmt.Printf("Row %d: %v\n", i+1, row)
-		}
-
-	}
-*/
+ */
