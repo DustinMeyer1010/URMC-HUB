@@ -25,6 +25,7 @@
 </script>
 
 <section>
+    {#if FileUploadState.files.length == 0}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div
     role="button"
@@ -35,21 +36,30 @@
     ondragleave={FileUploadState.handleDragLeave}
     ondrop={FileUploadState.handleDrop}
     >
-        <strong>Drop files here</strong><br>
+        <strong>Drop file here</strong><br>
         or click to browse
     </div>
+    {/if}
     {#if FileUploadState.error}
         {FileUploadState.error}
         <span>Files must be of type .csv, .xlsx, .txt</span>
     {/if}
     {#if FileUploadState.files.length}
-        <h3>Uploaded Files</h3>
-
-        <ul>
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <div     
+        role="button"
+        tabindex="0"
+        onclick={FileUploadState.openFileMenu}
+        class="uploaded {FileUploadState.dragging ? 'dragging' : ''}"
+        ondragover={FileUploadState.handleDragOver}
+        ondragleave={FileUploadState.handleDragLeave}
+        ondrop={FileUploadState.handleDrop}
+        >
+            <b>Current File Upload: </b>
             {#each FileUploadState.files as file}
-            <li>{file.name} — {file.size} bytes</li>
+                <span>{file.name} — {file.size} bytes</span>
             {/each}
-        </ul>
+        </div>
     {/if}
 </section>
 
@@ -82,4 +92,25 @@
     border-color: var(--color-text);
     background: var(--color-surface-lighter);
   }
+
+  div.uploaded {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 10px;
+  }
+
+  div.uploaded.dragging {
+    background: var(--color-surface-lighter);
+  }
+  @media (max-width: 450px) {
+    .dropzone {
+        width: 90%;
+        padding: 50%;
+    }
+  }
+  
+
 </style>

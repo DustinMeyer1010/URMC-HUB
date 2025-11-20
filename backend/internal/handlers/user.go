@@ -104,6 +104,7 @@ func AddGroup(w http.ResponseWriter, r *http.Request) {
 }
 
 func BulkUserSearchFile(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("here")
 	r.ParseMultipartForm(1 << 20)
 
 	uploadedfiles, ok := r.MultipartForm.File["file"]

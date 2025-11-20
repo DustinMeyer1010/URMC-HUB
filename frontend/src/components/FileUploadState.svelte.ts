@@ -11,16 +11,16 @@ export class FileUploadStateClass {
     }
 
     createInputField = () => {
-this.inputField = Object.assign(document.createElement("input"), {
-    type: "file",
-    multiple: true,
-    accept: this.extensions.join(",")
-});
+        this.inputField = Object.assign(document.createElement("input"), {
+            type: "file",
+            multiple: true,
+            accept: this.extensions.join(",")
+        });
 
-this.inputField.addEventListener("change", (e) => {
-    const files = (e.target as HTMLInputElement).files;
-    if (files) this.files = Array.from(files);
-});
+        this.inputField.addEventListener("change", (e) => {
+            const files = (e.target as HTMLInputElement).files;
+            if (files) this.files = Array.from(files);
+        });
     }
 
 
@@ -48,7 +48,7 @@ this.inputField.addEventListener("change", (e) => {
             this.error = `Invalid files: ${invalid.map(f => f.name).join(", ")}`;
         }
 
-        this.files = valid
+        this.files = valid.slice(0,1)
         this.dragging = false
     }
 

@@ -108,7 +108,7 @@
                 <h1>Related Printers</h1>
                 {#each relatedPrinters as p, idx}
                     {#if printer.queue != p.queue}
-                        <Printer printer={p} {idx}/>
+                        <Printer item={p} {idx}/>
                     {/if}
                 {/each}
             </div>

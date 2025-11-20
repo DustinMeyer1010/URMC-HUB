@@ -1,31 +1,41 @@
 <script lang="ts">
 	import FileUpload from "@components/FileUpload.svelte";
 	import { allowedExtensions, BulkLookUpStateClass } from "./state.svelte";
+	import GenerationLoading from "@components/Loading/GenerationLoading.svelte";
 
     let BulkLookupState: BulkLookUpStateClass = new BulkLookUpStateClass()
 
-    $inspect(BulkLookupState)
 
 </script>
 
 
 <section>
+    {#if BulkLookupState.loading}
+        <GenerationLoading />
+    {:else}
+        <FileUpload extensions={allowedExtensions} updateFiles={BulkLookupState.updateFiles}/>
+        <h1>Select File</h1>
+        <h1>OR</h1>
+        <h1>Enter Manually</h1>
+        <textarea bind:value={BulkLookupState.textValues} oninput={BulkLookupState.parseTextValueInput}></textarea>
+        <button onclick={ () => BulkLookupState.lookupUsers()}>Get Users</button>
+    {/if}
 
-  <FileUpload extensions={allowedExtensions} updateFiles={BulkLookupState.updateFiles}/>
-  <h1>OR</h1>
-  <span>Manully enter values</span>
-    <textarea bind:value={BulkLookupState.textValues} oninput={BulkLookupState.parseTextValueInput}></textarea>
 </section>
 
 
 
 <style>
 
+
+
     section {
         display: flex;
+        gap: 1rem;
         flex-direction: column;
         align-items: center;
         padding-top: 50px;
+        width: 100%;
     }
 
     textarea {
@@ -34,11 +44,30 @@
         color: var(--color-text);
         padding: 0.3rem;
         width: 90%;
-        height: 400px;
+        height: 200px;
         white-space: pre-wrap;
     }
 
     textarea:focus {
         outline: none;
     }
+
+    button {
+        background: var(--color-surface);
+        border: 2px solid var(--color-surface);
+        padding: 0.5rem 2rem;
+        border-radius: 5px;
+        color: var(--color-text)
+    }
+
+    button:hover {
+        background: none;
+    }
+
+    h1 {
+        padding: 0;
+        margin: 0;
+        font-size: 15px;
+    }
+
 </style>

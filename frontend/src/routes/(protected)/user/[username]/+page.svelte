@@ -8,54 +8,46 @@
 
 	import { onMount } from "svelte";
 	import { page } from "$app/state";
-	import { goto } from "$app/navigation";
     import type { UserFullInfo } from "@t/user";
 
     import  { type Section, Sections } from "@t/section";
+	import { UserStateClass } from "../state.svelte";
+	import PageLoading from "@components/PageLoading.svelte";
 
     let { data } : { data: UserFullInfo } = $props();
-    let shownSection: Section = $state("PROFILE")
-    let isMounted: boolean = $state(false)
+    let UserPageState = new UserStateClass()
 
     onMount(() => {
         let urlParams = page.url.searchParams;
-        shownSection = urlParams.get("section")?.toUpperCase() as Section ?? "PROFILE"
-        setURL()
-        isMounted = true
+        UserPageState.currentSection = urlParams.get("section")?.toUpperCase() as Section ?? "PROFILE"
+        UserPageState.SetURL()
+        UserPageState.loading = false
     })
-
-    const swapSection = (section: Section) => {
-        shownSection = section
-        setURL()
-    }
-
-    const setURL = () => {
-        goto(`?section=${shownSection}`, { replaceState: true, keepFocus: true, noScroll: true })
-    }
 
 </script>
 
 
-
 <nav>
     <h1>{data.name}</h1>
-    <Nav sections={Sections} {swapSection}/>
+    <Nav sections={Sections} swapSection={UserPageState.SwapSections}/>
 </nav>
 
-{#if isMounted}
+{#if !UserPageState.loading}
     <main>
-        {#if shownSection == "PROFILE"}
+        {#if UserPageState.currentSection == "PROFILE"}
             <Profile user={data}/>
-        {:else if shownSection == "LOCKOUT"}
+        {:else if UserPageState.currentSection == "LOCKOUT"}
             <Lockout username={data.username}/>
-        {:else if shownSection == "DRIVES"}
+        {:else if UserPageState.currentSection == "DRIVES"}
             <Drive groups={data.member_of}/>
-        {:else if shownSection == "GROUPS"}
+        {:else if UserPageState.currentSection == "GROUPS"}
             <Groups currentUser={data.username} groups={data.member_of}/>
-        {:else if shownSection == "ADD"}
+        {:else if UserPageState.currentSection == "ADD"}
             <Add currentUser={data.username}/>
         {/if}
     </main>
+{:else}
+<PageLoading/>
 {/if}
 
 

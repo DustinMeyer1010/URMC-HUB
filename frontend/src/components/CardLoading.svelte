@@ -1,10 +1,3 @@
-<script lang="ts">
-
-</script>
-
-
-
-
 <div>
     {#each {length: 7} as _,x}
         <span style={`--delay: ${250*x}ms`}></span>
