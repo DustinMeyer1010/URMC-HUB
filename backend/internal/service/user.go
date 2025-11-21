@@ -36,9 +36,7 @@ func BulkUserSearch(files []*multipart.FileHeader) *excel.File {
 
 func BulkUserSearchValues(values []string) *excel.File {
 
-	f := utils.ParseValuesArray(values)
-
-	return f
+	return utils.ParseValuesArray(values)
 }
 
 /*

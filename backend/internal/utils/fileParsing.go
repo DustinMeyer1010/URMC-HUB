@@ -1,12 +1,10 @@
 package utils
 
 import (
-	"fmt"
 	"mime/multipart"
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	excel "github.com/xuri/excelize/v2"
 )
 
@@ -14,9 +12,6 @@ import (
 func ParseXLSX(file multipart.File) *excel.File {
 
 	f, err := excel.OpenReader(file)
-
-	var duplicate [][]models.UserDetails = make([][]models.UserDetails, 0)
-	var single []models.UserDetails = make([]models.UserDetails, 0)
 
 	if err != nil {
 		return nil
@@ -29,37 +24,20 @@ func ParseXLSX(file multipart.File) *excel.File {
 		return nil
 	}
 
-	err = ad.CreatePresistantConn()
+	var values []string = make([]string, 0)
+
+	for _, row := range rows {
+		input := strings.Join(row, " ")
+		values = append(values, input)
+	}
+
+	unique, duplicate, notFound, err := ad.BulkLookup(values)
 
 	if err != nil {
 		return nil
 	}
 
-	for _, row := range rows {
-		input := strings.Join(row, " ")
-		results, err := ad.UserDetails(input)
-
-		if err != nil && err.Error() != "NOT_FOUND" {
-			fmt.Println("no account found")
-			continue
-		}
-
-		if len(results) == 0 {
-			continue
-		}
-
-		if len(results) == 1 {
-			single = append(single, results[0])
-			continue
-		}
-
-		duplicate = append(duplicate, results)
-
-	}
-
-	ad.DisconnectPresistantConn()
-
-	return createExcelFile(single, duplicate)
+	return createExcelFile(unique, duplicate, notFound)
 }
 
 func ParseCSV(file multipart.File) {
@@ -69,36 +47,12 @@ func ParseCSV(file multipart.File) {
 func ParsePlainText(file multipart.File) {}
 
 func ParseValuesArray(values []string) *excel.File {
-	var duplicate [][]models.UserDetails = make([][]models.UserDetails, 0)
-	var single []models.UserDetails = make([]models.UserDetails, 0)
-	err := ad.CreatePresistantConn()
+
+	unique, duplicate, notFound, err := ad.BulkLookup(values)
 
 	if err != nil {
 		return nil
 	}
 
-	for _, value := range values {
-		results, err := ad.UserDetails(value)
-
-		if err != nil && err.Error() != "NOT_FOUND" {
-			fmt.Println("no account found")
-			continue
-		}
-
-		if len(results) == 0 {
-			continue
-		}
-
-		if len(results) == 1 {
-			single = append(single, results[0])
-			continue
-		}
-
-		duplicate = append(duplicate, results)
-
-	}
-
-	ad.DisconnectPresistantConn()
-
-	return createExcelFile(single, duplicate)
+	return createExcelFile(unique, duplicate, notFound)
 }

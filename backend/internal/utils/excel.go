@@ -3,11 +3,11 @@ package utils
 import (
 	"fmt"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
 	excel "github.com/xuri/excelize/v2"
 )
 
-func createExcelFile(single []models.UserDetails, duplicates [][]models.UserDetails) *excel.File {
+func createExcelFile(single []ad.BulkSearchResult, duplicates [][]ad.BulkSearchResult, notFound []ad.BulkSearchResult) *excel.File {
 	f := excel.NewFile()
 	sheetName := "Sheet1"
 
@@ -21,9 +21,9 @@ func createExcelFile(single []models.UserDetails, duplicates [][]models.UserDeta
 
 	for _, user := range single {
 		currentRow += 1
-		f.SetCellValue(sheetName, fmt.Sprintf("A%d", currentRow), user.Name)
-		f.SetCellValue(sheetName, fmt.Sprintf("B%d", currentRow), user.Username)
-		f.SetCellValue(sheetName, fmt.Sprintf("C%d", currentRow), user.Email)
+		f.SetCellValue(sheetName, fmt.Sprintf("A%d", currentRow), user.UserDetails.Name)
+		f.SetCellValue(sheetName, fmt.Sprintf("B%d", currentRow), user.UserDetails.Username)
+		f.SetCellValue(sheetName, fmt.Sprintf("C%d", currentRow), user.UserDetails.Email)
 	}
 
 	currentRow += 3
@@ -42,12 +42,28 @@ func createExcelFile(single []models.UserDetails, duplicates [][]models.UserDeta
 	currentRow += 1
 
 	for _, foundUser := range duplicates {
+		f.SetCellValue(sheetName, fmt.Sprintf("A%d", currentRow), "Search Value: ")
+		f.SetCellValue(sheetName, fmt.Sprintf("B%d", currentRow), foundUser[0].Value)
+		currentRow += 1
 		for _, user := range foundUser {
-			f.SetCellValue(sheetName, fmt.Sprintf("A%d", currentRow), user.Name)
-			f.SetCellValue(sheetName, fmt.Sprintf("B%d", currentRow), user.Username)
-			f.SetCellValue(sheetName, fmt.Sprintf("C%d", currentRow), user.Email)
+			f.SetCellValue(sheetName, fmt.Sprintf("A%d", currentRow), user.UserDetails.Name)
+			f.SetCellValue(sheetName, fmt.Sprintf("B%d", currentRow), user.UserDetails.Username)
+			f.SetCellValue(sheetName, fmt.Sprintf("C%d", currentRow), user.UserDetails.Email)
 			currentRow += 1
 		}
+		currentRow += 1
+	}
+
+	currentRow += 1
+
+	f.MergeCell(sheetName, fmt.Sprintf("A%d", currentRow), fmt.Sprintf("C%d", currentRow))
+	f.SetCellStyle(sheetName, fmt.Sprintf("A%d", currentRow), fmt.Sprintf("A%d", currentRow), style)
+	f.SetCellValue(sheetName, fmt.Sprintf("A%d", currentRow), "Not Found")
+	currentRow += 1
+
+	for _, n := range notFound {
+		f.SetCellValue(sheetName, fmt.Sprintf("A%d", currentRow), "Search Value: ")
+		f.SetCellValue(sheetName, fmt.Sprintf("B%d", currentRow), n.Value)
 		currentRow += 1
 	}
 

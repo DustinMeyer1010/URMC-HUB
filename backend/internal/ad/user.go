@@ -318,3 +318,50 @@ func DisconnectPresistantConn() error {
 	return err
 
 }
+
+type BulkSearchResult struct {
+	Value       string
+	UserDetails models.UserDetails
+}
+
+func BulkLookup(values []string) (unique []BulkSearchResult, duplicates [][]BulkSearchResult, notFound []BulkSearchResult, err error) {
+	err = CreatePresistantConn()
+
+	if err != nil {
+		return
+	}
+
+	for _, value := range values {
+		currentSearch := BulkSearchResult{Value: value}
+		results, err := UserDetails(value)
+
+		if err != nil && err.Error() != "NOT_FOUND" {
+			notFound = append(notFound, currentSearch)
+			continue
+		}
+
+		if len(results) == 0 {
+			notFound = append(notFound, currentSearch)
+			continue
+		}
+
+		if len(results) == 1 {
+			currentSearch.UserDetails = results[0]
+			unique = append(unique, currentSearch)
+			continue
+		}
+		var dup []BulkSearchResult = make([]BulkSearchResult, 0)
+
+		for _, result := range results {
+			currentSearch = BulkSearchResult{Value: value, UserDetails: result}
+			dup = append(dup, currentSearch)
+		}
+
+		duplicates = append(duplicates, dup)
+	}
+
+	DisconnectPresistantConn()
+
+	return
+
+}
