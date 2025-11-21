@@ -20,7 +20,6 @@ func BulkUserSearch(files []*multipart.FileHeader) *excel.File {
 		switch fileExtension {
 		case "xlsx":
 			f := utils.ParseXLSX(file)
-
 			return f
 		case "txt":
 			utils.ParsePlainText(file)
@@ -33,6 +32,13 @@ func BulkUserSearch(files []*multipart.FileHeader) *excel.File {
 	}
 
 	return nil
+}
+
+func BulkUserSearchValues(values []string) *excel.File {
+
+	f := utils.ParseValuesArray(values)
+
+	return f
 }
 
 /*

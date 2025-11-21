@@ -67,3 +67,38 @@ func ParseCSV(file multipart.File) {
 }
 
 func ParsePlainText(file multipart.File) {}
+
+func ParseValuesArray(values []string) *excel.File {
+	var duplicate [][]models.UserDetails = make([][]models.UserDetails, 0)
+	var single []models.UserDetails = make([]models.UserDetails, 0)
+	err := ad.CreatePresistantConn()
+
+	if err != nil {
+		return nil
+	}
+
+	for _, value := range values {
+		results, err := ad.UserDetails(value)
+
+		if err != nil && err.Error() != "NOT_FOUND" {
+			fmt.Println("no account found")
+			continue
+		}
+
+		if len(results) == 0 {
+			continue
+		}
+
+		if len(results) == 1 {
+			single = append(single, results[0])
+			continue
+		}
+
+		duplicate = append(duplicate, results)
+
+	}
+
+	ad.DisconnectPresistantConn()
+
+	return createExcelFile(single, duplicate)
+}

@@ -104,7 +104,6 @@ func AddGroup(w http.ResponseWriter, r *http.Request) {
 }
 
 func BulkUserSearchFile(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("here")
 	r.ParseMultipartForm(1 << 20)
 
 	uploadedfiles, ok := r.MultipartForm.File["file"]
@@ -116,6 +115,30 @@ func BulkUserSearchFile(w http.ResponseWriter, r *http.Request) {
 
 	f := service.BulkUserSearch(uploadedfiles)
 
+	buf := new(bytes.Buffer)
+	if err := f.Write(buf); err != nil {
+		http.Error(w, "Failed to generate Excel file", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	w.Header().Set("Content-Disposition", `attachment; filename="example.xlsx"`)
+	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(buf.Bytes())))
+	w.Write(buf.Bytes())
+}
+
+func BulkUserSearch(w http.ResponseWriter, r *http.Request) {
+
+	var values []string = []string{}
+
+	err := json.NewDecoder(r.Body).Decode(&values)
+
+	if err != nil {
+		http.Error(w, "failed to parse body", http.StatusBadRequest)
+		return
+	}
+
+	f := service.BulkUserSearchValues(values)
 	buf := new(bytes.Buffer)
 	if err := f.Write(buf); err != nil {
 		http.Error(w, "Failed to generate Excel file", http.StatusInternalServerError)

@@ -1,3 +1,5 @@
+
+
 export const allowedExtensions: string[] = [".txt", ".xlsx", ".csv"];
 
 export class BulkLookUpStateClass {
@@ -16,19 +18,43 @@ export class BulkLookUpStateClass {
     lookupUsers = async () => {
         this.loading = true
 
-        if (this.files.length == 0) {
-            return
-        }
+        if (this.files.length != 0) {
+            await this.fileLookup()
+        } 
+        else if (this.textValues != "") {
+            await this.textLookup()
+        } 
 
+        this.loading = false
+    }
+
+    fileLookup = async () => {
         const formData = new FormData();
         formData.append("file", this.files[0])
-        console.log(formData)
 
-        const res = await fetch("http://localhost:8000/api/users/bulk/lookup", {
+        const res = await fetch("http://localhost:8000/api/users/bulk/lookup/file", {
             method: "POST",
             body: formData
         });
 
+        await this.downloadFile(res)
+
+    }
+
+    textLookup = async () => {
+        let values = this.textValues.split("\n")
+
+
+
+        const res = await fetch("http://localhost:8000/api/users/bulk/lookup", {
+            method: "POST",
+            body: JSON.stringify(values)
+        })
+
+        await this.downloadFile(res)
+    }
+
+    async downloadFile(res: Response) {
         const blob = await res.blob();
 
         const filename =
@@ -45,8 +71,6 @@ export class BulkLookUpStateClass {
         a.click();            
         a.remove();
         URL.revokeObjectURL(url);
-
-        this.loading = false
     }
     
 }

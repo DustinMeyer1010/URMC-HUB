@@ -50,8 +50,14 @@ func userRoutes(mux *mux.Router) {
 		},
 		{
 			methods{"POST", "OPTION"},
-			"/api/users/bulk/lookup",
+			"/api/users/bulk/lookup/file",
 			http.HandlerFunc(handlers.BulkUserSearchFile),
+			middleware.Middleware{middleware.CorsHandler},
+		},
+		{
+			methods{"POST", "OPTION"},
+			"/api/users/bulk/lookup",
+			http.HandlerFunc(handlers.BulkUserSearch),
 			middleware.Middleware{middleware.CorsHandler},
 		},
 	}

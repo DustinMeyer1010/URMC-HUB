@@ -6,13 +6,14 @@
 	import { onMount } from 'svelte';
 
     let showMenu: boolean = $state(false)
-    let button: HTMLButtonElement | undefined = $state(undefined)
+    let button: HTMLButtonElement | undefined = $state()
 
     let width = $state(0);
+
+    $inspect(showMenu)
     
 
     onMount(() => {
-        button = document.createElement("button")
         width = window.innerWidth;
 
         const handleResize = () => {
@@ -30,6 +31,10 @@
         return () => window.removeEventListener("resize", handleResize);
     });
 
+    const openMenu = () => {
+        showMenu = !showMenu
+    }
+
 
 
     let breakDown: boolean = $derived.by(() => {
@@ -37,11 +42,10 @@
     })
 
 </script>
-
+<nav >
+    <a href="/"><img  src={urmc} alt=""></a>
+    
 {#if !breakDown}
-<nav>
-    <a href="/"><img src={urmc} alt=""></a>
-
     <ul>
         <li>
             <a href="/">Search</a>
@@ -49,44 +53,41 @@
         <li>
             <a href="/bookmarks">Bookmarks</a>
         </li>
+        <button bind:this={button} onclick={openMenu}><img src={menuIcon} alt=""></button>
         <li class="dropdown">
-            <button bind:this={button} onclick={() => showMenu = !showMenu}><img src={menuIcon} alt=""></button>
             {#if showMenu}
                 <div>
-                    <a href="/api">API Docs</a>
                     <a href="/bulk_add">Bulk User Add</a>
                     <a href="/bulk_remove">Bulk User Remove</a>
                     <a href="/bulk_lookup">Bulk User Lookup</a>
+                    <a href="/api">API Docs</a>
                     <ToggleTheme/>
                 </div>
                 
             {/if}
         </li>
     </ul>
-</nav>
 {:else}
-<nav>
-    <a href="/"><img src={urmc} alt=""></a>
     
     <ul>
         <li class="dropdown">
-            <button bind:this={button} onclick={() => showMenu = !showMenu}><img src={menuIcon} alt=""></button>
+            <button bind:this={button} onclick={openMenu}><img src={menuIcon} alt=""></button>
             {#if showMenu}
                 <div>
                     <a href="/">Search</a>
                     <a href="/bookmarks">Bookmarks</a>
-                    <a href="/api">API Docs</a>
                     <a href="/bulk_add">Bulk User Add</a>
                     <a href="/bulk_remove">Bulk User Remove</a>
                     <a href="/bulk_lookup">Bulk User Lookup</a>
+                    <a href="/api">API Docs</a>
                     <ToggleTheme/>
                 </div>
                 
             {/if}
         </li>
     </ul>
-</nav>
 {/if}
+</nav>
 
 
 <style>
@@ -111,7 +112,7 @@
         flex-direction: column;
         background: var(--color-surface);
         top: 50px;
-        right: 0px;
+        right: -50px;
         z-index: 10;
         min-width: 300px;
         box-sizing: border-box;
@@ -141,6 +142,7 @@
         border: none;
         padding: 0;
         margin: 0;
+        order: 3;
     }
 
     button img {
@@ -172,6 +174,13 @@
     a:hover {
         color: var(--primary)
     }
+
+    @media (max-width: 500px) {
+        div {
+            right: 0;
+        }
+    }
+
 
 </style>
 
