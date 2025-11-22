@@ -14,7 +14,7 @@ func computerRoutes(mux *mux.Router) {
 			methods{"GET"},
 			"/api/computer/info/{computer}",
 			http.HandlerFunc(handlers.ComputerInfo),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 	}
 

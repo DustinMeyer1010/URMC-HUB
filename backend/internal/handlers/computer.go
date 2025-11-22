@@ -13,10 +13,11 @@ func ComputerInfo(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	computer := vars["computer"]
 
-	computerResponse, err := service.ComputerInfo(computer)
+	computerResponse, statusError := service.ComputerInfo(computer)
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if statusError != nil {
+		http.Error(w, statusError.ErrorType, statusError.HttpStatus)
+		w.Write([]byte(statusError.Error))
 		return
 	}
 

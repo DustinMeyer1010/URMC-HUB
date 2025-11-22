@@ -16,37 +16,37 @@ func searchRoutes(mux *mux.Router) {
 			methods{"GET"},
 			"/api/search/users/{searchValue}",
 			http.HandlerFunc(handlers.UserSearch),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"GET"},
 			"/api/search/groups/{searchValue}",
 			http.HandlerFunc(handlers.GroupSearch),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"GET"},
 			"/api/search/computers/{searchValue}",
 			http.HandlerFunc(handlers.ComputerSearch),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"GET"},
 			"/api/search/printers/{searchValue}",
 			http.HandlerFunc(handlers.PrinterSearch),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"GET"},
 			"/api/search/drives/{searchValue}",
 			http.HandlerFunc(handlers.ShareDriveSearch),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"GET"},
 			"/api/search/all/{searchValue}",
 			http.HandlerFunc(handlers.AllSearch),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 	}
 

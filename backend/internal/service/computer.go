@@ -9,23 +9,19 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func ComputerInfo(computer string) (models.ComputerPageInfo, error) {
+func ComputerInfo(computer string) (models.ComputerPageInfo, *models.Error) {
 	var isOnline bool = true
 
-	computerInfo, err := ad.PullComputerInformation(computer)
+	computerInfo, statusError := ad.PullComputerInformation(computer)
 
-	if err != nil {
-		return models.ComputerPageInfo{}, err
+	if statusError != nil {
+		return models.ComputerPageInfo{}, statusError
 	}
 
 	pingOutput, err := Ping(computerInfo.Name)
 
 	if err != nil {
 		isOnline = false
-	}
-
-	if isOnline {
-		parsePingInformation(pingOutput)
 	}
 
 	return models.ComputerPageInfo{
@@ -38,6 +34,7 @@ func ComputerInfo(computer string) (models.ComputerPageInfo, error) {
 func Ping(host string) (string, error) {
 	cmd := exec.Command("ping", "-n", "1", host)
 	out, err := cmd.CombinedOutput()
+
 	return string(out), err
 }
 

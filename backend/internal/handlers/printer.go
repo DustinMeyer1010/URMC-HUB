@@ -16,14 +16,15 @@ func PrinterInformation(w http.ResponseWriter, r *http.Request) {
 	queue := r.URL.Query().Get("queue")
 
 	if queue == "" {
-		http.Error(w, "Invaid printer name", http.StatusBadRequest)
+		http.Error(w, "INVALID_QUEUE", http.StatusBadRequest)
 		return
 	}
 
-	printer, err := service.PullPrinterInformation(server, queue)
+	printer, statusError := service.PullPrinterInformation(server, queue)
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if statusError != nil {
+		http.Error(w, statusError.ErrorType, http.StatusBadRequest)
+		w.Write([]byte(statusError.Error))
 		return
 	}
 
@@ -34,8 +35,8 @@ func PrinterInformation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
 }
 
@@ -46,34 +47,34 @@ func PingPrinter(w http.ResponseWriter, r *http.Request) {
 	err := service.PingPrinter(ip)
 
 	if err != nil {
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "Failed to Ping: %s", ip)
+		http.Error(w, "PING_FAILED", http.StatusNotFound)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Successfully Pinged: %s", ip)
+	fmt.Fprint(w, "PING_SUCCESSFUL")
 }
 
 func RelatedPrinters(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	ip := vars["ip"]
 
-	printers, err := service.RelatedPrinters(ip)
+	printers, statusError := service.RelatedPrinters(ip)
 
-	if err != nil {
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "Failed to Ping: %s", ip)
+	if statusError != nil {
+		http.Error(w, statusError.ErrorType, statusError.HttpStatus)
+		w.Write([]byte(statusError.Error))
 		return
 	}
 
 	jsonData, err := json.Marshal(printers)
 
 	if err != nil {
-		http.Error(w, "Error Creating Resposne", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
 }

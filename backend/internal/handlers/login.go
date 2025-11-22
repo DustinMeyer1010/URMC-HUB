@@ -11,18 +11,16 @@ import (
 func Login(w http.ResponseWriter, r *http.Request) {
 	var user models.UserLogin
 
-	err := json.NewDecoder(r.Body).Decode(&user)
-
-	if err != nil {
-		http.Error(w, "invalid body", http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		http.Error(w, "INVALID_BODY", http.StatusBadRequest)
 		return
 	}
 
 	if err := service.Login(user); err != nil {
-		http.Error(w, "invalid login", http.StatusUnauthorized)
+		http.Error(w, "INVALID_CREDENTIALS", http.StatusUnauthorized)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Successful Login"))
+	w.Write([]byte("SUCESSFUL_LOGIN"))
 }

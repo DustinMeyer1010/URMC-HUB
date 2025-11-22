@@ -9,7 +9,7 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func PullPrinterInformation(server, queue string) (models.PrinterSimpleInfo, error) {
+func PullPrinterInformation(server, queue string) (models.PrinterSimpleInfo, *models.Error) {
 	printer := fmt.Sprintf("\\\\%s\\%s", server, queue)
 	return ad.PullSinglePrinterInformation(printer)
 }
@@ -24,6 +24,6 @@ func PingPrinter(ip string) error {
 	return nil
 }
 
-func RelatedPrinters(ip string) ([]models.PrinterSimpleInfo, error) {
+func RelatedPrinters(ip string) ([]models.PrinterSimpleInfo, *models.Error) {
 	return ad.RelatedPrinters(ip)
 }

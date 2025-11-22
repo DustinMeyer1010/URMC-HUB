@@ -66,11 +66,11 @@ func fetchPrinters() (printers []models.PrinterSimpleInfo, err error) {
 	return
 }
 
-func PullSinglePrinterInformation(printer string) (models.PrinterSimpleInfo, error) {
+func PullSinglePrinterInformation(printer string) (models.PrinterSimpleInfo, *models.Error) {
 	printersList, err := fetchPrinters()
 
 	if err != nil {
-		return models.PrinterSimpleInfo{}, err
+		return models.PrinterSimpleInfo{}, models.NewError(http.StatusInternalServerError, "PRINTER_FETCH_FAILED", err.Error())
 	}
 
 	for _, p := range printersList {
@@ -79,16 +79,16 @@ func PullSinglePrinterInformation(printer string) (models.PrinterSimpleInfo, err
 		}
 	}
 
-	return models.PrinterSimpleInfo{}, fmt.Errorf("%s", "Printer not found")
+	return models.PrinterSimpleInfo{}, models.NewError(http.StatusNotFound, "NOT_FOUND", fmt.Sprintf("No printer found for: %s", printer))
 
 }
 
-func RelatedPrinters(ip string) ([]models.PrinterSimpleInfo, error) {
+func RelatedPrinters(ip string) ([]models.PrinterSimpleInfo, *models.Error) {
 	printerList, err := fetchPrinters()
 	var relatedPrinters []models.PrinterSimpleInfo
 
 	if err != nil {
-		return relatedPrinters, err
+		return relatedPrinters, models.NewError(http.StatusInternalServerError, "PRINTER_FETCH_FAILED", err.Error())
 	}
 
 	for _, p := range printerList {

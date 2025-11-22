@@ -16,13 +16,13 @@ func userRoutes(mux *mux.Router) {
 			methods{"GET"},
 			"/api/user/info/{username}",
 			http.HandlerFunc(handlers.PullUserInformation),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"GET"},
 			"/api/lockout/{username}",
 			http.HandlerFunc(handlers.LockOutStatus),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"POST", "OPTIONS"},
@@ -34,31 +34,31 @@ func userRoutes(mux *mux.Router) {
 			methods{"POST", "OPTIONS"},
 			"/api/drive/access",
 			http.HandlerFunc(handlers.DriveAccess),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"POST", "OPTIONS"},
 			"/api/user/group/add",
 			http.HandlerFunc(handlers.AddGroup),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"POST", "OPTIONS"},
 			"/api/user/group/remove",
 			http.HandlerFunc(handlers.RemoveGroup),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"POST", "OPTION"},
 			"/api/users/bulk/lookup/file",
 			http.HandlerFunc(handlers.BulkUserSearchFile),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"POST", "OPTION"},
 			"/api/users/bulk/lookup",
 			http.HandlerFunc(handlers.BulkUserSearch),
-			middleware.Middleware{middleware.CorsHandler},
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 	}
 

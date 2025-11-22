@@ -11,14 +11,17 @@ func DriveAccess(w http.ResponseWriter, r *http.Request) {
 
 	var groups []string
 
-	json.NewDecoder(r.Body).Decode(&groups)
+	if err := json.NewDecoder(r.Body).Decode(&groups); err != nil {
+		http.Error(w, "INVALID_BODY", http.StatusBadRequest)
+		return
+	}
 
 	drives := service.GetDriveAccess(groups)
 
 	data, err := json.Marshal(drives)
 
 	if err != nil {
-		http.Error(w, "Failed to write output to jsaon", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	w.Header().Set("Content-Type", "application/json")

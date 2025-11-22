@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"net/http"
 	"net/url"
 
@@ -10,30 +9,26 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func getSearchValue(r *http.Request) (string, error) {
+func getSearchValue(r *http.Request) (string, *models.Error) {
 	vars := mux.Vars(r)
-	searchValue, ok := vars["searchValue"]
-
-	if !ok {
-		return "", fmt.Errorf("no search value provided")
-	}
+	searchValue := vars["searchValue"]
 
 	searchValue, err := url.QueryUnescape(searchValue)
 
 	if err != nil {
-		return "", fmt.Errorf("failed to escape query")
+		return "", models.NewError(http.StatusBadRequest, "INVALID_SEARCH", err.Error())
 	}
 
 	return searchValue, nil
 
 }
 
-func SearchAllGroups(r *http.Request) ([]models.GroupSimpleInfo, error) {
+func SearchAllGroups(r *http.Request) ([]models.GroupSimpleInfo, *models.Error) {
 
-	searchValue, err := getSearchValue(r)
+	searchValue, statusError := getSearchValue(r)
 
-	if err != nil {
-		return []models.GroupSimpleInfo{}, err
+	if statusError != nil {
+		return []models.GroupSimpleInfo{}, statusError
 	}
 
 	return ad.SearchAllGroups(searchValue)
