@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"bufio"
+	"io"
 	"mime/multipart"
 	"strings"
 
@@ -8,7 +10,6 @@ import (
 	excel "github.com/xuri/excelize/v2"
 )
 
-// TODO Refactor
 func ParseXLSX(file multipart.File) *excel.File {
 
 	f, err := excel.OpenReader(file)
@@ -40,11 +41,44 @@ func ParseXLSX(file multipart.File) *excel.File {
 	return createExcelFile(unique, duplicate, notFound)
 }
 
-func ParseCSV(file multipart.File) {
+func ParseCSV(file multipart.File) *excel.File {
 
+	scanner := bufio.NewScanner(file)
+
+	var values []string
+	for scanner.Scan() {
+		input := strings.ReplaceAll(scanner.Text(), ",", " ")
+		input = strings.Trim(input, " ")
+		values = append(values, input)
+	}
+
+	unique, duplicate, notFound, err := ad.BulkLookup(values)
+
+	if err != nil {
+		return nil
+	}
+
+	return createExcelFile(unique, duplicate, notFound)
 }
 
-func ParsePlainText(file multipart.File) {}
+func ParsePlainText(file multipart.File) *excel.File {
+
+	content, err := io.ReadAll(file)
+
+	if err != nil {
+		return nil
+	}
+
+	values := strings.Split(string(content), "\n")
+
+	unique, duplicate, notFound, err := ad.BulkLookup(values)
+
+	if err != nil {
+		return nil
+	}
+
+	return createExcelFile(unique, duplicate, notFound)
+}
 
 func ParseValuesArray(values []string) *excel.File {
 

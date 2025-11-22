@@ -19,16 +19,14 @@ func BulkUserSearch(files []*multipart.FileHeader) *excel.File {
 
 		switch fileExtension {
 		case "xlsx":
-			f := utils.ParseXLSX(file)
-			return f
+			return utils.ParseXLSX(file)
 		case "txt":
-			utils.ParsePlainText(file)
+			return utils.ParsePlainText(file)
 		case "csv":
-			utils.ParseCSV(file)
+			return utils.ParseCSV(file)
 		default:
 			continue
 		}
-
 	}
 
 	return nil

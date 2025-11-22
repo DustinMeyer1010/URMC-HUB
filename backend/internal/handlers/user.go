@@ -115,6 +115,11 @@ func BulkUserSearchFile(w http.ResponseWriter, r *http.Request) {
 
 	f := service.BulkUserSearch(uploadedfiles)
 
+	if f == nil {
+		http.Error(w, "Failed to generate Excel file", http.StatusInternalServerError)
+		return
+	}
+
 	buf := new(bytes.Buffer)
 	if err := f.Write(buf); err != nil {
 		http.Error(w, "Failed to generate Excel file", http.StatusInternalServerError)
@@ -139,7 +144,13 @@ func BulkUserSearch(w http.ResponseWriter, r *http.Request) {
 	}
 
 	f := service.BulkUserSearchValues(values)
+
 	buf := new(bytes.Buffer)
+	if f == nil {
+		http.Error(w, "Failed to generate Excel file", http.StatusInternalServerError)
+		return
+	}
+
 	if err := f.Write(buf); err != nil {
 		http.Error(w, "Failed to generate Excel file", http.StatusInternalServerError)
 		return
