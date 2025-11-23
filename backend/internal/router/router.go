@@ -17,6 +17,7 @@ func Create() *mux.Router {
 		userRoutes,
 		authRoutes,
 		computerRoutes,
+		groupRoutes,
 		bookmarksRoutes,
 		reactSvelte,
 	)

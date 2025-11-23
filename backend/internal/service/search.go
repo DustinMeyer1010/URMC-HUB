@@ -34,11 +34,11 @@ func SearchAllGroups(r *http.Request) ([]models.GroupSimpleInfo, *models.Error) 
 	return ad.SearchAllGroups(searchValue)
 }
 
-func AllSearch(r *http.Request) (models.AllResults, error) {
+func AllSearch(r *http.Request) (models.AllResults, *models.Error) {
 	searchValue, err := getSearchValue(r)
 
 	if err != nil {
-		return models.AllResults{}, err
+		return models.AllResults{}, nil
 	}
 
 	return ad.AllSearch(searchValue)

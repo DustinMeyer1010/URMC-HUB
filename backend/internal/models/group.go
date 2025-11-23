@@ -21,3 +21,7 @@ func ToGroupSimpleInfo(entry *ldap.Entry) GroupSimpleInfo {
 		Information: entry.GetAttributeValue("info"),
 	}
 }
+
+type ModifyMembers struct {
+	Members []string `json:"members"`
+}

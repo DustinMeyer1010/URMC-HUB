@@ -12,10 +12,11 @@ import (
 
 func AllSearch(w http.ResponseWriter, r *http.Request) {
 
-	matches, err := service.AllSearch(r)
+	matches, statusError := service.AllSearch(r)
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+	if statusError != nil {
+		http.Error(w, statusError.ErrorType, http.StatusUnauthorized)
+		w.Write([]byte(statusError.Error))
 		return
 	}
 
@@ -56,10 +57,11 @@ func UserSearch(w http.ResponseWriter, r *http.Request) {
 
 func GroupSearch(w http.ResponseWriter, r *http.Request) {
 
-	groupMatches, err := service.SearchAllGroups(r)
+	groupMatches, statusError := service.SearchAllGroups(r)
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+	if statusError != nil {
+		http.Error(w, statusError.ErrorType, http.StatusUnauthorized)
+		w.Write([]byte(statusError.Error))
 		return
 	}
 

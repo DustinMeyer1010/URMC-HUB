@@ -98,6 +98,7 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, error) {
 	groups := user.FillAttributes(foundUser)
 	memberOfChan := make(chan models.GroupSimpleInfo, len(groups))
 	var wg sync.WaitGroup
+	fmt.Println(len(groups))
 	for _, group := range groups {
 		wg.Add(1)
 		go func(group string) {
@@ -133,25 +134,24 @@ func AddGroup(users []string, groups []string) ([]models.GroupModifyResults, err
 	defer l.Close()
 	defer l.Unbind()
 
-	usersDN, err := GetUserDN(users, l)
-
-	if err != nil {
+	var usersDN []string
+	if usersDN, err = GetUserDN(users, l); err != nil {
 		return []models.GroupModifyResults{}, err
 	}
 
-	groupsDN, err := GetGroupsDN(groups, l)
-
-	if err != nil {
+	var groupsDN []string
+	if groupsDN, err = GetGroupsDN(groups); err != nil {
 		return []models.GroupModifyResults{}, err
 	}
 
 	var response []models.GroupModifyResults
 
 	for _, group := range groupsDN {
-		groupResult := new(models.GroupModifyResults)
-		groupResult.Group = group
-		groupResult.Successful = true
-		groupResult.Message = "All changes completed"
+		groupResult := models.GroupModifyResults{
+			Group:      group,
+			Successful: true,
+			Message:    "Group Added",
+		}
 		addRequest := ldap.NewModifyRequest(group, nil)
 		addRequest.Add("member", usersDN)
 		groupAddError := l.Modify(addRequest)
@@ -159,10 +159,10 @@ func AddGroup(users []string, groups []string) ([]models.GroupModifyResults, err
 			fmt.Printf("Failed to add user to %s\n", group)
 			groupResult.Successful = false
 			groupResult.Message = groupAddError.Error()
-			response = append(response, *groupResult)
+			response = append(response, groupResult)
 			continue
 		}
-		response = append(response, *groupResult)
+		response = append(response, groupResult)
 	}
 
 	return response, err
@@ -183,7 +183,7 @@ func RemoveGroup(users []string, groups []string) ([]models.GroupModifyResults, 
 		return []models.GroupModifyResults{}, err
 	}
 
-	groupsDN, err := GetGroupsDN(groups, l)
+	groupsDN, err := GetGroupsDN(groups)
 
 	if err != nil {
 		return []models.GroupModifyResults{}, err
@@ -194,10 +194,11 @@ func RemoveGroup(users []string, groups []string) ([]models.GroupModifyResults, 
 	// Create delete request for each group
 	for _, group := range groupsDN {
 
-		groupResult := new(models.GroupModifyResults)
-		groupResult.Group = group
-		groupResult.Successful = true
-		groupResult.Message = "All changes completed"
+		groupResult := models.GroupModifyResults{
+			Group:      group,
+			Successful: true,
+			Message:    "Groups Removed",
+		}
 		deleteRequest := ldap.NewModifyRequest(group, nil)
 		deleteRequest.Delete("member", usersDN)
 		groupRemoveErr := l.Modify(deleteRequest)
@@ -205,10 +206,10 @@ func RemoveGroup(users []string, groups []string) ([]models.GroupModifyResults, 
 			fmt.Println("Failed to remove user from " + group)
 			groupResult.Successful = false
 			groupResult.Message += groupRemoveErr.Error()
-			response = append(response, *groupResult)
+			response = append(response, groupResult)
 			continue
 		}
-		response = append(response, *groupResult)
+		response = append(response, groupResult)
 	}
 
 	return response, err
@@ -235,27 +236,6 @@ func GetUserDN(users []string, l *ldap.Conn) ([]string, error) {
 	}
 
 	return userDN, nil
-}
-
-func GetGroupsDN(groups []string, l *ldap.Conn) ([]string, error) {
-
-	var groupsDN []string
-
-	for _, group := range groups {
-		config := SearchConfig(
-			fmt.Sprintf("(&(objectClass=group)(cn=%s))", group),
-			"dn",
-		)
-
-		results, err := config.Search(l)
-
-		if err != nil || len(results.Entries) == 0 {
-			break
-		}
-		groupsDN = append(groupsDN, results.Entries[0].DN)
-	}
-
-	return groupsDN, nil
 }
 
 var persistConn *ldap.Conn

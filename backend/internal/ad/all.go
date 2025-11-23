@@ -1,13 +1,12 @@
 package ad
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func AllSearch(search string) (result models.AllResults, err error) {
+func AllSearch(search string) (result models.AllResults, err *models.Error) {
 	result.Users = make([]models.UserSimpleInfo, 0)
 	result.Computers = make([]models.ComputerSimpleInfo, 0)
 	result.Groups = make([]models.GroupSimpleInfo, 0)
@@ -30,7 +29,7 @@ func AllSearch(search string) (result models.AllResults, err error) {
 		case []models.PrinterSimpleInfo:
 			result.Printers = results
 		default:
-			err = fmt.Errorf("unknown type: %T", results)
+			err = nil
 		}
 
 	}
