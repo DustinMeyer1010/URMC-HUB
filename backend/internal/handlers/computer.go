@@ -13,20 +13,15 @@ func ComputerInfo(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	computer := vars["computer"]
 
-	computerResponse, statusError := service.ComputerInfo(computer)
+	computerResponse, cError := service.ComputerInfo(computer)
 
-	if statusError != nil {
-		http.Error(w, statusError.ErrorType, statusError.HttpStatus)
-		w.Write([]byte(statusError.Error))
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	jsonData, err := json.Marshal(computerResponse)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	jsonData, _ := json.Marshal(computerResponse)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)

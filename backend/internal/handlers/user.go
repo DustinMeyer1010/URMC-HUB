@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 	"github.com/gorilla/mux"
@@ -16,11 +17,11 @@ func PullUserInformation(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	username := vars["username"]
 
-	user, err := ad.PullUserInformation(username)
+	user, cError := ad.PullUserInformation(username)
 
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Failed"))
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
@@ -50,23 +51,21 @@ func RemoveGroup(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&groupModify)
 
 	if err != nil {
-		http.Error(w, "Invalid body", http.StatusBadRequest)
+		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS IN BODY")
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	modifyResults, err := ad.RemoveGroup(groupModify.Users, groupModify.Groups)
+	modifyResults, cError := ad.RemoveGroup(groupModify.Users, groupModify.Groups)
 
-	if err != nil {
-		http.Error(w, "Unable to remove group", http.StatusInternalServerError)
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	res, err := json.Marshal(modifyResults)
-
-	if err != nil {
-		http.Error(w, "Failed to parse into JSON", http.StatusInternalServerError)
-		return
-	}
+	res, _ := json.Marshal(modifyResults)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
@@ -79,23 +78,21 @@ func AddGroup(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&groupModify)
 
 	if err != nil {
-		http.Error(w, "Invalid body", http.StatusBadRequest)
+		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS IN BODY")
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	modifyResults, err := ad.AddGroup(groupModify.Users, groupModify.Groups)
+	modifyResults, cError := ad.AddGroup(groupModify.Users, groupModify.Groups)
 
-	if err != nil {
-		http.Error(w, "Unable to remove group", http.StatusInternalServerError)
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	res, err := json.Marshal(modifyResults)
-
-	if err != nil {
-		http.Error(w, "Failed to parse into JSON", http.StatusInternalServerError)
-		return
-	}
+	res, _ := json.Marshal(modifyResults)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
@@ -121,6 +118,7 @@ func BulkUserSearchFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	buf := new(bytes.Buffer)
+
 	if err := f.Write(buf); err != nil {
 		http.Error(w, "Failed to generate Excel file", http.StatusInternalServerError)
 		return

@@ -16,22 +16,17 @@ func DriveAccess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	drives, statusError := service.GetDriveAccess(groups)
+	drives, cError := service.GetDriveAccess(groups)
 
-	if statusError != nil {
-		http.Error(w, statusError.ErrorType, statusError.HttpStatus)
-		w.Write([]byte(statusError.Error))
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	data, err := json.Marshal(drives)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	jsonData, _ := json.Marshal(drives)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(data)
+	w.Write(jsonData)
 }

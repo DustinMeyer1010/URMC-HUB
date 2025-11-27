@@ -12,20 +12,15 @@ import (
 
 func AllSearch(w http.ResponseWriter, r *http.Request) {
 
-	matches, statusError := service.AllSearch(r)
+	matches, cError := service.AllSearch(r)
 
-	if statusError != nil {
-		http.Error(w, statusError.ErrorType, http.StatusUnauthorized)
-		w.Write([]byte(statusError.Error))
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	jsonData, err := json.Marshal(matches)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	jsonData, _ := json.Marshal(matches)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -40,11 +35,11 @@ func UserSearch(w http.ResponseWriter, r *http.Request) {
 
 	searchValue, _ = url.QueryUnescape(searchValue)
 
-	userMatches, err := ad.SearchAllUsers(searchValue)
+	userMatches, cError := ad.SearchAllUsers(searchValue)
 
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(err.Error()))
+	if cError != nil {
+		w.WriteHeader(cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
@@ -57,20 +52,15 @@ func UserSearch(w http.ResponseWriter, r *http.Request) {
 
 func GroupSearch(w http.ResponseWriter, r *http.Request) {
 
-	groupMatches, statusError := service.SearchAllGroups(r)
+	groupMatches, cError := service.SearchAllGroups(r)
 
-	if statusError != nil {
-		http.Error(w, statusError.ErrorType, http.StatusUnauthorized)
-		w.Write([]byte(statusError.Error))
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	jsonData, err := json.Marshal(groupMatches)
-
-	if err != nil {
-		http.Error(w, "failed to parse response to json", http.StatusInternalServerError)
-		return
-	}
+	jsonData, _ := json.Marshal(groupMatches)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -83,11 +73,11 @@ func PrinterSearch(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	searchValue := vars["searchValue"]
 
-	printerMatches, err := ad.SearchAllPrinters(searchValue)
+	printerMatches, cError := ad.SearchAllPrinters(searchValue)
 
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+	if cError != nil {
+		w.WriteHeader(cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
@@ -106,11 +96,11 @@ func ComputerSearch(w http.ResponseWriter, r *http.Request) {
 
 	searchValue, _ = url.QueryUnescape(searchValue)
 
-	computerMatches, err := ad.SearchAllComputers(searchValue)
+	computerMatches, cError := ad.SearchAllComputers(searchValue)
 
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(err.Error()))
+	if cError != nil {
+		w.WriteHeader(cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 

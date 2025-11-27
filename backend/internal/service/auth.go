@@ -1,24 +1,16 @@
 package service
 
 import (
-	"fmt"
-
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/db"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func Login(user models.UserLogin) (err error) {
+func Login(user models.UserLogin) *customError.Error {
 
-	if err = ad.Login(user); err != nil {
-		fmt.Println(err)
-		return
+	if cError := ad.Login(user); cError != nil {
+		return cError
 	}
 
-	if err = db.AgentDatabaseInit(); err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	return
+	return nil
 }

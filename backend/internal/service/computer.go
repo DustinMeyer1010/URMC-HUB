@@ -6,16 +6,17 @@ import (
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func ComputerInfo(computer string) (models.ComputerPageInfo, *models.Error) {
+func ComputerInfo(computer string) (models.ComputerPageInfo, *customError.Error) {
 	var isOnline bool = true
 
-	computerInfo, statusError := ad.PullComputerInformation(computer)
+	computerInfo, cError := ad.PullComputerInformation(computer)
 
-	if statusError != nil {
-		return models.ComputerPageInfo{}, statusError
+	if cError != nil {
+		return models.ComputerPageInfo{}, cError
 	}
 
 	pingOutput, err := Ping(computerInfo.Name)
