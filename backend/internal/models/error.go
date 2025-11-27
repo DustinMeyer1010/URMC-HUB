@@ -3,9 +3,9 @@ package models
 type Error struct {
 	HttpStatus int
 	ErrorType  string `json:"error_type"`
-	Error      string `json:"error"`
+	Error      error  `json:"error"`
 }
 
-func NewError(status int, errtype, err string) *Error {
+func NewError(status int, errtype string, err error) *Error {
 	return &Error{HttpStatus: status, ErrorType: errtype, Error: err}
 }

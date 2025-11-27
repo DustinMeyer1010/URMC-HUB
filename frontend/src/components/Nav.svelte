@@ -57,9 +57,7 @@
         <li class="dropdown">
             {#if showMenu}
                 <div>
-                    <a href="/bulk_add">Bulk User Add</a>
-                    <a href="/bulk_remove">Bulk User Remove</a>
-                    <a href="/bulk_lookup">Bulk User Lookup</a>
+                    <a href="/bulk-lookup">Bulk User Lookup</a>
                     <a href="/api">API Docs</a>
                     <ToggleTheme/>
                 </div>
@@ -76,9 +74,7 @@
                 <div>
                     <a href="/">Search</a>
                     <a href="/bookmarks">Bookmarks</a>
-                    <a href="/bulk_add">Bulk User Add</a>
-                    <a href="/bulk_remove">Bulk User Remove</a>
-                    <a href="/bulk_lookup">Bulk User Lookup</a>
+                    <a href="/bulk-lookup">Bulk User Lookup</a>
                     <a href="/api">API Docs</a>
                     <ToggleTheme/>
                 </div>

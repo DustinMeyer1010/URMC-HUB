@@ -19,7 +19,8 @@ func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&modify)
 
 	if err != nil {
-		fmt.Println(err.Error())
+		http.Error(w, "INVALID_BODY", http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
 		return
 	}
 

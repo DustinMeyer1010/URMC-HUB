@@ -2,9 +2,11 @@ package ad
 
 import (
 	"fmt"
+	"net/http"
 	"strings"
 	"sync"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/go-ldap/ldap/v3"
 )
@@ -135,7 +137,9 @@ func AddGroup(users []string, groups []string) ([]models.GroupModifyResults, err
 	defer l.Unbind()
 
 	var usersDN []string
-	if usersDN, err = GetUserDN(users, l); err != nil {
+	var statusError *models.Error
+
+	if usersDN, statusError = GetUserDN(users); statusError != nil {
 		return []models.GroupModifyResults{}, err
 	}
 
@@ -168,26 +172,23 @@ func AddGroup(users []string, groups []string) ([]models.GroupModifyResults, err
 	return response, err
 }
 
-func RemoveGroup(users []string, groups []string) ([]models.GroupModifyResults, error) {
+func RemoveGroup(users []string, groups []string) ([]models.GroupModifyResults, *models.Error) {
 
 	l, err := connectToLDAP()
 	if err != nil {
-		return []models.GroupModifyResults{}, err
+		return []models.GroupModifyResults{}, models.NewError(http.StatusInternalServerError, "LDAP_ERROR", err.Error())
 	}
+
 	defer l.Close()
 	defer l.Unbind()
 
-	usersDN, err := GetUserDN(users, l)
+	usersDN, statusError := GetUserDN(users)
 
-	if err != nil {
-		return []models.GroupModifyResults{}, err
+	if statusError != nil {
+		return []models.GroupModifyResults{}, statusError
 	}
 
-	groupsDN, err := GetGroupsDN(groups)
-
-	if err != nil {
-		return []models.GroupModifyResults{}, err
-	}
+	groupsDN := GetGroupsDN(groups)
 
 	var response []models.GroupModifyResults
 
@@ -212,24 +213,29 @@ func RemoveGroup(users []string, groups []string) ([]models.GroupModifyResults, 
 		response = append(response, groupResult)
 	}
 
-	return response, err
+	return response, nil
 
 }
 
-func GetUserDN(users []string, l *ldap.Conn) ([]string, error) {
-
+func GetUserDN(users []string) ([]string, *customError.Error) {
 	var userDN []string
+	l, cError := connectToLDAP()
+	if cError != nil {
+		return userDN, cError
+	}
+	defer l.Close()
+	defer l.Unbind()
 
 	for _, user := range users {
-		config := SearchConfig(
-			fmt.Sprintf("(&(objectClass=user)(SAMaccountName=%s))", user),
-			"dn",
-		)
+		results, ldapError := SearchByCategory("user", "SAMaccountName", user, "dn")
 
-		results, err := config.Search(l)
+		if ldapError != nil {
+			cError := customError.LDAP_ERROR.NewError(ldapError)
+			return userDN, &cError
+		}
 
-		if err != nil || len(results.Entries) == 0 {
-			break
+		if len(results.Entries) == 0 {
+			continue
 		}
 
 		userDN = append(userDN, results.Entries[0].DN)

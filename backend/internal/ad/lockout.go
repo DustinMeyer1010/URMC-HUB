@@ -5,6 +5,7 @@ import (
 	"sort"
 	"sync"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
@@ -12,9 +13,9 @@ import (
 func LockoutInfoData(user string) (matches []models.LockOutStatus) {
 	var servers = global.AllServers()
 
-	var wg sync.WaitGroup // create a wait group
+	var wg sync.WaitGroup
 
-	for _, server := range servers { // loop through servers
+	for _, server := range servers {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -22,13 +23,11 @@ func LockoutInfoData(user string) (matches []models.LockOutStatus) {
 			if err != nil {
 				return
 			}
-			matches = append(matches, result) // append results
+			matches = append(matches, result)
 		}()
 	}
 
 	wg.Wait()
-
-	fmt.Println(matches)
 
 	sort.Slice(matches, func(i, j int) bool {
 		return matches[i].Name < matches[j].Name
@@ -37,15 +36,15 @@ func LockoutInfoData(user string) (matches []models.LockOutStatus) {
 	return
 }
 
-func ServerLockout(server string, user string) (models.LockOutStatus, error) {
+func ServerLockout(server string, user string) (models.LockOutStatus, *customError.Error) {
 
-	l, err := ConnectToServer("LDAP://" + server)
+	l, cError := ConnectToServer("LDAP://" + server)
 
-	if err != nil {
-		return models.LockOutStatus{}, err
+	if cError != nil {
+		return models.LockOutStatus{}, cError
 	}
-
 	defer l.Close()
+	defer l.Unbind()
 
 	config := SearchConfig(
 		fmt.Sprintf("(&(objectClass=user)(SAMAccountName=%s*))", user),
@@ -53,11 +52,19 @@ func ServerLockout(server string, user string) (models.LockOutStatus, error) {
 		"badPasswordTime",
 	)
 
-	results, _ := config.Search(l)
-	if results == nil {
-		return models.LockOutStatus{}, fmt.Errorf("no entries found")
+	results, ldapError := config.Search(l)
+
+	if ldapError != nil {
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return models.LockOutStatus{}, &cError
 	}
+
+	if results == nil {
+		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO USER FOUND FOR: %s", user))
+		return models.LockOutStatus{}, &cError
+	}
+
 	entry := results.Entries[0]
 
-	return models.ToLockOutStatus(server, entry), err
+	return models.ToLockOutStatus(server, entry), nil
 }

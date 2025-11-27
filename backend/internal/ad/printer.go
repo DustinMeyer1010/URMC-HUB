@@ -6,16 +6,17 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
 // Matches printer to the search
-func SearchAllPrinters(searchValue string) (printers []models.PrinterSimpleInfo, err error) {
-	printers = make([]models.PrinterSimpleInfo, 0)
-	printersList, err := fetchPrinters()
+func SearchAllPrinters(searchValue string) ([]models.PrinterSimpleInfo, *customError.Error) {
+	printers := make([]models.PrinterSimpleInfo, 0)
+	printersList, cError := fetchPrinters()
 
-	if err != nil {
-		return
+	if cError != nil {
+		return printers, cError
 	}
 
 	for _, printer := range printersList {
@@ -29,26 +30,28 @@ func SearchAllPrinters(searchValue string) (printers []models.PrinterSimpleInfo,
 		printers = printers[0:100]
 	}
 
-	return
+	return printers, nil
 }
 
 // Retrieves the printer queue from the server
-func fetchPrinters() (printers []models.PrinterSimpleInfo, err error) {
-	printers = make([]models.PrinterSimpleInfo, 0)
+func fetchPrinters() ([]models.PrinterSimpleInfo, *customError.Error) {
+	printers := make([]models.PrinterSimpleInfo, 0)
 	// Make a GET request
-	resp, err := http.Get("https://apps.mc.rochester.edu/ISD/SIG/PrintQueues/PrintQReport.csv")
+	resp, requestError := http.Get("https://apps.mc.rochester.edu/ISD/SIG/PrintQueues/PrintQReport.csv")
 
-	if err != nil {
-		return
+	if requestError != nil {
+		cError := customError.REQUEST_ERROR.NewError(requestError)
+		return printers, &cError
 	}
 	defer resp.Body.Close()
 
 	file := csv.NewReader(resp.Body)
 
-	records, err := file.ReadAll()
+	records, fileReadError := file.ReadAll()
 
-	if err != nil {
-		return
+	if fileReadError != nil {
+		cError := customError.READ_FILE_ERROR.NewError(fileReadError)
+		return printers, &cError
 	}
 
 	for _, record := range records {
@@ -63,14 +66,14 @@ func fetchPrinters() (printers []models.PrinterSimpleInfo, err error) {
 		})
 	}
 
-	return
+	return printers, nil
 }
 
-func PullSinglePrinterInformation(printer string) (models.PrinterSimpleInfo, *models.Error) {
-	printersList, err := fetchPrinters()
+func PullSinglePrinterInformation(printer string) (models.PrinterSimpleInfo, *customError.Error) {
+	printersList, cError := fetchPrinters()
 
-	if err != nil {
-		return models.PrinterSimpleInfo{}, models.NewError(http.StatusInternalServerError, "PRINTER_FETCH_FAILED", err.Error())
+	if cError != nil {
+		return models.PrinterSimpleInfo{}, cError
 	}
 
 	for _, p := range printersList {
@@ -79,16 +82,18 @@ func PullSinglePrinterInformation(printer string) (models.PrinterSimpleInfo, *mo
 		}
 	}
 
-	return models.PrinterSimpleInfo{}, models.NewError(http.StatusNotFound, "NOT_FOUND", fmt.Sprintf("No printer found for: %s", printer))
+	cError1 := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO PRINTER FOUND FOR: %s", printer))
+
+	return models.PrinterSimpleInfo{}, &cError1
 
 }
 
-func RelatedPrinters(ip string) ([]models.PrinterSimpleInfo, *models.Error) {
-	printerList, err := fetchPrinters()
+func RelatedPrinters(ip string) ([]models.PrinterSimpleInfo, *customError.Error) {
+	printerList, cError := fetchPrinters()
 	var relatedPrinters []models.PrinterSimpleInfo
 
-	if err != nil {
-		return relatedPrinters, models.NewError(http.StatusInternalServerError, "PRINTER_FETCH_FAILED", err.Error())
+	if cError != nil {
+		return relatedPrinters, cError
 	}
 
 	for _, p := range printerList {
