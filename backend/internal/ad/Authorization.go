@@ -2,43 +2,51 @@ package ad
 
 import (
 	"fmt"
-	"log"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/go-ldap/ldap/v3"
 )
 
-func connectToLDAP() (l *ldap.Conn, err error) {
+func connectToLDAP() (*ldap.Conn, *customError.Error) {
+
 	if global.Username == "" || global.Password == "" {
-		return nil, fmt.Errorf("agent not logged in")
+		cError := customError.UNAUTHORIZED
+		return nil, &cError
 	}
 
-	l, err = ldap.DialURL(global.URMC_LDAP)
+	l, ldapError := ldap.DialURL(global.URMC_LDAP)
 
-	if err != nil {
-		log.Fatal(err)
-		return
+	if ldapError != nil {
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return nil, &cError
 	}
 
-	err = l.Bind(formatUsername(global.Username), global.Password)
+	ldapError = l.Bind(formatUsername(global.Username), global.Password)
 
-	return
+	if ldapError != nil {
+		cError := customError.UNAUTHORIZED
+		return nil, &cError
+	}
+
+	return l, nil
 }
 
-func Login(user models.UserLogin) error {
+func Login(user models.UserLogin) *customError.Error {
 
-	l, err := ldap.DialURL(global.URMC_LDAP)
+	l, ldapError := ldap.DialURL(global.URMC_LDAP)
 
-	if err != nil {
-		log.Fatal(err)
-		return fmt.Errorf("Failed to connect to URMC ldap server")
+	if ldapError != nil {
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return &cError
 	}
 
-	err = l.Bind(formatUsername(user.Username), user.Password)
+	ldapError = l.Bind(formatUsername(user.Username), user.Password)
 
-	if err != nil {
-		return fmt.Errorf("invalid username or password")
+	if ldapError != nil {
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return &cError
 	}
 
 	global.Username = user.Username
@@ -48,36 +56,32 @@ func Login(user models.UserLogin) error {
 
 }
 
-func ConnectToServer(URL string) (*ldap.Conn, error) {
+func ConnectToServer(URL string) (*ldap.Conn, *customError.Error) {
 	if global.Username == "" || global.Password == "" {
-		return nil, fmt.Errorf("agent not logged in")
+		cError := customError.NOT_LOGGED_IN
+		return nil, &cError
 	}
 
-	l, err := ldap.DialURL(URL)
+	l, ldapError := ldap.DialURL(URL)
 
-	if err != nil {
-		log.Fatal(err)
-		return nil, err
+	if ldapError != nil {
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return nil, &cError
 	}
 
-	err = l.Bind(fmt.Sprintf("%s\\%s", global.USERNAME_PREFIX, global.Username), global.Password)
+	ldapError = l.Bind(fmt.Sprintf("%s\\%s", global.USERNAME_PREFIX, global.Username), global.Password)
 
-	return l, err
+	if ldapError != nil {
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return nil, &cError
+	}
+
+	return l, nil
 }
 
-func Verify() error {
-
-	if global.Username == "" || global.Password == "" {
-		return fmt.Errorf("%s", "Agent Not Logged In")
-	}
-
-	_, err := connectToLDAP()
-
-	if err != nil {
-		return fmt.Errorf("invalid username or password")
-	}
-
-	return nil
+func Verify() *customError.Error {
+	_, cError := connectToLDAP()
+	return cError
 }
 
 func formatUsername(username string) string {

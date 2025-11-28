@@ -20,18 +20,18 @@ func PrinterInformation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	printer, statusError := service.PullPrinterInformation(server, queue)
+	printer, cError := service.PullPrinterInformation(server, queue)
 
-	if statusError != nil {
-		http.Error(w, statusError.ErrorType, http.StatusBadRequest)
-		w.Write([]byte(statusError.Error))
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	jsonData, err := json.Marshal(printer)
+	jsonData, jsonError := json.Marshal(printer)
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if jsonError != nil {
+		http.Error(w, jsonError.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -59,20 +59,15 @@ func RelatedPrinters(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	ip := vars["ip"]
 
-	printers, statusError := service.RelatedPrinters(ip)
+	printers, cError := service.RelatedPrinters(ip)
 
-	if statusError != nil {
-		http.Error(w, statusError.ErrorType, statusError.HttpStatus)
-		w.Write([]byte(statusError.Error))
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	jsonData, err := json.Marshal(printers)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	jsonData, _ := json.Marshal(printers)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

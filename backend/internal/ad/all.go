@@ -1,12 +1,15 @@
 package ad
 
 import (
+	"fmt"
 	"sync"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func AllSearch(search string) (result models.AllResults, err *models.Error) {
+func AllSearch(search string) (models.AllResults, *customError.Error) {
+	result := models.AllResults{}
 	result.Users = make([]models.UserSimpleInfo, 0)
 	result.Computers = make([]models.ComputerSimpleInfo, 0)
 	result.Groups = make([]models.GroupSimpleInfo, 0)
@@ -29,12 +32,12 @@ func AllSearch(search string) (result models.AllResults, err *models.Error) {
 		case []models.PrinterSimpleInfo:
 			result.Printers = results
 		default:
-			err = nil
+			fmt.Println("Item not of any type")
 		}
 
 	}
 
-	return
+	return result, nil
 }
 
 func thread(wg *sync.WaitGroup, ch chan any, task func() any) {

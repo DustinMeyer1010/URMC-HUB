@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/gorilla/mux"
 )
@@ -16,17 +16,21 @@ func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
 
 	var modify models.ModifyMembers
 
-	err := json.NewDecoder(r.Body).Decode(&modify)
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
 
-	if err != nil {
-		fmt.Println(err.Error())
+	if jsonError := decoder.Decode(&modify); jsonError != nil {
+		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS ARRAY")
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	err = ad.AddUsersToGroup(group, modify.Members)
+	cError := ad.AddUsersToGroup(group, modify.Members)
 
-	if err != nil {
-		fmt.Println(err.Error())
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 }
@@ -35,20 +39,23 @@ func RemoveUsersFromGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	group := vars["group"]
 
-	fmt.Println("here")
-
 	var modify models.ModifyMembers
 
-	err := json.NewDecoder(r.Body).Decode(&modify)
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
 
-	if err != nil {
-		fmt.Println(err.Error())
+	if jsonError := decoder.Decode(&modify); jsonError != nil {
+		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS ARRAY")
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
-	err = ad.RemoveUsersFromGroup(group, modify.Members)
 
-	if err != nil {
-		fmt.Println(err.Error())
+	cError := ad.RemoveUsersFromGroup(group, modify.Members)
+
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 

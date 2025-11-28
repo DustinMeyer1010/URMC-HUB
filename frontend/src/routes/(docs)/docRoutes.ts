@@ -44,15 +44,15 @@ export const DocUser = [
     },
     {
         name: "Drive Access",
-        path: "/api/user/drive_access"
+        path: "/api/user/drive-access"
     },
     {
         name: "Add Groups",
-        path: "/api/user/add_group"
+        path: "/api/user/add-group"
     },
     {
         name: "Remove Groups",
-        path: "/api/user/remove_group"
+        path: "/api/user/remove-group"
     },
 
 ]

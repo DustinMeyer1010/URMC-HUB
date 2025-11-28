@@ -55,10 +55,10 @@ func (config LDAPSearchConfig) Search(conn *ldap.Conn) (*ldap.SearchResult, erro
 
 func SearchAllByCategory(category, attribute, value string, attrs ...string) (*ldap.SearchResult, error) {
 
-	conn, err := connectToLDAP()
+	conn, cError := connectToLDAP()
 
-	if err != nil {
-		return nil, err
+	if cError != nil {
+		return nil, cError.GetErrorValue()
 	}
 
 	defer conn.Close()
@@ -73,10 +73,10 @@ func SearchAllByCategory(category, attribute, value string, attrs ...string) (*l
 
 func SearchByCategory(category, attribute, value string, attrs ...string) (*ldap.SearchResult, error) {
 
-	conn, err := connectToLDAP()
+	conn, cError := connectToLDAP()
 
-	if err != nil {
-		return nil, err
+	if cError != nil {
+		return nil, cError.GetErrorValue()
 	}
 
 	defer conn.Close()

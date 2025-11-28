@@ -5,36 +5,38 @@ import (
 	"net/url"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/gorilla/mux"
 )
 
-func getSearchValue(r *http.Request) (string, *models.Error) {
+func getSearchValue(r *http.Request) (string, *customError.Error) {
 	vars := mux.Vars(r)
 	searchValue := vars["searchValue"]
 
 	searchValue, err := url.QueryUnescape(searchValue)
 
 	if err != nil {
-		return "", models.NewError(http.StatusBadRequest, "INVALID_SEARCH", err.Error())
+		cError := customError.INVALID_BODY.NewMessage("INVALID SEARCH PARAMETER")
+		return "", &cError
 	}
 
 	return searchValue, nil
 
 }
 
-func SearchAllGroups(r *http.Request) ([]models.GroupSimpleInfo, *models.Error) {
+func SearchAllGroups(r *http.Request) ([]models.GroupSimpleInfo, *customError.Error) {
 
-	searchValue, statusError := getSearchValue(r)
+	searchValue, cError := getSearchValue(r)
 
-	if statusError != nil {
-		return []models.GroupSimpleInfo{}, statusError
+	if cError != nil {
+		return []models.GroupSimpleInfo{}, cError
 	}
 
 	return ad.SearchAllGroups(searchValue)
 }
 
-func AllSearch(r *http.Request) (models.AllResults, *models.Error) {
+func AllSearch(r *http.Request) (models.AllResults, *customError.Error) {
 	searchValue, err := getSearchValue(r)
 
 	if err != nil {

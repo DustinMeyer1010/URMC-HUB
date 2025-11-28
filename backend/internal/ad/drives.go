@@ -5,17 +5,18 @@ import (
 	"os"
 	"strings"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
 // Will have to be redone
-func SearchAllDrives(searchValue string) ([]models.DriveSimpleInfo, error) {
+func SearchAllDrives(searchValue string) ([]models.DriveSimpleInfo, *customError.Error) {
 	allDrives := make([]models.DriveSimpleInfo, 0)
 	mapping, err := getDriveToGroupsMapping()
 
 	if err != nil {
-		return allDrives, err
+		return allDrives, &customError.FILE_UNREACHABLE
 	}
 
 	for drive, groups := range mapping {
@@ -37,11 +38,11 @@ func SearchAllDrives(searchValue string) ([]models.DriveSimpleInfo, error) {
 			)
 		}
 		if len(allDrives) >= 100 {
-			return allDrives, err
+			return allDrives, nil
 		}
 	}
 
-	return allDrives, err
+	return allDrives, nil
 }
 
 func checkForGroupMatch(searchValue string, groups []string) bool {
@@ -54,15 +55,14 @@ func checkForGroupMatch(searchValue string, groups []string) bool {
 }
 
 // Finds all share drives that match the searchValues
-func GetGroupToDrivesMapping() (map[string][]string, error) {
-
+func GetGroupToDrivesMapping() (map[string][]string, *customError.Error) {
 	collection := make(map[string][]string)
 
 	scanner, file, err := openLogonServer()
 	defer file.Close()
 
 	if err != nil {
-		return make(map[string][]string), err
+		return make(map[string][]string), &customError.FILE_UNREACHABLE
 	}
 
 	for scanner.Scan() {
@@ -71,16 +71,16 @@ func GetGroupToDrivesMapping() (map[string][]string, error) {
 		collection[adGroup] = append(collection[adGroup], sharedrives...)
 	}
 
-	return collection, err
+	return collection, nil
 }
 
-func getDriveToGroupsMapping() (map[string][]string, error) {
+func getDriveToGroupsMapping() (map[string][]string, *customError.Error) {
 	collection := make(map[string][]string)
 	scanner, file, err := openLogonServer()
 	defer file.Close()
 
 	if err != nil {
-		return make(map[string][]string), err
+		return make(map[string][]string), &customError.FILE_UNREACHABLE
 	}
 
 	for scanner.Scan() {
@@ -91,7 +91,7 @@ func getDriveToGroupsMapping() (map[string][]string, error) {
 		}
 	}
 
-	return collection, err
+	return collection, nil
 
 }
 

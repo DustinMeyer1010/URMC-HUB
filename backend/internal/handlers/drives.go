@@ -11,20 +11,24 @@ func DriveAccess(w http.ResponseWriter, r *http.Request) {
 
 	var groups []string
 
-	if err := json.NewDecoder(r.Body).Decode(&groups); err != nil {
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(&groups); err != nil {
 		http.Error(w, "INVALID_BODY", http.StatusBadRequest)
 		return
 	}
 
-	drives := service.GetDriveAccess(groups)
+	drives, cError := service.GetDriveAccess(groups)
 
-	data, err := json.Marshal(drives)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
+		return
 	}
+
+	jsonData, _ := json.Marshal(drives)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(data)
+	w.Write(jsonData)
 }

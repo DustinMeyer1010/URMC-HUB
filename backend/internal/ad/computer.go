@@ -2,15 +2,14 @@ package ad
 
 import (
 	"fmt"
-	"net/http"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func SearchAllComputers(searchValue string) ([]models.ComputerSimpleInfo, error) {
-	matches := make([]models.ComputerSimpleInfo, 0)
-
-	results, err := SearchAllByCategory(
+func SearchAllComputers(searchValue string) ([]models.ComputerSimpleInfo, *customError.Error) {
+	matches := []models.ComputerSimpleInfo{}
+	results, ldapError := SearchAllByCategory(
 		"computer",
 		"name",
 		searchValue,
@@ -19,20 +18,26 @@ func SearchAllComputers(searchValue string) ([]models.ComputerSimpleInfo, error)
 		"distinguishedName",
 	)
 
-	if results == nil || err != nil {
-		return matches, err
+	if results == nil {
+		cError := &customError.NOT_FOUND
+		return matches, cError
+	}
+
+	if ldapError != nil {
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return matches, &cError
 	}
 
 	for _, entry := range results.Entries {
 		matches = append(matches, models.ToComputerSimpleInfo(entry))
 	}
 
-	return matches, err
+	return matches, nil
 }
 
-func PullComputerInformation(computer string) (models.ComputerSimpleInfo, *models.Error) {
+func PullComputerInformation(computer string) (models.ComputerSimpleInfo, *customError.Error) {
 
-	results, err := SearchByCategory(
+	results, ldapError := SearchByCategory(
 		"computer",
 		"name",
 		computer,
@@ -41,14 +46,14 @@ func PullComputerInformation(computer string) (models.ComputerSimpleInfo, *model
 		"distinguishedName",
 	)
 
-	if err != nil {
-		return models.ComputerSimpleInfo{},
-			models.NewError(http.StatusInternalServerError, "LDAP_ERROR", err.Error())
+	if ldapError != nil {
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return models.ComputerSimpleInfo{}, &cError
 	}
 
 	if len(results.Entries) == 0 {
-		return models.ComputerSimpleInfo{},
-			models.NewError(http.StatusNotFound, "NOT_FOUND", fmt.Sprintf("No computer found for %s", computer))
+		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO COMPUTER FOUND FOR: %s", computer))
+		return models.ComputerSimpleInfo{}, &cError
 	}
 
 	return models.ToComputerSimpleInfo(results.Entries[0]), nil

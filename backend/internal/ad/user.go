@@ -5,23 +5,23 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/go-ldap/ldap/v3"
 )
 
-func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err error) {
+func SearchAllUsers(searchValue string) ([]models.UserSimpleInfo, *customError.Error) {
 
-	matches = make([]models.UserSimpleInfo, 0)
+	matches := make([]models.UserSimpleInfo, 0)
 
-	conn, err := connectToLDAP()
+	l, cError := connectToLDAP()
 
-	if err != nil {
-		fmt.Println(err)
-		return
+	if cError != nil {
+		return matches, cError
 	}
 
-	defer conn.Close()
-	defer conn.Unbind()
+	defer l.Close()
+	defer l.Unbind()
 
 	filter := fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue)
 
@@ -36,10 +36,16 @@ func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err er
 		"urid",
 	)
 
-	results, err := ldapConfig.Search(conn)
+	results, ldapError := ldapConfig.Search(l)
 
-	if results == nil || err != nil {
-		return
+	if ldapError != nil {
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return matches, &cError
+	}
+
+	if results == nil {
+		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO USERS FOUND FOR: %s", searchValue))
+		return matches, &cError
 	}
 
 	for _, entry := range results.Entries {
@@ -48,17 +54,17 @@ func SearchAllUsers(searchValue string) (matches []models.UserSimpleInfo, err er
 		matches = append(matches, user)
 	}
 
-	return
+	return matches, nil
 }
 
-func PullUserInformation(searchValue string) (models.UserFullInfo, error) {
+func PullUserInformation(searchValue string) (models.UserFullInfo, *customError.Error) {
 
 	var user models.UserFullInfo
 
 	catagory := "user"
 	attribute := "SAMAccountName"
 
-	results, err := SearchAllByCategory(
+	results, ldapError := SearchAllByCategory(
 		catagory,
 		attribute,
 		searchValue,
@@ -81,16 +87,14 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, error) {
 		"sn",
 	)
 
+	if ldapError != nil {
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return user, &cError
+	}
+
 	if results == nil {
-		return user, fmt.Errorf("username not found")
-	}
-
-	if err != nil {
-		return user, fmt.Errorf("ldap threw an error: %s", err)
-	}
-
-	if len(results.Entries) == 0 {
-		return user, fmt.Errorf("%s", "No accounts found")
+		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO USER FOUND FOR: %s", searchValue))
+		return user, &cError
 	}
 
 	foundUser := results.Entries[0]
@@ -122,71 +126,80 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, error) {
 
 	user.MemberOf = memberOf
 
-	return user, err
+	return user, nil
 }
 
-func AddGroup(users []string, groups []string) ([]models.GroupModifyResults, error) {
+// TODO: Update to only take one user as the argument
+func AddGroup(users []string, groups []string) ([]models.GroupModifyResults, *customError.Error) {
 
-	l, err := connectToLDAP()
-	if err != nil {
-		return []models.GroupModifyResults{}, err
+	l, cError := connectToLDAP()
+	if cError != nil {
+		return []models.GroupModifyResults{}, cError
 	}
 	defer l.Close()
 	defer l.Unbind()
 
 	var usersDN []string
-	if usersDN, err = GetUserDN(users, l); err != nil {
-		return []models.GroupModifyResults{}, err
+	if usersDN, cError = GetUserDN(users); cError != nil {
+		return []models.GroupModifyResults{}, cError
+	}
+
+	if len(usersDN) == 0 {
+		cError := customError.NOT_FOUND.NewMessage("NO USER FOUND TO BECOME MEMEBER OF GROUP")
+		return []models.GroupModifyResults{}, &cError
 	}
 
 	var groupsDN []string
-	if groupsDN, err = GetGroupsDN(groups); err != nil {
-		return []models.GroupModifyResults{}, err
+	if groupsDN, cError = GetGroupsDN(groups); cError != nil {
+		return []models.GroupModifyResults{}, cError
 	}
 
 	var response []models.GroupModifyResults
 
-	for _, group := range groupsDN {
+	for _, groupDN := range groupsDN {
 		groupResult := models.GroupModifyResults{
-			Group:      group,
+			Group:      groupDN,
 			Successful: true,
 			Message:    "Group Added",
 		}
-		addRequest := ldap.NewModifyRequest(group, nil)
-		addRequest.Add("member", usersDN)
-		groupAddError := l.Modify(addRequest)
-		if groupAddError != nil {
-			fmt.Printf("Failed to add user to %s\n", group)
+		cError = ModifyGroupNewMember(groupDN, usersDN[0])
+		if cError != nil {
+			fmt.Printf("Failed to add user to %s\n", groupDN)
 			groupResult.Successful = false
-			groupResult.Message = groupAddError.Error()
+			groupResult.Message = cError.Msg
 			response = append(response, groupResult)
 			continue
 		}
 		response = append(response, groupResult)
 	}
 
-	return response, err
+	return response, nil
 }
 
-func RemoveGroup(users []string, groups []string) ([]models.GroupModifyResults, error) {
+func RemoveGroup(users []string, groups []string) ([]models.GroupModifyResults, *customError.Error) {
 
-	l, err := connectToLDAP()
-	if err != nil {
-		return []models.GroupModifyResults{}, err
+	l, cError := connectToLDAP()
+	if cError != nil {
+		return []models.GroupModifyResults{}, cError
 	}
 	defer l.Close()
 	defer l.Unbind()
 
-	usersDN, err := GetUserDN(users, l)
+	usersDN, cError := GetUserDN(users)
 
-	if err != nil {
-		return []models.GroupModifyResults{}, err
+	if cError != nil {
+		return []models.GroupModifyResults{}, cError
 	}
 
-	groupsDN, err := GetGroupsDN(groups)
+	if len(usersDN) == 0 {
+		cError := customError.NOT_FOUND.NewMessage("NO USER FOUND REMOVE FROM GROUP")
+		return []models.GroupModifyResults{}, &cError
+	}
 
-	if err != nil {
-		return []models.GroupModifyResults{}, err
+	groupsDN, cError := GetGroupsDN(groups)
+
+	if cError != nil {
+		return []models.GroupModifyResults{}, cError
 	}
 
 	var response []models.GroupModifyResults
@@ -199,37 +212,40 @@ func RemoveGroup(users []string, groups []string) ([]models.GroupModifyResults, 
 			Successful: true,
 			Message:    "Groups Removed",
 		}
-		deleteRequest := ldap.NewModifyRequest(group, nil)
-		deleteRequest.Delete("member", usersDN)
-		groupRemoveErr := l.Modify(deleteRequest)
-		if groupRemoveErr != nil {
+		cError := ModifyGroupRemoveMember(group, usersDN[0])
+		if cError != nil {
 			fmt.Println("Failed to remove user from " + group)
 			groupResult.Successful = false
-			groupResult.Message += groupRemoveErr.Error()
+			groupResult.Message += cError.Msg
 			response = append(response, groupResult)
 			continue
 		}
 		response = append(response, groupResult)
 	}
 
-	return response, err
+	return response, nil
 
 }
 
-func GetUserDN(users []string, l *ldap.Conn) ([]string, error) {
-
+func GetUserDN(users []string) ([]string, *customError.Error) {
 	var userDN []string
+	l, cError := connectToLDAP()
+	if cError != nil {
+		return userDN, cError
+	}
+	defer l.Close()
+	defer l.Unbind()
 
 	for _, user := range users {
-		config := SearchConfig(
-			fmt.Sprintf("(&(objectClass=user)(SAMaccountName=%s))", user),
-			"dn",
-		)
+		results, ldapError := SearchByCategory("user", "SAMaccountName", user, "dn")
 
-		results, err := config.Search(l)
+		if ldapError != nil {
+			cError := customError.LDAP_ERROR.NewError(ldapError)
+			return userDN, &cError
+		}
 
-		if err != nil || len(results.Entries) == 0 {
-			break
+		if len(results.Entries) == 0 {
+			continue
 		}
 
 		userDN = append(userDN, results.Entries[0].DN)
@@ -278,9 +294,10 @@ func UserDetails(input string) ([]models.UserDetails, error) {
 }
 
 func CreatePresistantConn() (err error) {
-	persistConn, err = connectToLDAP()
-	if err != nil {
-		return err
+	var cError *customError.Error
+	persistConn, cError = connectToLDAP()
+	if cError != nil {
+		return fmt.Errorf("%s", cError.Msg)
 	}
 
 	return nil
