@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PageLoading from "@components/PageLoading.svelte";
+	import PageLoading from "@components/Loading-Animations/PageLoading.svelte";
 	import type { ComputerPageInfo } from "@t/computer";
     import ComputerOnlineIcon from "$lib/assets/computer-online.png"
     import ComputerOfflineIcon from "$lib/assets/computer-offline.png"

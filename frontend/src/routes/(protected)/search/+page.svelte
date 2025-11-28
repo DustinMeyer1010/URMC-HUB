@@ -7,7 +7,7 @@
 	import { onMount } from 'svelte';
     import { page } from '$app/state';
 	import { getFilter, getSearchValue } from '../../helper';
-	import CardLoading from '@components/CardLoading.svelte';
+	import CardLoading from '@components/Loading-Animations/CardLoading.svelte';
 	import { SearchStateClass } from './state.svelte';
 
 

@@ -8,16 +8,16 @@
 
 	import { onMount } from "svelte";
 	import { page } from "$app/state";
-    import type { UserFullInfo } from "@t/user";
 
     import  { type Section, Sections } from "@t/section";
 	import { UserStateClass } from "../state.svelte";
-	import PageLoading from "@components/PageLoading.svelte";
+	import PageLoading from "@components/Loading-Animations/PageLoading.svelte";
 
-    let { data } : { data: UserFullInfo } = $props();
+    let { data } : { data: {username: string} } = $props();
     let UserPageState = new UserStateClass()
 
-    onMount(() => {
+    onMount(async () => {
+        UserPageState.pageData = await UserPageState.UserFullInfo(data.username)
         let urlParams = page.url.searchParams;
         UserPageState.currentSection = urlParams.get("section")?.toUpperCase() as Section ?? "PROFILE"
         UserPageState.SetURL()
@@ -27,39 +27,46 @@
 </script>
 
 
-<nav>
-    <h1>{data.name}</h1>
-    <Nav sections={Sections} swapSection={UserPageState.SwapSections}/>
-</nav>
+{#if UserPageState.pageData != null}
+    <nav>
+        <h1>{UserPageState.pageData.name}</h1>
+        <Nav sections={Sections} swapSection={UserPageState.SwapSections}/>
+    </nav>
 
-{#if !UserPageState.loading}
-    <main>
-        {#if UserPageState.currentSection == "PROFILE"}
-            <Profile user={data}/>
-        {:else if UserPageState.currentSection == "LOCKOUT"}
-            <Lockout username={data.username}/>
-        {:else if UserPageState.currentSection == "DRIVES"}
-            <Drive groups={data.member_of}/>
-        {:else if UserPageState.currentSection == "GROUPS"}
-            <Groups currentUser={data.username} groups={data.member_of}/>
-        {:else if UserPageState.currentSection == "ADD"}
-            <Add currentUser={data.username}/>
-        {/if}
-    </main>
-{:else}
-<PageLoading/>
+    {#if !UserPageState.loading}
+        <main>
+            {#if UserPageState.currentSection == "PROFILE"}
+                <Profile user={UserPageState.pageData}/>
+            {:else if UserPageState.currentSection == "LOCKOUT"}
+                <Lockout username={UserPageState.pageData.username}/>
+            {:else if UserPageState.currentSection == "DRIVES"}
+                <Drive groups={UserPageState.pageData.member_of}/>
+            {:else if UserPageState.currentSection == "GROUPS"}
+                <Groups currentUser={UserPageState.pageData.username} groups={UserPageState.pageData.member_of}/>
+            {:else if UserPageState.currentSection == "ADD"}
+                <Add currentUser={UserPageState.pageData.username}/>
+            {/if}
+        </main>
+    {:else}
+        <PageLoading/>
+    {/if}
 {/if}
 
 
 
 
-
 <style>
+    
+    h1 {
+        padding: 10px;
+        margin: 0;
+    }
+
     main {
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 1rem 5rem;
+        padding: 1rem 2rem;
         flex-direction: column;
         gap: 1rem;
         margin-top: 150px;
@@ -82,24 +89,17 @@
         background: var(--color-bg);
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 700px) {
         main {
-            margin-top: 175px;
-            padding: 0 3rem;
+            padding: 0 1rem;
         }
     }
 
-    @media (max-width: 784px) {
-        main {
-            margin-top: 250px;
-            padding: 0 2rem;
-        }
-    }
+
 
     @media (max-width: 465px) {
         main {
-            margin-top: 300px;
-            padding: 0 1rem;
+            margin-top: 200px;
         }
     }
 

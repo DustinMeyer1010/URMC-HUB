@@ -2,6 +2,8 @@
 	import type { GroupSimpleInfo } from "@t/group";
 	import Confirm from "./Confirm.svelte";
 	import { goto } from "$app/navigation";
+	import type { ModifyResults } from "@t/resutls";
+	import Message from "./Message.svelte";
 
     let {
         currentUser
@@ -13,6 +15,7 @@
 
     let search: string = $state("")
     let groups: GroupSimpleInfo[] = $state([])
+    let results: ModifyResults[] = $state([])
 
 
 
@@ -24,6 +27,7 @@
     }
 
     const addGroup = async (group: string) => {
+        results = []
         const res = await fetch("http://localhost:8000/api/user/group/add", {
             method: "POST",
             mode: "cors",
@@ -33,9 +37,7 @@
             })
         })
 
-        const data = await res.json()
-
-        console.log(data)
+        results = await res.json()
 
 
         goto(location.href, { invalidateAll: true, replaceState: true });
@@ -51,18 +53,25 @@
     <button type="submit">Search</button>
 </form>
 
+
+
 <section>
-        {#each groups as group, idx (group.name)}
-            <ul style="--delay: {Math.min(idx * 50, 2000)}ms">
-                <li class="title">{group.name !== "" ? group.name : "NA"}</li>
-                <li><b>Description:</b> {group.description !== "" ? group.description : "NA"}</li>
-                <li><b>Information:</b> {group.information !== "" ? group.information : "NA"}</li>
-                <li><b>OU:</b> {group.ou !== "" ? group.ou : "NA"}</li>
-                <Confirm name={group.name} title={"Add Group?"} value={"Add"} action={addGroup}/>
-            </ul>
-        {:else}
-         <h1>Lookup Group To Add</h1>
+    {#if results}
+        {#each results as result}
+            <Message {result}/>
         {/each}
+    {/if}
+    {#each groups as group, idx (group.name)}
+        <ul style="--delay: {Math.min(idx * 50, 2000)}ms">
+            <li class="title">{group.name !== "" ? group.name : "NA"}</li>
+            <li><b>Description:</b> {group.description !== "" ? group.description : "NA"}</li>
+            <li><b>Information:</b> {group.information !== "" ? group.information : "NA"}</li>
+            <li><b>OU:</b> {group.ou !== "" ? group.ou : "NA"}</li>
+            <Confirm name={group.name} title={"Add Group?"} value={"Add"} action={addGroup}/>
+        </ul>
+    {:else}
+        <h1>Lookup Group To Add</h1>
+    {/each}
 </section>
 
 

@@ -32,8 +32,7 @@
 
     button {
         padding: 1rem;
-        font-size: 15px;
-        min-width: 130px; 
+        font-size: 12px;
         max-width: 200px;
         width: 200px;
         background: var(--color-surface);
@@ -57,7 +56,7 @@
             flex-wrap: wrap;
         }
         button {
-            padding: 1rem 2rem;
+            padding: 1rem 1rem;
             width: fit-content;
             flex-grow: 1;
         }
@@ -66,6 +65,7 @@
     @media (max-width: 800px) {
         button {
             padding: 1rem;
+            font-size: 12px;
         }
     } 
 </style>

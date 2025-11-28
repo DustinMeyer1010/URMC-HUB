@@ -29,15 +29,12 @@
         });
 
         if (res.status == 200) {
-            goto(window.location.pathname, {invalidateAll: true})
+            goto("/", {invalidateAll: true, replaceState: true, keepFocus: true})
             login()
             return
         }
 
         error = true
-
-
-
 
     }
 </script>

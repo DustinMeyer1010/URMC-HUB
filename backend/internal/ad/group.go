@@ -84,61 +84,71 @@ func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
 }
 
 // TODO: Create a message per users letting the frontend know if that user was or was not added to the group
-func AddUsersToGroup(group string, newMembers []string) *customError.Error {
+func AddUsersToGroup(group string, newMembers []string) (map[string]models.GroupModifyResults, *customError.Error) {
 
-	usersDN, cError := GetUserDN(newMembers)
+	var results map[string]models.GroupModifyResults = make(map[string]models.GroupModifyResults)
+
+	usersDN, cError := GetUsersDN(newMembers)
 	if cError != nil {
-		return cError
+		return results, cError
 	}
 	group = LDAP_STRING_REPLACE.Replace(group)
 	groupDN, cError := GetGroupDN(group)
 
-	for _, user := range usersDN {
-		cError = ModifyGroupNewMember(groupDN, user)
-		if cError != nil {
-			// User not added but frontend does not know
-			fmt.Println(cError)
-			continue
-		}
-		fmt.Printf("User: %s\n Added to Group\n", user)
+	if cError != nil {
+		return results, cError
 	}
 
-	return nil
+	for user, userDN := range usersDN {
+		cError = ModifyGroupNewMember(groupDN, userDN)
+		if cError != nil {
+			results[user] = models.GroupModifyResults{
+				Group:      group,
+				Message:    cError.Msg,
+				Successful: false,
+			}
+			continue
+		}
+		results[user] = models.GroupModifyResults{Group: group, Message: "Added to Group", Successful: true}
+	}
+
+	return results, nil
 }
 
 // TODO: Create a message per users letting the frontend know if that user was or was not removed to the group
-func RemoveUsersFromGroup(group string, members []string) *customError.Error {
-	l, cError := connectToLDAP()
-	if cError != nil {
-		return cError
-	}
-	defer l.Close()
-	defer l.Unbind()
+func RemoveUsersFromGroup(group string, members []string) (map[string]models.GroupModifyResults, *customError.Error) {
 
-	var usersDN []string
-	if usersDN, cError = GetUserDN(members); cError != nil {
-		return cError
+	var cError *customError.Error
+	var results map[string]models.GroupModifyResults = make(map[string]models.GroupModifyResults)
+
+	var usersDN map[string]string
+	if usersDN, cError = GetUsersDN(members); cError != nil {
+		return results, cError
 	}
 
 	var groupDN string
 	if groupDN, cError = GetGroupDN(group); cError != nil {
-		return cError
+		return results, cError
 	}
 
-	for _, user := range usersDN {
-		cError = ModifyGroupRemoveMember(groupDN, user)
+	for user, userDN := range usersDN {
+		cError = ModifyGroupRemoveMember(groupDN, userDN)
 		if cError != nil {
-			fmt.Println(cError)
+			results[user] = models.GroupModifyResults{
+				Group:      group,
+				Message:    cError.Msg,
+				Successful: false,
+			}
 			continue
 		}
-		fmt.Printf("User: %s\n Removed From Group\n", user)
+		results[user] = models.GroupModifyResults{Group: group, Message: "Removed from Group", Successful: true}
 	}
 
-	return nil
+	return results, nil
 }
 
-func GetGroupsDN(groups []string) ([]string, *customError.Error) {
-	groupsDN := make([]string, 0)
+func GetGroupsDN(groups []string) (map[string]string, *customError.Error) {
+	groupsDN := make(map[string]string, 0)
 
 	for _, group := range groups {
 		DN, cError := GetGroupDN(group)
@@ -151,7 +161,7 @@ func GetGroupsDN(groups []string) ([]string, *customError.Error) {
 			continue
 		}
 
-		groupsDN = append(groupsDN, DN)
+		groupsDN[group] = DN
 	}
 
 	return groupsDN, nil

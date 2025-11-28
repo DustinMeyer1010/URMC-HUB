@@ -1,5 +1,7 @@
 import { goto } from "$app/navigation";
+import { redirect } from "@sveltejs/kit";
 import type { Section } from "@t/section";
+import type { UserFullInfo } from "@t/user";
 
 interface UserStateInterface {
     currentSection: Section,
@@ -11,6 +13,7 @@ interface UserStateInterface {
 export class UserStateClass implements UserStateInterface {
     currentSection: Section = $state("PROFILE");
     loading: boolean = $state(true)
+    pageData: UserFullInfo | null = $state(null)
 
 
     SwapSections = (section: Section) => {
@@ -20,5 +23,19 @@ export class UserStateClass implements UserStateInterface {
 
     SetURL() {
         goto(`?section=${this.currentSection}`, { replaceState: true, keepFocus: true, noScroll: true })
+    }
+
+    UserFullInfo = async (username: string): Promise<UserFullInfo> => {
+
+        const response: Response = await fetch(`http://localhost:8000/api/user/info/${username}`);
+
+        if (!response.ok) {
+            throw redirect(301, "/search")
+        }
+
+        const data: UserFullInfo = await response.json();
+
+        return data
+
     }
 }

@@ -4,6 +4,8 @@
 	import { fly } from "svelte/transition";
 	import Remove from "./Remove.svelte";
 	import { goto } from "$app/navigation";
+	import type { ModifyResults } from "@t/resutls";
+	import Message from "./Message.svelte";
 
     let copyState: CopyState = $state({
         copied: "",
@@ -19,12 +21,11 @@
         groups: GroupSimpleInfo[]
     } = $props();
 
-    $inspect(groups)
 
 
     let filter: string = $state("")
     let filteredGroups: GroupSimpleInfo[] = $state(groups.sort((a, b) => a.name.localeCompare(b.name)))
-
+    let results: ModifyResults[] = $state([])
     
 
     $effect(() => {
@@ -39,6 +40,7 @@
     })
 
     const removeGroup = async (group: string) => {
+        results = []
         const res = await fetch("http://localhost:8000/api/user/group/remove", {
             method: "POST",
             mode: "cors",
@@ -48,9 +50,8 @@
             })
         })
 
-        const data = await res.json()
+        results = await res.json()
 
-        console.log(data)
 
         goto(location.href, { invalidateAll: true, replaceState: true });
     }
@@ -60,6 +61,9 @@
 
 
 <section>
+    {#each results as result}
+        <Message {result}/>
+    {/each}
     <input oncontextmenu={(e: Event) => {e.preventDefault();filter=""}} bind:value={filter} placeholder="Search For Group"/>
     {#each filteredGroups as group, idx }
         <ul style="--delay: {Math.min(idx * 50, 2000)}ms" out:fly={{x: 100}}>
@@ -168,7 +172,10 @@
         }
     }
 
+
     @media (max-width: 850px) {
+
+
         button {
             flex-direction: column;
             justify-content: flex-start;

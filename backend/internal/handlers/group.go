@@ -26,13 +26,19 @@ func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cError := ad.AddUsersToGroup(group, modify.Members)
+	results, cError := ad.AddUsersToGroup(group, modify.Members)
 
 	if cError != nil {
 		http.Error(w, cError.Type, cError.StatusCode)
 		w.Write([]byte(cError.Msg))
 		return
 	}
+
+	jsonData, _ := json.Marshal(results)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 }
 
 func RemoveUsersFromGroup(w http.ResponseWriter, r *http.Request) {
@@ -51,12 +57,18 @@ func RemoveUsersFromGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cError := ad.RemoveUsersFromGroup(group, modify.Members)
+	results, cError := ad.RemoveUsersFromGroup(group, modify.Members)
 
 	if cError != nil {
 		http.Error(w, cError.Type, cError.StatusCode)
 		w.Write([]byte(cError.Msg))
 		return
 	}
+
+	jsonData, _ := json.Marshal(results)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 
 }

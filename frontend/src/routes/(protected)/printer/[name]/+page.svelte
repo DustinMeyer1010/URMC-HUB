@@ -4,7 +4,7 @@
 	import { copyToClip, type CopyState } from '$lib/helper/copy.svelte';
 	import Printer from '@components/Cards/Printer.svelte';
 	import CopyButton from '@components/CopyButton.svelte';
-	import PageLoading from '@components/PageLoading.svelte';
+	import PageLoading from '@components/Loading-Animations/PageLoading.svelte';
 	import PrinterStatus from '@components/Printer/PrinterStatus.svelte';
 	import type { PrinterSimpleInfo } from '@t/printer';
 	import { onMount } from 'svelte';
