@@ -41,11 +41,10 @@
 
     const removeGroup = async (group: string) => {
         results = []
-        const res = await fetch("http://localhost:8000/api/user/group/remove", {
-            method: "POST",
+        const res = await fetch(`http://localhost:8000/api/user/${currentUser}`, {
+            method: "DELETE",
             mode: "cors",
             body: JSON.stringify({
-                users: [currentUser],
                 groups: [group]
             })
         })

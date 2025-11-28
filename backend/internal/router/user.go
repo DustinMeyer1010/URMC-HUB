@@ -38,19 +38,19 @@ func userRoutes(mux *mux.Router) {
 		},
 		{
 			methods{"POST", "OPTIONS"},
-			"/api/user/group/add",
+			"/api/user/{username}",
 			http.HandlerFunc(handlers.AddGroup),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
-			methods{"POST", "OPTIONS"},
-			"/api/user/group/remove",
+			methods{"DELETE", "OPTIONS"},
+			"/api/user/{username}",
 			http.HandlerFunc(handlers.RemoveGroup),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"POST", "OPTION"},
-			"/api/users/bulk/lookup/file",
+			"/api/users/bulk-lookup-file",
 			http.HandlerFunc(handlers.BulkUserSearchFile),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},

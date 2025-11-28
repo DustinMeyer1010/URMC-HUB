@@ -1,7 +1,9 @@
 
 
 <script lang="ts">
-    import type { Section } from "./section"    
+	import type { Section } from "./[name]/state.svelte";
+
+      
 
     let {
         sections,

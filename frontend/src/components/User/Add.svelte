@@ -28,11 +28,10 @@
 
     const addGroup = async (group: string) => {
         results = []
-        const res = await fetch("http://localhost:8000/api/user/group/add", {
+        const res = await fetch(`http://localhost:8000/api/user/${currentUser}`, {
             method: "POST",
             mode: "cors",
             body: JSON.stringify({
-                users: [currentUser],
                 groups: [group]
             })
         })

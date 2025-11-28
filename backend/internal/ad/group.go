@@ -62,7 +62,8 @@ func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
 		"distinguishedName",
 		"sAMAccountName",
 		"description",
-		"info")
+		"info",
+	)
 
 	if ldapError != nil {
 		cError := customError.LDAP_ERROR.NewError(ldapError)
@@ -83,7 +84,6 @@ func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
 	return models.ToGroupSimpleInfo(entry), nil
 }
 
-// TODO: Create a message per users letting the frontend know if that user was or was not added to the group
 func AddUsersToGroup(group string, newMembers []string) (map[string]models.GroupModifyResults, *customError.Error) {
 
 	var results map[string]models.GroupModifyResults = make(map[string]models.GroupModifyResults)
@@ -115,7 +115,6 @@ func AddUsersToGroup(group string, newMembers []string) (map[string]models.Group
 	return results, nil
 }
 
-// TODO: Create a message per users letting the frontend know if that user was or was not removed to the group
 func RemoveUsersFromGroup(group string, members []string) (map[string]models.GroupModifyResults, *customError.Error) {
 
 	var cError *customError.Error
@@ -233,4 +232,9 @@ func ModifyGroupRemoveMember(groupDN, user string) *customError.Error {
 	}
 
 	return nil
+}
+
+// TODO: Retrive all the members of a group
+func GetAllMembers(group string) {
+
 }

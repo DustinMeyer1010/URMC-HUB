@@ -128,8 +128,7 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, *customError.
 	return user, nil
 }
 
-// TODO: Update to only take one user as the argument
-func AddGroup(users []string, groups []string) ([]models.GroupModifyResults, *customError.Error) {
+func AddGroup(username string, groups []string) ([]models.GroupModifyResults, *customError.Error) {
 
 	l, cError := connectToLDAP()
 	if cError != nil {
@@ -139,7 +138,7 @@ func AddGroup(users []string, groups []string) ([]models.GroupModifyResults, *cu
 	defer l.Unbind()
 
 	var usersDN map[string]string
-	if usersDN, cError = GetUsersDN(users); cError != nil {
+	if usersDN, cError = GetUsersDN([]string{username}); cError != nil {
 		return []models.GroupModifyResults{}, cError
 	}
 
@@ -177,7 +176,7 @@ func AddGroup(users []string, groups []string) ([]models.GroupModifyResults, *cu
 	return response, nil
 }
 
-func RemoveGroup(users []string, groups []string) ([]models.GroupModifyResults, *customError.Error) {
+func RemoveGroup(username string, groups []string) ([]models.GroupModifyResults, *customError.Error) {
 
 	l, cError := connectToLDAP()
 	if cError != nil {
@@ -186,7 +185,7 @@ func RemoveGroup(users []string, groups []string) ([]models.GroupModifyResults, 
 	defer l.Close()
 	defer l.Unbind()
 
-	usersDN, cError := GetUsersDN(users)
+	usersDN, cError := GetUsersDN([]string{username})
 
 	if cError != nil {
 		return []models.GroupModifyResults{}, cError

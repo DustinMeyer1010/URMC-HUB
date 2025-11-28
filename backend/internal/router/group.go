@@ -22,6 +22,20 @@ func groupRoutes(mux *mux.Router) {
 			http.HandlerFunc(handlers.RemoveUsersFromGroup),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
+		{
+			methods{"GET", "OPTION"},
+			"/api/{group}/info",
+			http.HandlerFunc(handlers.PullUserInformation),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+		/*
+			{
+				methods{"GET", "OPTION"},
+				"/api/{group}/members",
+				http.HandlerFunc(handlers.RemoveUsersFromGroup),
+				middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+			},
+		*/
 	}
 
 	routes.add(mux)

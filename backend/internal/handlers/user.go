@@ -46,19 +46,22 @@ func LockOutStatus(w http.ResponseWriter, r *http.Request) {
 
 func RemoveGroup(w http.ResponseWriter, r *http.Request) {
 
-	var groupModify models.GroupModify
+	vars := mux.Vars(r)
+	username := vars["username"]
+
+	var userModify models.UserModifyMemberOf
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 
-	if jsonError := decoder.Decode(&groupModify); jsonError != nil {
+	if jsonError := decoder.Decode(&userModify); jsonError != nil {
 		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS IN BODY")
 		http.Error(w, cError.Type, cError.StatusCode)
 		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	modifyResults, cError := ad.RemoveGroup(groupModify.Users, groupModify.Groups)
+	modifyResults, cError := ad.RemoveGroup(username, userModify.Groups)
 
 	if cError != nil {
 		http.Error(w, cError.Type, cError.StatusCode)
@@ -74,19 +77,23 @@ func RemoveGroup(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddGroup(w http.ResponseWriter, r *http.Request) {
-	var groupModify models.GroupModify
+
+	vars := mux.Vars(r)
+	username := vars["username"]
+
+	var userModify models.UserModifyMemberOf
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 
-	if jsonError := decoder.Decode(&groupModify); jsonError != nil {
+	if jsonError := decoder.Decode(&userModify); jsonError != nil {
 		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS IN BODY")
 		http.Error(w, cError.Type, cError.StatusCode)
 		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	modifyResults, cError := ad.AddGroup(groupModify.Users, groupModify.Groups)
+	modifyResults, cError := ad.AddGroup(username, userModify.Groups)
 
 	if cError != nil {
 		http.Error(w, cError.Type, cError.StatusCode)
@@ -161,4 +168,24 @@ func BulkUserSearch(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Disposition", `attachment; filename="example.xlsx"`)
 	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(buf.Bytes())))
 	w.Write(buf.Bytes())
+}
+
+func GetAllMembers(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	group := vars["group"]
+
+	members, cError := service.GetAllMembers(group)
+
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
+		return
+	}
+
+	jsonData, _ := json.Marshal(members)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
+
 }

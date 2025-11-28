@@ -4,3 +4,8 @@ export type GroupSimpleInfo = {
     information: string,
     description: string,
 }
+
+
+export type GroupPageInfo = {
+    
+}
