@@ -48,9 +48,10 @@ func RemoveGroup(w http.ResponseWriter, r *http.Request) {
 
 	var groupModify models.GroupModify
 
-	err := json.NewDecoder(r.Body).Decode(&groupModify)
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
 
-	if err != nil {
+	if jsonError := decoder.Decode(&groupModify); jsonError != nil {
 		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS IN BODY")
 		http.Error(w, cError.Type, cError.StatusCode)
 		w.Write([]byte(cError.Msg))
@@ -75,9 +76,10 @@ func RemoveGroup(w http.ResponseWriter, r *http.Request) {
 func AddGroup(w http.ResponseWriter, r *http.Request) {
 	var groupModify models.GroupModify
 
-	err := json.NewDecoder(r.Body).Decode(&groupModify)
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
 
-	if err != nil {
+	if jsonError := decoder.Decode(&groupModify); jsonError != nil {
 		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS IN BODY")
 		http.Error(w, cError.Type, cError.StatusCode)
 		w.Write([]byte(cError.Msg))
@@ -134,9 +136,10 @@ func BulkUserSearch(w http.ResponseWriter, r *http.Request) {
 
 	var values []string = []string{}
 
-	err := json.NewDecoder(r.Body).Decode(&values)
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
 
-	if err != nil {
+	if jsonError := decoder.Decode(&values); jsonError != nil {
 		http.Error(w, "failed to parse body", http.StatusBadRequest)
 		return
 	}

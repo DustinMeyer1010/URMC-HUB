@@ -16,9 +16,10 @@ func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
 
 	var modify models.ModifyMembers
 
-	jsonError := json.NewDecoder(r.Body).Decode(&modify)
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
 
-	if jsonError != nil {
+	if jsonError := decoder.Decode(&modify); jsonError != nil {
 		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS ARRAY")
 		http.Error(w, cError.Type, cError.StatusCode)
 		w.Write([]byte(cError.Msg))
@@ -40,9 +41,10 @@ func RemoveUsersFromGroup(w http.ResponseWriter, r *http.Request) {
 
 	var modify models.ModifyMembers
 
-	jsonError := json.NewDecoder(r.Body).Decode(&modify)
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
 
-	if jsonError != nil {
+	if jsonError := decoder.Decode(&modify); jsonError != nil {
 		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS ARRAY")
 		http.Error(w, cError.Type, cError.StatusCode)
 		w.Write([]byte(cError.Msg))

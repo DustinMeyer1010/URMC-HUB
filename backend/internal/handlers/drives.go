@@ -11,7 +11,9 @@ func DriveAccess(w http.ResponseWriter, r *http.Request) {
 
 	var groups []string
 
-	if err := json.NewDecoder(r.Body).Decode(&groups); err != nil {
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(&groups); err != nil {
 		http.Error(w, "INVALID_BODY", http.StatusBadRequest)
 		return
 	}
