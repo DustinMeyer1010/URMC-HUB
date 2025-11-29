@@ -32,7 +32,7 @@ export class BulkLookUpStateClass {
         const formData = new FormData();
         formData.append("file", this.files[0])
 
-        const res = await fetch("http://localhost:8000/api/users/bulk/lookup/file", {
+        const res = await fetch("http://localhost:8000/api/users/bulk-lookup-file", {
             method: "POST",
             body: formData
         });
@@ -46,7 +46,7 @@ export class BulkLookUpStateClass {
 
 
 
-        const res = await fetch("http://localhost:8000/api/users/bulk/lookup", {
+        const res = await fetch("http://localhost:8000/api/users/bulk-lookup", {
             method: "POST",
             body: JSON.stringify(values)
         })
