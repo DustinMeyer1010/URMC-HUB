@@ -28,7 +28,7 @@
 
     const addGroup = async (group: string) => {
         results = []
-        const res = await fetch(`http://localhost:8000/api/user/${currentUser}`, {
+        const res = await fetch(`http://localhost:8000/api/user/${currentUser}/memberof`, {
             method: "POST",
             mode: "cors",
             body: JSON.stringify({

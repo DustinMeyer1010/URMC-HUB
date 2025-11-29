@@ -27,7 +27,7 @@ export class UserStateClass implements UserStateInterface {
 
     UserFullInfo = async (username: string): Promise<UserFullInfo> => {
 
-        const response: Response = await fetch(`http://localhost:8000/api/user/info/${username}`);
+        const response: Response = await fetch(`http://localhost:8000/api/user/${username}`);
 
         if (!response.ok) {
             throw redirect(301, "/search")

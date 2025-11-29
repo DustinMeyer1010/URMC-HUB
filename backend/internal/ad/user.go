@@ -92,7 +92,7 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, *customError.
 		return user, &cError
 	}
 
-	if results == nil {
+	if results == nil || len(results.Entries) == 0 {
 		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO USER FOUND FOR: %s", searchValue))
 		return user, &cError
 	}

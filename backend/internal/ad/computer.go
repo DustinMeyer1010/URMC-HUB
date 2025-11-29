@@ -51,7 +51,7 @@ func PullComputerInformation(computer string) (models.ComputerSimpleInfo, *custo
 		return models.ComputerSimpleInfo{}, &cError
 	}
 
-	if len(results.Entries) == 0 {
+	if results == nil || len(results.Entries) == 0 {
 		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO COMPUTER FOUND FOR: %s", computer))
 		return models.ComputerSimpleInfo{}, &cError
 	}

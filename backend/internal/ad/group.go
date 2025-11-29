@@ -70,7 +70,7 @@ func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
 		return groupInfo, &cError
 	}
 
-	if results == nil {
+	if results == nil || len(results.Entries) == 0 {
 		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO GROUP FOUND FOR: %s", group))
 		return groupInfo, &cError
 	}

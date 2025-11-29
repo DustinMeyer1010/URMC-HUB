@@ -10,7 +10,7 @@
 	import { page } from "$app/state";
 
     import  { type Section, Sections } from "@t/section";
-	import { UserStateClass } from "../state.svelte";
+	import { UserStateClass } from "./state.svelte";
 	import PageLoading from "@components/Loading-Animations/PageLoading.svelte";
 
     let { data } : { data: {username: string} } = $props();

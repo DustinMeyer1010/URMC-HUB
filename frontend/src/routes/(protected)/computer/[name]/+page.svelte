@@ -5,6 +5,7 @@
     import ComputerOfflineIcon from "$lib/assets/computer-offline.png"
 	import { onMount } from "svelte";
     import DisabledIcon from "$lib/assets/disabled-computer.png"
+	import Ping from "@components/Computer/Ping.svelte";
 
     let { data } : {data: {name: string}} = $props();
 
@@ -15,7 +16,7 @@
 
 
     onMount(async () => {
-        let res = await fetch(`http://localhost:8000/api/computer/info/${data.name}`)
+        let res = await fetch(`http://localhost:8000/api/computer/${data.name}/info`)
 
         computer = await res.json()
     })
@@ -43,21 +44,7 @@
             <li><b>OS:</b> {computer.computer_info.operating_system}</li>
         </ul>
     </div>
-
-    <div class="ping-results" >
-        <h1>Ping Results</h1>
-        {#if computer.is_online}
-            <span>{computer.ping_results}</span>
-        {:else} 
-            <p>Computer is not responding to pings.</p>
-            <h2>Causes: </h2>
-            <ul>
-                <li>Customer is remote</li>
-                <li>Computer is disbaled</li>
-                <li>Computer is powered off</li>
-            </ul>
-        {/if}
-    </div>
+    <Ping isOnline={computer.is_online} pingResults={computer.ping_results}/>
 {:else}
 
 <PageLoading/>
@@ -99,27 +86,6 @@
         border-radius: 20px;
     }
 
-    div.ping-results span {
-        width: 50%;
-        align-self: center;
-
-    }
-
-    div.ping-results{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align: center;
-    }
-
-    div.ping-results ul {
-        list-style-type: disc;
-        font-size: 12px;
-    }
-
-    div.ping-results h2 {
-        text-align: left;
-    }
 
     div.header {
         position: relative;

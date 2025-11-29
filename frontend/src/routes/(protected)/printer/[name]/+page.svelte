@@ -63,11 +63,7 @@
         loading = false
         res = await fetch(`http://localhost:8000/api/printer/ping/${printer.ip.replace(/_.*/, "")}`)
 
-
-
-
-        const str = await res.text();
-        isOnline = str.includes("Successfully")
+        isOnline = res.status == 200
         eRecordPrinter = printer.server.includes("eRcd-CPA")
 
         res = await fetch(`http://localhost:8000/api/printer/related/${printer.ip.replace(/_.*/, "")}`)

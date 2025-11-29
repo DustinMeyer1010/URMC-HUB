@@ -2,8 +2,7 @@ package service
 
 import (
 	"fmt"
-	"net"
-	"time"
+	"os/exec"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
@@ -16,13 +15,11 @@ func PullPrinterInformation(server, queue string) (models.PrinterSimpleInfo, *cu
 }
 
 func PingPrinter(ip string) error {
-	timeout := 2 * time.Second
-	conn, err := net.DialTimeout("tcp", net.JoinHostPort(ip, "80"), timeout)
-	if err != nil {
-		return err
-	}
-	conn.Close()
-	return nil
+	cmd := exec.Command("ping", "-n", "1", ip)
+	out, err := cmd.CombinedOutput()
+	fmt.Println(string(out))
+	fmt.Println(err)
+	return err
 }
 
 func RelatedPrinters(ip string) ([]models.PrinterSimpleInfo, *customError.Error) {

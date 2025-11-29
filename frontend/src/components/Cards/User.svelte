@@ -19,7 +19,7 @@
     } = $props();
 
     const allCopyText: string = `Name: ${item.name}\nUsername: ${item.username}\nNet_ID: ${item.net_id}\nURID: ${item.urid}\nEmail: ${item.email}\nOU: ${item.ou}\n`;
-    const disabled = item.ou.toLowerCase().includes("disabled")
+    const disabled = item.ou.toLowerCase().includes("disabled") || item.ou.toLocaleLowerCase().includes("offboarded")
 </script>
 
 

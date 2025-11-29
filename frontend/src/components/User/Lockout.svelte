@@ -27,7 +27,7 @@
         }
 
         loading = true
-        const response: Response = await fetch(`http://localhost:8000/api/lockout/${username}`)
+        const response: Response = await fetch(`http://localhost:8000/api/user/${username}/lockout`)
         data = await response.json()
 
         data.sort((a, b) =>  new Date(b.time).getTime() - new Date(a.time).getTime())

@@ -29,6 +29,7 @@ const config = {
 				'/group/index',
 				'/user/index',
 				'/printer/index',
+				'/bulk-lookup',
 				'/bookmarks',
 				'/search',
 				'/api',
@@ -40,11 +41,11 @@ const config = {
 				'/api/search/groups',
 				'/api/auth/login',
 				'/api/auth/verify',
-				'/api/user/add_group',
-				'/api/user/drive_access',
+				'/api/user/add-group',
+				'/api/user/drive-access',
 				'/api/user/information',
 				'/api/user/lockout',
-				'/api/user/remove_group',
+				'/api/user/remove-group',
 
 			]
 			},	
