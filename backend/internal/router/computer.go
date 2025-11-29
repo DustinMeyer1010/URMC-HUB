@@ -12,7 +12,7 @@ func computerRoutes(mux *mux.Router) {
 	routes := routes{
 		{
 			methods{"GET"},
-			"/api/computer/info/{computer}",
+			"/api/computer/{computer}/info",
 			http.HandlerFunc(handlers.ComputerInfo),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},

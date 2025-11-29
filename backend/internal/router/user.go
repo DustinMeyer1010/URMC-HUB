@@ -14,13 +14,13 @@ func userRoutes(mux *mux.Router) {
 	routes := routes{
 		{
 			methods{"GET"},
-			"/api/user/info/{username}",
+			"/api/user/{username}",
 			http.HandlerFunc(handlers.PullUserInformation),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"GET"},
-			"/api/lockout/{username}",
+			"/api/user/{username}/lockout",
 			http.HandlerFunc(handlers.LockOutStatus),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
@@ -38,13 +38,13 @@ func userRoutes(mux *mux.Router) {
 		},
 		{
 			methods{"POST", "OPTIONS"},
-			"/api/user/{username}",
+			"/api/user/{username}/memberof",
 			http.HandlerFunc(handlers.AddGroup),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"DELETE", "OPTIONS"},
-			"/api/user/{username}",
+			"/api/user/{username}/memberof",
 			http.HandlerFunc(handlers.RemoveGroup),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
