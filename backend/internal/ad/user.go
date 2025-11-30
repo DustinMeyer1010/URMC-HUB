@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/go-ldap/ldap/v3"
 )
@@ -23,6 +24,8 @@ func SearchAllUsers(searchValue string) ([]models.UserSimpleInfo, *customError.E
 	defer l.Close()
 	defer l.Unbind()
 
+	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
+
 	filter := fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue)
 
 	ldapConfig := SearchConfig(
@@ -39,11 +42,12 @@ func SearchAllUsers(searchValue string) ([]models.UserSimpleInfo, *customError.E
 	results, ldapError := ldapConfig.Search(l)
 
 	if ldapError != nil {
+		logger.ServerLogger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return matches, &cError
 	}
 
-	if results == nil {
+	if results == nil || len(results.Entries) == 0 {
 		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO USERS FOUND FOR: %s", searchValue))
 		return matches, &cError
 	}
@@ -63,6 +67,8 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, *customError.
 
 	catagory := "user"
 	attribute := "SAMAccountName"
+
+	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
 
 	results, ldapError := SearchAllByCategory(
 		catagory,
@@ -88,6 +94,7 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, *customError.
 	)
 
 	if ldapError != nil {
+		logger.ServerLogger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return user, &cError
 	}
@@ -241,6 +248,7 @@ func GetUsersDN(users []string) (map[string]string, *customError.Error) {
 		results, ldapError := SearchByCategory("user", "SAMaccountName", user, "dn")
 
 		if ldapError != nil {
+			logger.ServerLogger.Error(ldapError)
 			cError := customError.LDAP_ERROR.NewError(ldapError)
 			return userDN, &cError
 		}
@@ -272,10 +280,11 @@ func UserDetails(input string) ([]models.UserDetails, error) {
 		return []models.UserDetails{}, fmt.Errorf("connection to Ldap is nil")
 	}
 
-	results, err := config.Search(persistConn)
+	results, ldapError := config.Search(persistConn)
 
-	if err != nil {
-		return []models.UserDetails{}, err
+	if ldapError != nil {
+		logger.ServerLogger.Error(ldapError)
+		return []models.UserDetails{}, ldapError
 	}
 
 	if len(results.Entries) == 0 {
@@ -334,6 +343,7 @@ func BulkLookup(values []string) (unique []BulkSearchResult, duplicates [][]Bulk
 		results, err := UserDetails(value)
 
 		if err != nil && err.Error() != "NOT_FOUND" {
+
 			notFound = append(notFound, currentSearch)
 			continue
 		}

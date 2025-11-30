@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/server"
 	"github.com/getlantern/systray"
 )
 
 func onExit() {
-	fmt.Println("Exiting application...")
+	logger.ServerLogger.Info("Server Shut Down")
 }
 
 func setupTrayIcon() {
@@ -31,7 +32,6 @@ func checkRunning(port int) bool {
 	address := fmt.Sprintf("0.0.0.0:%d", port)
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
-		fmt.Println("Port already in use")
 		return true
 	}
 	defer listener.Close()

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/go-ldap/ldap/v3"
 )
@@ -24,7 +25,7 @@ func SearchAllGroups(searchValue string) ([]models.GroupSimpleInfo, *customError
 
 	results, ldapError := SearchAllByCategory(
 		"group",
-		"cn",
+		"anr",
 		searchValue,
 		"cn",
 		"distinguishedName",
@@ -34,6 +35,7 @@ func SearchAllGroups(searchValue string) ([]models.GroupSimpleInfo, *customError
 	)
 
 	if ldapError != nil {
+		logger.ServerLogger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return matches, &cError
 	}
@@ -66,6 +68,7 @@ func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
 	)
 
 	if ldapError != nil {
+		logger.ServerLogger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return groupInfo, &cError
 	}
@@ -85,7 +88,6 @@ func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
 }
 
 func AddUsersToGroup(group string, newMembers []string) (map[string]models.GroupModifyResults, *customError.Error) {
-
 	var results map[string]models.GroupModifyResults = make(map[string]models.GroupModifyResults)
 
 	usersDN, cError := GetUsersDN(newMembers)
@@ -116,7 +118,6 @@ func AddUsersToGroup(group string, newMembers []string) (map[string]models.Group
 }
 
 func RemoveUsersFromGroup(group string, members []string) (map[string]models.GroupModifyResults, *customError.Error) {
-
 	var cError *customError.Error
 	var results map[string]models.GroupModifyResults = make(map[string]models.GroupModifyResults)
 
@@ -180,6 +181,7 @@ func GetGroupDN(group string) (string, *customError.Error) {
 	results, ldapError := SearchByCategory("group", "cn", group, "dn")
 
 	if ldapError != nil {
+		logger.ServerLogger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return "", &cError
 	}
@@ -206,6 +208,7 @@ func ModifyGroupNewMember(groupDN, user string) *customError.Error {
 	ldapError := l.Modify(addRequest)
 
 	if ldapError != nil {
+		logger.ServerLogger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return &cError
 	}
@@ -227,6 +230,7 @@ func ModifyGroupRemoveMember(groupDN, user string) *customError.Error {
 	ldapError := l.Modify(addRequest)
 
 	if ldapError != nil {
+		logger.ServerLogger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return &cError
 	}

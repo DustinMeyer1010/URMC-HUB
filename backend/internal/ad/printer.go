@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
@@ -40,6 +41,7 @@ func fetchPrinters() ([]models.PrinterSimpleInfo, *customError.Error) {
 	resp, requestError := http.Get("https://apps.mc.rochester.edu/ISD/SIG/PrintQueues/PrintQReport.csv")
 
 	if requestError != nil {
+		logger.ServerLogger.Error(requestError)
 		cError := customError.REQUEST_ERROR.NewError(requestError)
 		return printers, &cError
 	}
@@ -50,6 +52,7 @@ func fetchPrinters() ([]models.PrinterSimpleInfo, *customError.Error) {
 	records, fileReadError := file.ReadAll()
 
 	if fileReadError != nil {
+		logger.ServerLogger.Error(fileReadError)
 		cError := customError.READ_FILE_ERROR.NewError(fileReadError)
 		return printers, &cError
 	}

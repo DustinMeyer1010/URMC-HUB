@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 	"github.com/gorilla/mux"
 )
 
 func PrinterInformation(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 	vars := mux.Vars(r)
 	server := vars["server"]
 
@@ -41,6 +43,7 @@ func PrinterInformation(w http.ResponseWriter, r *http.Request) {
 }
 
 func PingPrinter(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 	vars := mux.Vars(r)
 	ip := vars["ip"]
 
@@ -56,6 +59,7 @@ func PingPrinter(w http.ResponseWriter, r *http.Request) {
 }
 
 func RelatedPrinters(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 	vars := mux.Vars(r)
 	ip := vars["ip"]
 

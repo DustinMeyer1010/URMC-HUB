@@ -7,6 +7,7 @@ import (
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
@@ -16,6 +17,7 @@ func SearchAllDrives(searchValue string) ([]models.DriveSimpleInfo, *customError
 	mapping, err := getDriveToGroupsMapping()
 
 	if err != nil {
+		logger.ServerLogger.Error(err)
 		return allDrives, &customError.FILE_UNREACHABLE
 	}
 
@@ -62,6 +64,7 @@ func GetGroupToDrivesMapping() (map[string][]string, *customError.Error) {
 	defer file.Close()
 
 	if err != nil {
+		logger.ServerLogger.Error(err)
 		return make(map[string][]string), &customError.FILE_UNREACHABLE
 	}
 
@@ -80,6 +83,7 @@ func getDriveToGroupsMapping() (map[string][]string, *customError.Error) {
 	defer file.Close()
 
 	if err != nil {
+		logger.ServerLogger.Error(err)
 		return make(map[string][]string), &customError.FILE_UNREACHABLE
 	}
 
@@ -115,6 +119,7 @@ func openLogonServer() (*bufio.Scanner, *os.File, error) {
 	file, err := os.Open(global.LOGON)
 
 	if err != nil {
+		logger.ServerLogger.Error(err)
 		return nil, nil, err
 	}
 

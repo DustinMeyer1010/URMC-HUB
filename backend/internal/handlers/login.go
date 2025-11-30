@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 	var user models.UserLogin
 
 	decoder := json.NewDecoder(r.Body)

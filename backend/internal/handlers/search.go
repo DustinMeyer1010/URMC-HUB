@@ -6,11 +6,14 @@ import (
 	"net/url"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 	"github.com/gorilla/mux"
 )
 
 func AllSearch(w http.ResponseWriter, r *http.Request) {
+
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 
 	matches, cError := service.AllSearch(r)
 
@@ -30,6 +33,8 @@ func AllSearch(w http.ResponseWriter, r *http.Request) {
 
 func UserSearch(w http.ResponseWriter, r *http.Request) {
 
+	logger.LogRequestInfo(r.Method, r.URL.Path)
+
 	vars := mux.Vars(r)
 	searchValue := vars["searchValue"]
 
@@ -45,12 +50,15 @@ func UserSearch(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.Marshal(userMatches)
 
+	logger.ServerLogger.Info(jsonData)
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
 }
 
 func GroupSearch(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 
 	groupMatches, cError := service.SearchAllGroups(r)
 
@@ -69,6 +77,7 @@ func GroupSearch(w http.ResponseWriter, r *http.Request) {
 }
 
 func PrinterSearch(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 
 	vars := mux.Vars(r)
 	searchValue := vars["searchValue"]
@@ -90,6 +99,7 @@ func PrinterSearch(w http.ResponseWriter, r *http.Request) {
 }
 
 func ComputerSearch(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 
 	vars := mux.Vars(r)
 	searchValue := vars["searchValue"]
@@ -113,6 +123,7 @@ func ComputerSearch(w http.ResponseWriter, r *http.Request) {
 }
 
 func ShareDriveSearch(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 
 	vars := mux.Vars(r)
 	searchValue := vars["searchValue"]

@@ -8,12 +8,14 @@ import (
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 	"github.com/gorilla/mux"
 )
 
 func PullUserInformation(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 	vars := mux.Vars(r)
 	username := vars["username"]
 
@@ -32,6 +34,7 @@ func PullUserInformation(w http.ResponseWriter, r *http.Request) {
 }
 
 func LockOutStatus(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 
 	vars := mux.Vars(r)
 	username := vars["username"]
@@ -45,6 +48,7 @@ func LockOutStatus(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveGroup(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 
 	vars := mux.Vars(r)
 	username := vars["username"]
@@ -77,6 +81,7 @@ func RemoveGroup(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddGroup(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 
 	vars := mux.Vars(r)
 	username := vars["username"]
@@ -110,6 +115,7 @@ func AddGroup(w http.ResponseWriter, r *http.Request) {
 }
 
 func BulkUserSearchFile(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 	r.ParseMultipartForm(1 << 20)
 
 	uploadedfiles, ok := r.MultipartForm.File["file"]
@@ -140,6 +146,7 @@ func BulkUserSearchFile(w http.ResponseWriter, r *http.Request) {
 }
 
 func BulkUserSearch(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 
 	var values []string = []string{}
 
@@ -171,6 +178,7 @@ func BulkUserSearch(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllMembers(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 	vars := mux.Vars(r)
 	group := vars["group"]
 

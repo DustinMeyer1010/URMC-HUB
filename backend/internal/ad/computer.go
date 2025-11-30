@@ -4,14 +4,16 @@ import (
 	"fmt"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
 func SearchAllComputers(searchValue string) ([]models.ComputerSimpleInfo, *customError.Error) {
 	matches := []models.ComputerSimpleInfo{}
+	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
 	results, ldapError := SearchAllByCategory(
 		"computer",
-		"name",
+		"anr",
 		searchValue,
 		"name",
 		"operatingSystem",
@@ -24,6 +26,7 @@ func SearchAllComputers(searchValue string) ([]models.ComputerSimpleInfo, *custo
 	}
 
 	if ldapError != nil {
+		logger.ServerLogger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return matches, &cError
 	}
@@ -36,7 +39,7 @@ func SearchAllComputers(searchValue string) ([]models.ComputerSimpleInfo, *custo
 }
 
 func PullComputerInformation(computer string) (models.ComputerSimpleInfo, *customError.Error) {
-
+	computer = LDAP_STRING_REPLACE.Replace(computer)
 	results, ldapError := SearchByCategory(
 		"computer",
 		"name",
@@ -47,6 +50,7 @@ func PullComputerInformation(computer string) (models.ComputerSimpleInfo, *custo
 	)
 
 	if ldapError != nil {
+		logger.ServerLogger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return models.ComputerSimpleInfo{}, &cError
 	}

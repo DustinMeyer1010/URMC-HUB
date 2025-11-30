@@ -6,11 +6,13 @@ import (
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/gorilla/mux"
 )
 
 func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
 	vars := mux.Vars(r)
 	group := vars["group"]
 
@@ -42,6 +44,7 @@ func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveUsersFromGroup(w http.ResponseWriter, r *http.Request) {
+	logger.ServerLogger.Infof("%s %s", r.Method, r.URL)
 	vars := mux.Vars(r)
 	group := vars["group"]
 
