@@ -17,7 +17,7 @@ func SearchAllDrives(searchValue string) ([]models.DriveSimpleInfo, *customError
 	mapping, err := getDriveToGroupsMapping()
 
 	if err != nil {
-		logger.ServerLogger.Error(err)
+		logger.Error(err)
 		return allDrives, &customError.FILE_UNREACHABLE
 	}
 
@@ -64,7 +64,7 @@ func GetGroupToDrivesMapping() (map[string][]string, *customError.Error) {
 	defer file.Close()
 
 	if err != nil {
-		logger.ServerLogger.Error(err)
+		logger.Error(err)
 		return make(map[string][]string), &customError.FILE_UNREACHABLE
 	}
 
@@ -83,7 +83,7 @@ func getDriveToGroupsMapping() (map[string][]string, *customError.Error) {
 	defer file.Close()
 
 	if err != nil {
-		logger.ServerLogger.Error(err)
+		logger.Error(err)
 		return make(map[string][]string), &customError.FILE_UNREACHABLE
 	}
 
@@ -119,7 +119,7 @@ func openLogonServer() (*bufio.Scanner, *os.File, error) {
 	file, err := os.Open(global.LOGON)
 
 	if err != nil {
-		logger.ServerLogger.Error(err)
+		logger.Error(err)
 		return nil, nil, err
 	}
 

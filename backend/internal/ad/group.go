@@ -35,7 +35,7 @@ func SearchAllGroups(searchValue string) ([]models.GroupSimpleInfo, *customError
 	)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return matches, &cError
 	}
@@ -68,7 +68,7 @@ func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
 	)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return groupInfo, &cError
 	}
@@ -79,7 +79,7 @@ func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
 	}
 
 	if len(results.Entries) > 1 {
-		fmt.Println(results.Entries)
+		logger.Debugf("Multiple Group Entries: %+v\n Input: %s", results.Entries, group)
 	}
 
 	entry := results.Entries[0]
@@ -181,7 +181,7 @@ func GetGroupDN(group string) (string, *customError.Error) {
 	results, ldapError := SearchByCategory("group", "cn", group, "dn")
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return "", &cError
 	}
@@ -208,7 +208,7 @@ func ModifyGroupNewMember(groupDN, user string) *customError.Error {
 	ldapError := l.Modify(addRequest)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return &cError
 	}
@@ -230,7 +230,7 @@ func ModifyGroupRemoveMember(groupDN, user string) *customError.Error {
 	ldapError := l.Modify(addRequest)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return &cError
 	}

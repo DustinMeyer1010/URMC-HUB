@@ -26,7 +26,7 @@ func SearchAllComputers(searchValue string) ([]models.ComputerSimpleInfo, *custo
 	}
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return matches, &cError
 	}
@@ -50,7 +50,7 @@ func PullComputerInformation(computer string) (models.ComputerSimpleInfo, *custo
 	)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return models.ComputerSimpleInfo{}, &cError
 	}

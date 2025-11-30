@@ -18,7 +18,7 @@ func main() {
 	//db.Init()
 
 	if checkRunning(8000) {
-		logger.ServerLogger.Error("Server already running on 8000")
+		logger.Error("Server already running on 8000")
 		os.Exit(1)
 	}
 

@@ -6,6 +6,7 @@ import (
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
@@ -16,9 +17,8 @@ func PullPrinterInformation(server, queue string) (models.PrinterSimpleInfo, *cu
 
 func PingPrinter(ip string) error {
 	cmd := exec.Command("ping", "-n", "1", ip)
-	out, err := cmd.CombinedOutput()
-	fmt.Println(string(out))
-	fmt.Println(err)
+	_, err := cmd.CombinedOutput()
+	logger.Error(err)
 	return err
 }
 

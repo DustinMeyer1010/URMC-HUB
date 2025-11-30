@@ -1,9 +1,7 @@
 package service
 
 import (
-	"fmt"
 	"os/exec"
-	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
@@ -39,6 +37,7 @@ func Ping(host string) (string, error) {
 	return string(out), err
 }
 
+/*
 func parsePingInformation(output string) {
 
 	out := strings.SplitSeq(output, "\r\n\r\n")
@@ -49,15 +48,13 @@ func parsePingInformation(output string) {
 			fmt.Printf("Section: %s\n", section)
 		}
 	}
-
-	/*
 		re := regexp.MustCompile(`\[(.*?)\]`)
 
 		matches := re.FindStringSubmatch(output)
 
 		fmt.Println(matches)
-	*/
 }
+*/
 
 type PingResults struct {
 	DNS        string

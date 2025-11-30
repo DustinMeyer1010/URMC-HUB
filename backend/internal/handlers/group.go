@@ -44,7 +44,7 @@ func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveUsersFromGroup(w http.ResponseWriter, r *http.Request) {
-	logger.ServerLogger.Infof("%s %s", r.Method, r.URL)
+	logger.Infof("%s %s", r.Method, r.URL)
 	vars := mux.Vars(r)
 	group := vars["group"]
 

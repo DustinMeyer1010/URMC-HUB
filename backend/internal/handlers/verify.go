@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
@@ -10,13 +9,14 @@ import (
 
 // Verify that the users creds are still valid
 func Verify(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
 
-	err := ad.Verify()
+	cError := ad.Verify()
 
-	if err != nil {
-		fmt.Println(err)
+	if cError != nil {
+		logger.LogRequestInfo(r.Method, r.URL.Path)
+		logger.Error(cError)
 		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte(cError.Msg))
 		return
 	}
 	w.WriteHeader(http.StatusOK)

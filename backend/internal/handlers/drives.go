@@ -22,18 +22,17 @@ func DriveAccess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger.ServerLogger.Infof("Finding Drive Access | Input: %s", groups)
+	logger.Infof("Finding Drive Access | Input: %s", groups)
 
 	drives, cError := service.GetDriveAccess(groups)
 
 	if cError != nil {
-		logger.ServerLogger.Errorf("%s %s", cError.Type, cError.Msg)
+		logger.Errorf("%s %s", cError.Type, cError.Msg)
 		http.Error(w, cError.Type, cError.StatusCode)
 		w.Write([]byte(cError.Msg))
 		return
 	}
 
-	logger.ServerLogger.Infof("Found Computers | Input: %+v", drives)
 	jsonData, _ := json.Marshal(drives)
 
 	w.Header().Set("Content-Type", "application/json")

@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { copyToClip, type CopyState } from '$lib/helper/copy.svelte';
+	import { isLoggedIn } from '$lib/login';
 	import Printer from '@components/Cards/Printer.svelte';
 	import CopyButton from '@components/CopyButton.svelte';
 	import PageLoading from '@components/Loading-Animations/PageLoading.svelte';
@@ -42,6 +43,7 @@
 
 
     const PageInformation = async () => {
+
         loading = true
         let urlParams = page.url.searchParams;
         let queue = urlParams.get("queue")

@@ -22,7 +22,7 @@ func LockoutInfoData(user string) (matches []models.LockOutStatus) {
 			defer wg.Done()
 			result, err := ServerLockout(server, user)
 			if err != nil {
-				logger.ServerLogger.Error(err)
+				logger.Error(err)
 				return
 			}
 			matches = append(matches, result)
@@ -57,7 +57,7 @@ func ServerLockout(server string, user string) (models.LockOutStatus, *customErr
 	results, ldapError := config.Search(l)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return models.LockOutStatus{}, &cError
 	}

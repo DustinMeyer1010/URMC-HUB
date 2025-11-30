@@ -29,7 +29,7 @@
         });
 
         if (res.status == 200) {
-            goto("/", {invalidateAll: true, replaceState: true, keepFocus: true})
+            window.location.reload()
             login()
             return
         }

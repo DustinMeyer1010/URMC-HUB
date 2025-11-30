@@ -8,7 +8,9 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-var ServerLogger = New("URMC-HUB")
+// Log located at C:\Users\{username}\AppData\Local\URMC-HUB\app.log
+
+var serverLogger = New("URMC-HUB")
 
 type Logger struct {
 	info  *log.Logger
@@ -61,4 +63,28 @@ func (l *Logger) Errorf(format string, v ...any) {
 
 func (l *Logger) Debugf(format string, v ...any) {
 	l.debug.Printf(format, v...)
+}
+
+func Info(v ...any) {
+	serverLogger.info.Println(v...)
+}
+
+func Error(v ...any) {
+	serverLogger.err.Println(v...)
+}
+
+func Debug(v ...any) {
+	serverLogger.debug.Println(v...)
+}
+
+func Infof(format string, v ...any) {
+	serverLogger.info.Printf(format, v...)
+}
+
+func Errorf(format string, v ...any) {
+	serverLogger.err.Printf(format, v...)
+}
+
+func Debugf(format string, v ...any) {
+	serverLogger.debug.Printf(format, v...)
 }

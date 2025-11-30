@@ -1,10 +1,10 @@
 package ad
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
@@ -32,7 +32,7 @@ func AllSearch(search string) (models.AllResults, *customError.Error) {
 		case []models.PrinterSimpleInfo:
 			result.Printers = results
 		default:
-			fmt.Println("Item not of any type")
+			logger.Errorf("No types found %+v", results)
 		}
 
 	}

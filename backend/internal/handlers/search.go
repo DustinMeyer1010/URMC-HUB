@@ -50,7 +50,7 @@ func UserSearch(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.Marshal(userMatches)
 
-	logger.ServerLogger.Info(jsonData)
+	logger.Info(jsonData)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

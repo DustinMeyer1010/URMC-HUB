@@ -20,7 +20,7 @@ func connectToLDAP() (*ldap.Conn, *customError.Error) {
 	l, ldapError := ldap.DialURL(global.URMC_LDAP)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return nil, &cError
 	}
@@ -40,7 +40,7 @@ func Login(user models.UserLogin) *customError.Error {
 	l, ldapError := ldap.DialURL(global.URMC_LDAP)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return &cError
 	}
@@ -48,7 +48,7 @@ func Login(user models.UserLogin) *customError.Error {
 	ldapError = l.Bind(formatUsername(user.Username), user.Password)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return &cError
 	}
@@ -69,7 +69,7 @@ func ConnectToServer(URL string) (*ldap.Conn, *customError.Error) {
 	l, ldapError := ldap.DialURL(URL)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return nil, &cError
 	}
@@ -77,7 +77,7 @@ func ConnectToServer(URL string) (*ldap.Conn, *customError.Error) {
 	ldapError = l.Bind(fmt.Sprintf("%s\\%s", global.USERNAME_PREFIX, global.Username), global.Password)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return nil, &cError
 	}

@@ -1,3 +1,4 @@
+import { isLoggedIn } from "$lib/login";
 
 
 export const allowedExtensions: string[] = [".txt", ".xlsx", ".csv"];
@@ -29,6 +30,9 @@ export class BulkLookUpStateClass {
     }
 
     fileLookup = async () => {
+        if (!await isLoggedIn.CheckStatus()) {
+            return
+        }
         const formData = new FormData();
         formData.append("file", this.files[0])
 
@@ -42,6 +46,9 @@ export class BulkLookUpStateClass {
     }
 
     textLookup = async () => {
+        if (!await isLoggedIn.CheckStatus()) {
+            return
+        }
         let values = this.textValues.split("\n")
 
 

@@ -1,31 +1,37 @@
 <script lang="ts">
+	import { isLoggedIn } from "$lib/login";
 	import Login from "@components/Login.svelte";
 	import Nav from "@components/Nav.svelte";
-    import { onMount } from "svelte";
+	import { onMount } from "svelte";
 
 
-    let isLoggedIn: boolean = $state(true);
 
     let { children } = $props();
-    onMount(async () => {
-        const res = await fetch("http://localhost:8000/api/verify")
 
-        if (res.status != 200) {
-            isLoggedIn = false
-            return
-        }
+    onMount(() => {
+        isLoggedIn.CheckStatus();
 
-        isLoggedIn = true
+        const interval = setInterval(() => {
+            isLoggedIn.CheckStatus();
+        }, 10000);
 
+        return () => clearInterval(interval);
+    });
 
-    })
 
     const login = () => {
-        isLoggedIn = true
+        isLoggedIn.Login()
     }
+
+    let IsLoggedIn: boolean = $derived.by(() => {
+        return $isLoggedIn
+    })
+
+
+    
 </script>
 
-{#if !isLoggedIn}
+{#if !IsLoggedIn }
     <div>
         <Login login={login} />
     </div>

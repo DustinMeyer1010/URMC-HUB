@@ -10,7 +10,7 @@ import (
 )
 
 func onExit() {
-	logger.ServerLogger.Info("Server Shut Down")
+	logger.Info("Server Shut Down")
 }
 
 func setupTrayIcon() {

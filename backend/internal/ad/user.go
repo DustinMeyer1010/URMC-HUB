@@ -42,7 +42,7 @@ func SearchAllUsers(searchValue string) ([]models.UserSimpleInfo, *customError.E
 	results, ldapError := ldapConfig.Search(l)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return matches, &cError
 	}
@@ -94,7 +94,7 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, *customError.
 	)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
 		return user, &cError
 	}
@@ -248,7 +248,7 @@ func GetUsersDN(users []string) (map[string]string, *customError.Error) {
 		results, ldapError := SearchByCategory("user", "SAMaccountName", user, "dn")
 
 		if ldapError != nil {
-			logger.ServerLogger.Error(ldapError)
+			logger.Error(ldapError)
 			cError := customError.LDAP_ERROR.NewError(ldapError)
 			return userDN, &cError
 		}
@@ -283,7 +283,7 @@ func UserDetails(input string) ([]models.UserDetails, error) {
 	results, ldapError := config.Search(persistConn)
 
 	if ldapError != nil {
-		logger.ServerLogger.Error(ldapError)
+		logger.Error(ldapError)
 		return []models.UserDetails{}, ldapError
 	}
 

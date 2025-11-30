@@ -37,7 +37,6 @@ func Init() {
 }
 
 func createTables(db *sql.DB) error {
-	fmt.Println("Creating Tables")
 	data, _ := fs.ReadFile(schema, "schema/tables.sql")
 
 	_, err := db.Exec(string(data))

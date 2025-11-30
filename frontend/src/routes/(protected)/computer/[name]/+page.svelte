@@ -6,6 +6,7 @@
 	import { onMount } from "svelte";
     import DisabledIcon from "$lib/assets/disabled-computer.png"
 	import Ping from "@components/Computer/Ping.svelte";
+	import { isLoggedIn } from "$lib/login";
 
     let { data } : {data: {name: string}} = $props();
 
@@ -16,6 +17,9 @@
 
 
     onMount(async () => {
+        if (!await isLoggedIn.CheckStatus()) {
+            return
+        }
         let res = await fetch(`http://localhost:8000/api/computer/${data.name}/info`)
 
         computer = await res.json()
