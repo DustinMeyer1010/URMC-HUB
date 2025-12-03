@@ -8,6 +8,7 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 	"github.com/gorilla/mux"
 )
 
@@ -69,6 +70,27 @@ func RemoveUsersFromGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jsonData, _ := json.Marshal(results)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
+
+}
+
+func GetAllMembers(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
+	vars := mux.Vars(r)
+	group := vars["group"]
+
+	members, cError := service.GetAllMembers(group)
+
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
+		return
+	}
+
+	jsonData, _ := json.Marshal(members)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

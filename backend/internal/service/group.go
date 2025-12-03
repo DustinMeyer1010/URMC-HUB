@@ -6,6 +6,6 @@ import (
 )
 
 func GetAllMembers(group string) ([]string, *customError.Error) {
-	ad.GetAllMembers(group)
-	return []string{}, nil
+
+	return ad.GetAllMembers(group)
 }

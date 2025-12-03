@@ -238,7 +238,60 @@ func ModifyGroupRemoveMember(groupDN, user string) *customError.Error {
 	return nil
 }
 
+// NOTE: Total Retrive per request 1500
 // TODO: Retrive all the members of a group
-func GetAllMembers(group string) {
+func GetAllMembers(group string) ([]string, *customError.Error) {
+	start := 0
+	end := 1499
+
+	var final_memeber []string = []string{}
+
+	var temp_members []string = []string{}
+	l, cError := connectToLDAP()
+
+	if cError != nil {
+		fmt.Println(cError)
+		return final_memeber, cError
+	}
+
+	defer l.Close()
+	defer l.Unbind()
+
+	for {
+		config := SearchConfig(fmt.Sprintf("(&(objectCategory=group)(cn=%s))", group), fmt.Sprintf("member;range=%d-%d", start, end))
+		config.Control = nil
+		results, err := config.Search(l)
+
+		if err != nil {
+			cError := customError.LDAP_ERROR.NewError(err)
+			return final_memeber, &cError
+		}
+
+		if results == nil {
+			cError := customError.LDAP_ERROR.NewMessage("Results were return as none from ldap")
+			return final_memeber, &cError
+		}
+
+		if len(results.Entries) == 0 {
+			cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO GROUPS FOUND FOR: %s", group))
+			return final_memeber, &cError
+		}
+
+		result := results.Entries[0]
+
+		for _, attr := range result.Attributes {
+			temp_members = attr.Values
+			final_memeber = append(final_memeber, temp_members...)
+		}
+
+		if len(temp_members) != 1500 {
+			break
+		}
+
+		start += 1500
+		end += 1500
+	}
+
+	return final_memeber, nil
 
 }

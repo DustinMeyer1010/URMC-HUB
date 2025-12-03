@@ -176,24 +176,3 @@ func BulkUserSearch(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(buf.Bytes())))
 	w.Write(buf.Bytes())
 }
-
-func GetAllMembers(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
-	vars := mux.Vars(r)
-	group := vars["group"]
-
-	members, cError := service.GetAllMembers(group)
-
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
-		return
-	}
-
-	jsonData, _ := json.Marshal(members)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
-
-}
