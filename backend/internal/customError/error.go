@@ -39,6 +39,10 @@ func (e Error) GetErrorValue() error {
 	return fmt.Errorf("%s", e.Msg)
 }
 
+func (e Error) ToString() string {
+	return fmt.Sprintf("Error: %s\nMessage: %s", e.Type, e.Msg)
+}
+
 var (
 	UNAUTHORIZED = Error{
 		http.StatusUnauthorized,

@@ -97,3 +97,17 @@ func GetAllMembers(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 
 }
+
+func PullGroupInfo(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
+	vars := mux.Vars(r)
+	group := vars["group"]
+
+	result, _ := ad.PullGroupInfo(group)
+
+	jsonData, _ := json.Marshal(result)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
+}

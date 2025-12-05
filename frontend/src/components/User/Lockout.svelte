@@ -1,9 +1,7 @@
 <script lang="ts">
-	import type { LockoutInfo } from "@t/user";
-	import { onMount } from "svelte";
     import RefreshIcon from '$lib/assets/Refresh-color-text.png'
-
-    let loading: boolean = $state(false)
+	import { onMount } from 'svelte';
+	import  { LockoutStateClass } from "./LockoutState.svelte";
 
     let {
         username
@@ -11,44 +9,22 @@
         username: string
     } = $props();
 
-    let data: LockoutInfo[] = $state([])
-    let refreshedMsg: string = $state("")
-    let refreshedTimeout: ReturnType<typeof setTimeout> | null = $state(null)
+    let LockoutState: LockoutStateClass = new LockoutStateClass(username)
 
-
-    onMount(async () => {
-        refreshLockout()
+    onMount(() => {
+        LockoutState.RefreshLockout()
     })
-
-    const refreshLockout = async () => {
-        if (refreshedTimeout != null) {
-            clearTimeout(refreshedTimeout)
-            refreshedMsg = ""
-        }
-
-        loading = true
-        const response: Response = await fetch(`http://localhost:8000/api/user/${username}/lockout`)
-        data = await response.json()
-
-        data.sort((a, b) =>  new Date(b.time).getTime() - new Date(a.time).getTime())
-        loading = false
-        refreshedMsg = "Refreshed"
-        refreshedTimeout = setTimeout(() => {
-            refreshedMsg = ""
-        }, 1000);
-
-    }
 
 </script>
 
     <section>
-        <span>{refreshedMsg}<button class:loading={loading} onclick={refreshLockout}><img src={RefreshIcon} alt=""></button></span>
+        <span>{LockoutState.RefreshMsg}<button class:loading={LockoutState.loading} onclick={LockoutState.RefreshLockout}><img src={RefreshIcon} alt=""></button></span>
             <div class="header">
                 <div class="remove">Server</div>
                 <div>Attempts</div>
                 <div>Last Attempt</div>
             </div>
-            {#each data as server}
+            {#each LockoutState.LockoutInformation as server}
             <div class="row">
                 <div class="remove">{server.name}</div>
                 <div>{server.count}</div>

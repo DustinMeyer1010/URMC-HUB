@@ -42,7 +42,7 @@
             {:else if UserPageState.currentSection == "DRIVES"}
                 <Drive groups={UserPageState.pageData.member_of}/>
             {:else if UserPageState.currentSection == "GROUPS"}
-                <Groups currentUser={UserPageState.pageData.username} groups={UserPageState.pageData.member_of}/>
+                <Groups username={UserPageState.pageData.username} groups={UserPageState.pageData.member_of}/>
             {:else if UserPageState.currentSection == "ADD"}
                 <Add currentUser={UserPageState.pageData.username}/>
             {/if}
@@ -98,6 +98,9 @@
 
 
     @media (max-width: 465px) {
+        h1 {
+            font-size: 18px;
+        }
         main {
             margin-top: 200px;
         }

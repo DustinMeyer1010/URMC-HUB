@@ -134,7 +134,6 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, *customError.
 
 	return user, nil
 }
-
 func AddGroup(username string, groups []string) ([]models.GroupModifyResults, *customError.Error) {
 
 	l, cError := connectToLDAP()

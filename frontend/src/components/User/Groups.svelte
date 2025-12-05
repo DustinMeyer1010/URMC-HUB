@@ -1,92 +1,45 @@
+<!-- REFACTOR -->
+
 <script lang="ts">
-	import { copyToClip, type CopyState } from "$lib/helper/copy.svelte";
 	import type { GroupSimpleInfo } from "@t/group";
 	import { fly } from "svelte/transition";
 	import Remove from "./Remove.svelte";
-	import { goto } from "$app/navigation";
-	import type { ModifyResults } from "@t/resutls";
-	import Message from "./Message.svelte";
 
-    let copyState: CopyState = $state({
-        copied: "",
-        timeout: null
-    })
+	import Message from "./Message.svelte";
+	import { GroupStateClass } from "./GroupState.svelte";
+	import CopyButton from "@components/CopyButton.svelte";
 
 
     let {
         groups,
-        currentUser
+        username
     } : {
-        currentUser: string
+        username: string
         groups: GroupSimpleInfo[]
     } = $props();
 
-
-
-    let filter: string = $state("")
-    let filteredGroups: GroupSimpleInfo[] = $state(groups.sort((a, b) => a.name.localeCompare(b.name)))
-    let results: ModifyResults[] = $state([])
-    
-
-    $effect(() => {
-        if (filter == "") {
-            filteredGroups = groups
-            return
-        }
-
-        filteredGroups = groups.filter((group) => 
-        group.name.toLowerCase().includes(filter.toLowerCase()))
-
-    })
-
-    const removeGroup = async (group: string) => {
-        results = []
-        const res = await fetch(`http://localhost:8000/api/user/${currentUser}/memberof`, {
-            method: "DELETE",
-            mode: "cors",
-            body: JSON.stringify({
-                groups: [group]
-            })
-        })
-
-        results = await res.json()
-
-
-        goto(location.href, { invalidateAll: true, replaceState: true });
-    }
-
+    let GroupState: GroupStateClass = new GroupStateClass(groups)
 </script>
 
 
-
+{#each GroupState.Results as result}
+    <Message {result}/>
+{/each}
 <section>
-    {#each results as result}
-        <Message {result}/>
-    {/each}
-    <input oncontextmenu={(e: Event) => {e.preventDefault();filter=""}} bind:value={filter} placeholder="Search For Group"/>
-    {#each filteredGroups as group, idx }
+    <input oncontextmenu={(e: Event) => {e.preventDefault();GroupState.Filter=""}} bind:value={GroupState.Filter} placeholder="Search For Group"/>
+    {#each GroupState.FilteredGroups as group, idx }
         <ul style="--delay: {Math.min(idx * 50, 2000)}ms" out:fly={{x: 100}}>
-            
-            <button onclick={() => copyToClip(group.name, copyState)} class="name"><li>{group.name === copyState.copied ? "Copied" : group.name}</li></button>
+            <CopyButton label={""} value={group.name}/>
             {#if group.description != ""}
-                <button onclick={() => copyToClip(group.description, copyState)}>
-                    <b>Description: </b> 
-                    <li>{group.description === copyState.copied ? "Copied" : group.description}</li>
-                </button>
+                <CopyButton label={"Description"} value={group.description}/>
             {/if}
             {#if group.information != ""}
-                <button onclick={() => copyToClip(group.information, copyState)}>
-                    <b>Information: </b> 
-                    <li>{group.information === copyState.copied ? "Copied" : group.information}</li>
-                </button>
+                <CopyButton label={"Information"} value={group.information}/>
             {/if}
             {#if group.ou != ""}
-                <button onclick={() => copyToClip(group.ou, copyState)}>
-                    <b>OU: </b> 
-                    <li>{group.ou === copyState.copied ? "Copied" : group.ou}</li>
-                </button>
+                <CopyButton label={"OU"} value={group.ou}/>
             {/if}
-            <Remove group={group.name} removeGroup={removeGroup}/>
+            <Remove group={group.name} username={username} removeGroup={GroupState.RemoveGroup}/>
         </ul>
     {/each}
 

@@ -2,6 +2,7 @@ package ad
 
 import (
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
@@ -92,6 +93,7 @@ func AddUsersToGroup(group string, newMembers []string) (map[string]models.Group
 
 	usersDN, cError := GetUsersDN(newMembers)
 	if cError != nil {
+		logger.Error(cError.ToString())
 		return results, cError
 	}
 	group = LDAP_STRING_REPLACE.Replace(group)
@@ -123,11 +125,13 @@ func RemoveUsersFromGroup(group string, members []string) (map[string]models.Gro
 
 	var usersDN map[string]string
 	if usersDN, cError = GetUsersDN(members); cError != nil {
+		logger.Error(cError.ToString())
 		return results, cError
 	}
 
 	var groupDN string
 	if groupDN, cError = GetGroupDN(group); cError != nil {
+		logger.Error(cError.ToString())
 		return results, cError
 	}
 
@@ -156,6 +160,7 @@ func GetGroupsDN(groups []string) (map[string]string, *customError.Error) {
 		// No group found with the given name
 		if cError != nil {
 			if cError.Type == "LDAP_ERROR" {
+				logger.Errorf("Could not find: %s - For a DN search", group)
 				return groupsDN, cError
 			}
 			continue
@@ -171,6 +176,7 @@ func GetGroupDN(group string) (string, *customError.Error) {
 
 	l, cError := connectToLDAP()
 	if cError != nil {
+		logger.Error(cError.ToString())
 		return "", cError
 	}
 	defer l.Close()
@@ -198,6 +204,7 @@ func ModifyGroupNewMember(groupDN, user string) *customError.Error {
 	l, cError := connectToLDAP()
 
 	if cError != nil {
+		logger.Error(cError.ToString())
 		return cError
 	}
 	defer l.Close()
@@ -220,6 +227,7 @@ func ModifyGroupRemoveMember(groupDN, user string) *customError.Error {
 	l, cError := connectToLDAP()
 
 	if cError != nil {
+		logger.Error(cError.ToString())
 		return cError
 	}
 	defer l.Close()
@@ -239,18 +247,18 @@ func ModifyGroupRemoveMember(groupDN, user string) *customError.Error {
 }
 
 // NOTE: Total Retrive per request 1500
-// TODO: Retrive all the members of a group
 func GetAllMembers(group string) ([]string, *customError.Error) {
 	start := 0
 	end := 1499
+	rateLimit := 100
 
 	var final_memeber []string = []string{}
-
 	var temp_members []string = []string{}
+
 	l, cError := connectToLDAP()
 
 	if cError != nil {
-		fmt.Println(cError)
+		logger.Error(cError.ToString())
 		return final_memeber, cError
 	}
 
@@ -260,19 +268,22 @@ func GetAllMembers(group string) ([]string, *customError.Error) {
 	for {
 		config := SearchConfig(fmt.Sprintf("(&(objectCategory=group)(cn=%s))", group), fmt.Sprintf("member;range=%d-%d", start, end))
 		config.Control = nil
-		results, err := config.Search(l)
+		results, ldapError := config.Search(l)
 
-		if err != nil {
-			cError := customError.LDAP_ERROR.NewError(err)
+		if ldapError != nil {
+			logger.Error(ldapError)
+			cError := customError.LDAP_ERROR.NewError(ldapError)
 			return final_memeber, &cError
 		}
 
 		if results == nil {
-			cError := customError.LDAP_ERROR.NewMessage("Results were return as none from ldap")
+			logger.Error("LDAP RETURN RESULTS WERE NIL")
+			cError := customError.LDAP_ERROR.NewMessage("RESULTS WERE NIL FROM LDAP SEARCH")
 			return final_memeber, &cError
 		}
 
 		if len(results.Entries) == 0 {
+			logger.Errorf("GROUP NOT FOUND FOR: %s", group)
 			cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO GROUPS FOUND FOR: %s", group))
 			return final_memeber, &cError
 		}
@@ -285,12 +296,21 @@ func GetAllMembers(group string) ([]string, *customError.Error) {
 		}
 
 		if len(temp_members) != 1500 {
+			logger.Infof("END OF MEMBERS FOR GROUP: %s", group)
 			break
+		}
+
+		if rateLimit < 0 {
+			logger.Errorf("RATE LIMIT WAS REACH FOR MEMBERS: %s", group)
+			cError := customError.NewError(http.StatusInternalServerError, "RATE_LIMIT_HIT", fmt.Sprintf("RATE LIMIT WAS REACH FOR MEMBERS: %s", group))
+			return []string{}, &cError
 		}
 
 		start += 1500
 		end += 1500
 	}
+
+	logger.Info(len(final_memeber))
 
 	return final_memeber, nil
 

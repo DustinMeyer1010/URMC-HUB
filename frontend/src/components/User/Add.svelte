@@ -1,9 +1,7 @@
 <script lang="ts">
-	import type { GroupSimpleInfo } from "@t/group";
 	import Confirm from "./Confirm.svelte";
-	import { goto } from "$app/navigation";
-	import type { ModifyResults } from "@t/resutls";
 	import Message from "./Message.svelte";
+	import { AddStateClass } from "./AddState.svelte";
 
     let {
         currentUser
@@ -11,62 +9,32 @@
         currentUser: string
     } = $props()
 
-
-
-    let search: string = $state("")
-    let groups: GroupSimpleInfo[] = $state([])
-    let results: ModifyResults[] = $state([])
-
-
-
-    const searchGroups = async (e: SubmitEvent) => {
-        e.preventDefault()
-        const res = await fetch(`http://localhost:8000/api/search/groups/${search}`)
-
-        groups = await res.json() as GroupSimpleInfo[]
-    }
-
-    const addGroup = async (group: string) => {
-        results = []
-        const res = await fetch(`http://localhost:8000/api/user/${currentUser}/memberof`, {
-            method: "POST",
-            mode: "cors",
-            body: JSON.stringify({
-                groups: [group]
-            })
-        })
-
-        results = await res.json()
-
-
-        goto(location.href, { invalidateAll: true, replaceState: true });
-
-    }
+    let AddState: AddStateClass = new AddStateClass()
 
 
 
 </script>
 
-<form onsubmit={searchGroups}>
-    <input oncontextmenu={(e: Event) => {e.preventDefault();search=""}} bind:value={search} type="text" placeholder="Search For Group" >
+<form onsubmit={AddState.SearchGroup}>
+    <input oncontextmenu={(e: Event) => {e.preventDefault();AddState.Search=""}} bind:value={AddState.Search} type="text" placeholder="Search For Group" >
     <button type="submit">Search</button>
 </form>
 
 
 
 <section>
-    {#if results}
-        {#each results as result}
+    {#if AddState.Results}
+        {#each AddState.Results as result}
             <Message {result}/>
         {/each}
     {/if}
-    {#each groups as group, idx (group.name)}
+    {#each AddState.Groups as group, idx (group.name)}
         <ul style="--delay: {Math.min(idx * 50, 2000)}ms">
             <li class="title">{group.name !== "" ? group.name : "NA"}</li>
             <li><b>Description:</b> {group.description !== "" ? group.description : "NA"}</li>
             <li><b>Information:</b> {group.information !== "" ? group.information : "NA"}</li>
             <li><b>OU:</b> {group.ou !== "" ? group.ou : "NA"}</li>
-            <Confirm name={group.name} title={"Add Group?"} value={"Add"} action={addGroup}/>
+            <Confirm name={group.name} username={currentUser} title={"Add Group?"} value={"Add"} action={AddState.AddGroup}/>
         </ul>
     {:else}
         <h1>Lookup Group To Add</h1>

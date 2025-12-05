@@ -1,4 +1,4 @@
-import { AllFilters, type Groups } from "@t/filters"
+import { AllFilters, type Filters } from "@t/filters"
 
 
 export function getSearchValue(urlParams: URLSearchParams): string {
@@ -7,9 +7,9 @@ export function getSearchValue(urlParams: URLSearchParams): string {
             return (urlSearch !== "" ? decodeURI(urlSearch) : storageSearch)
 }
 
-export function getFilter(urlParams: URLSearchParams): Groups {
+export function getFilter(urlParams: URLSearchParams): Filters {
 
-    let filter: Groups = "USERS"
+    let filter: Filters = "USERS"
     let urlFilter = urlParams.get('filter')?.toUpperCase() || ""
     let storagefilter = localStorage.getItem("filter")?.toUpperCase()  || ""
 
@@ -20,11 +20,11 @@ export function getFilter(urlParams: URLSearchParams): Groups {
     console.log(urlFilter)
     if (AllFilters.includes(urlFilter)) {
         console.log("url")
-        return urlFilter as Groups
+        return urlFilter as Filters
     }
 
     if (AllFilters.includes(storagefilter)) {
-        return storagefilter as Groups
+        return storagefilter as Filters
     }
 
 

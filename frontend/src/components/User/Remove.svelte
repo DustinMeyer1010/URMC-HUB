@@ -5,10 +5,12 @@
 
     let {
         group,
+        username,
         removeGroup
     } : {
         group: string;
-        removeGroup: (group: string) => void;
+        username: string;
+        removeGroup: (username: string, group: string) => void;
     } = $props()
 
     const OpenConfirmMenu = () => {
@@ -16,7 +18,7 @@
     }
 
     const yes = () => {
-        removeGroup(group)
+        removeGroup(username, group)
         needsToBeConfirmed = false
     }
 

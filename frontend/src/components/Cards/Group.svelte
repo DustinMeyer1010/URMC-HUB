@@ -23,6 +23,7 @@
 
 
 <ul class:disabled={item.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(idx * 50, 2000)}ms">
+    <a href={`/group/${item.name}`}> <img src={outIcon} alt=""></a>
     {#if copyState.copied != allCopyText}
         <button 
         class="copy-all" 

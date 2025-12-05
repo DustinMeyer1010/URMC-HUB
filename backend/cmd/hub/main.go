@@ -2,10 +2,8 @@ package main
 
 import (
 	_ "embed"
-	"fmt"
 	"os"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/server"
@@ -17,10 +15,6 @@ var APPICON []byte
 
 func main() {
 	global.LoadEnv()
-	memebers, _ := ad.GetAllMembers("ISDU_VPN_GP_FullAccess")
-
-	fmt.Println(len(memebers))
-	//fmt.Println(memebers)
 
 	//db.Init()
 

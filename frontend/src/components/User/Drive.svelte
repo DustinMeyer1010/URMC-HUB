@@ -1,44 +1,28 @@
+<!-- Refactor  -->
 <script lang="ts">
-	import type { DriveSimpleInfo } from "@t/drive";
 	import type { GroupSimpleInfo } from "@t/group";
 	import { onMount } from "svelte";
+	import { DriveStateClass } from "./DriveState.svelte";
 
 
-
-    let data: DriveSimpleInfo[] | undefined = $state(undefined)
-    let loading: boolean = $state(true)
     let {
         groups
     } : {
         groups: GroupSimpleInfo[]
     } = $props();
+
+    let DriveState: DriveStateClass = new DriveStateClass()
     
     onMount(async () => {
-        loading = true
-        const names = groups.map((group) => group.name)
-
-        const res = await fetch("http://localhost:8000/api/drive/access", {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(names)
-        })
-
-        data = await res.json()
-
-        loading = false
+        await DriveState.GetDrives(groups)
     })
 
 
 </script>
 
-
-{#if !loading && data == undefined || data?.length == 0 }
-    <h1 class="no-access">No drive access</h1>
-{/if}
 <section>
-    {#if !loading}
-
-        {#each data as access, idx}
+    {#if !DriveState.Loading}
+        {#each DriveState.DrivesAccess as access, idx}
             <div style="--delay: {idx * 50}ms">
                 <h1 class="title">{access.drive}</h1>
                 <ul>
@@ -47,6 +31,8 @@
                     {/each}
                 </ul>
             </div>
+        {:else}
+            <h1 class="no-access">No drive access</h1>
         {/each}
     {:else}
         {#each Array(8).fill(0) as _,x}

@@ -5,17 +5,19 @@
         name,
         title,
         value,
+        username,
         action
     } : {
         name: string
         title: string
         value: string
-        action: (name: string) => void
+        username: string
+        action: (usernaem: string, name: string) => void
     } = $props()
 
     const yes = () => {
         needsToBeConfirmed = false
-        action(name)
+        action(username, name)
     }
 
     const no = () => {

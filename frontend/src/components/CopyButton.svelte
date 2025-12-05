@@ -22,14 +22,20 @@
 
 
 <button onclick={() => copyToClip(value, copyState)}>
-    <b>{label ? label : ""}:</b>
-    {@html value == copyState.copied ? "Copied" : value}
+    {#if label != ""}
+        <b>{label}:</b>
+    {/if}
+    <span class:header={label == ""}>{@html value == copyState.copied ? "Copied" : value}</span>
 </button>
 
 
 
 
 <style>
+    b {
+        font-size: 15px;
+    }
+
     button {
         margin: 0;
         background: transparent;
@@ -39,5 +45,21 @@
         text-align: left;
         font-size: 15px;
         font-family: Roboto;
+        word-break: break-all;
+        width: 100%;
+    }
+
+    span.header {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    @media (max-width: 500px) {
+        button {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 5px;
+            flex-direction: column;
+        }
     }
 </style>
