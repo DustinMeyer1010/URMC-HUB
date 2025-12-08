@@ -2,7 +2,6 @@
 	import Info from '@components/Group/Info.svelte';
 	import Nav from '../Nav.svelte';
 	import { GroupPageStateClass, Sections } from './state.svelte';
-	import { onMount } from 'svelte';
 	import Members from '@components/Group/Members.svelte';
 
     let {
@@ -12,10 +11,7 @@
     } = $props()
 
     let PageState: GroupPageStateClass = new GroupPageStateClass()
-
-    onMount(async () => {
-        await PageState.retrievePageData(data.name)
-    })
+    $inspect(PageState.section == "INFO")
 
 </script>
 
@@ -23,14 +19,13 @@
     <h1>{data.name}</h1>
     <Nav sections={Sections} swapSection={PageState.swapSection} />
 
-    {#if PageState.PageInfo}
         {#if PageState.section == "INFO"}
-            <Info group={PageState.PageInfo}></Info>
+            <h1>info</h1>
+            <Info group={data.name}></Info>
         {:else if PageState.section == "MEMBERS"}
             <Members group={data.name}/>
 
         {/if}
-    {/if}
 </main>
 
 

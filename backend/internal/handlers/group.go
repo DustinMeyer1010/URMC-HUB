@@ -103,7 +103,13 @@ func PullGroupInfo(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	group := vars["group"]
 
-	result, _ := ad.PullGroupInfo(group)
+	result, cError := ad.PullGroupInfo(group)
+
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
+		return
+	}
 
 	jsonData, _ := json.Marshal(result)
 

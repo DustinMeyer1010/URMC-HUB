@@ -1,17 +1,27 @@
 <script lang="ts">
-    import type { GroupPageInfo } from "@t/group";
+
+	import { InfoStateClass } from "./InfoState.svelte";
+	import { onMount } from "svelte";
+
     let {
         group
     } : {
-        group: GroupPageInfo
+        group: string
     } = $props();
+
+
+    let InfoState: InfoStateClass = new InfoStateClass(group)
+
+    onMount(async () => {
+        await InfoState.GetGroupInfo()
+    })
+
+
 </script>
 
 <section>
-    {group.name}
-    {group.ou}
-    {group.description}
-    {group.information}
+test
+DriveSimpleInfoadfa
 
 </section>
 

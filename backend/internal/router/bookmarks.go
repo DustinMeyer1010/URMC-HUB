@@ -20,8 +20,8 @@ func bookmarksRoutes(mux *mux.Router) {
 		},
 		{
 			methods{"GET"},
-			"/api/generate/generic/bookmarks",
-			http.HandlerFunc(handlers.GenerateGenericBookmarks),
+			"/api/generic/bookmarks",
+			http.HandlerFunc(handlers.GetGeneralBookmarks),
 			middleware.Middleware{
 				middleware.CorsHandler,
 				middleware.AdminCheck,

@@ -1,7 +1,7 @@
 <script lang="ts">
 
 
-    import type{ Groups } from '@t/filters'
+    import type{ Filters } from '@t/filters'
     import { fly } from 'svelte/transition'
     import filterIconDark from '$lib/assets/filter-color-accent-dark.png'
     import filterIconLight from '$lib/assets/filter-color-accent-light.png'
@@ -18,11 +18,11 @@
         currentFilter,
         switchFilter
     } : {
-        currentFilter: Groups,
-        switchFilter: (newFilter: Groups) => void
+        currentFilter: Filters,
+        switchFilter: (newFilter: Filters) => void
     } = $props();
 
-    let allFilters: Groups[] = ['USERS','COMPUTERS', "GROUPS", 'PRINTERS', 'DRIVES']
+    let allFilters: Filters[] = ['USERS','COMPUTERS', "GROUPS", 'PRINTERS', 'DRIVES']
 
 
 </script>

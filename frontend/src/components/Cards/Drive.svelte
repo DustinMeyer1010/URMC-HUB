@@ -187,7 +187,7 @@
         position: absolute;
         display: flex;
         justify-content: center;
-        align-item: center;
+        align-items: center;
         top: 0.3rem;
         right: -0.5rem;
         width: 50px;

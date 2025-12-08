@@ -22,8 +22,6 @@ func DriveAccess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger.Infof("Finding Drive Access | Input: %s", groups)
-
 	drives, cError := service.GetDriveAccess(groups)
 
 	if cError != nil {

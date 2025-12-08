@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/db"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 )
 
@@ -17,15 +18,9 @@ func AddBookmark(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GenerateGenericBookmarks(w http.ResponseWriter, r *http.Request) {
-
-	err := service.GenerateGenericBookmarks()
-
-	if err != nil {
-		http.Error(w, fmt.Sprintf("failed to generate generics \n%s", err.Error()), http.StatusInternalServerError)
-		return
-	}
+func GetGeneralBookmarks(w http.ResponseWriter, r *http.Request) {
+	bookmarks := db.GenericBookmarks()
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Generated Generics"))
+	w.Write(bookmarks)
 }

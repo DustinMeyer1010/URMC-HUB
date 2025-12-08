@@ -1,10 +1,3 @@
-<script lang="ts">
-
-</script>
-
-
-
-
 
 <div>
     <ul>

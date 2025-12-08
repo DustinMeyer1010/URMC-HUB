@@ -92,26 +92,6 @@
         margin: 0;
     }
 
-    li {
-        word-break: break-all;
-    }
-
-    button.name {
-        font-weight: bold;
-        font-size: 18px;
-    }
-
-
-    button {
-        background: transparent;
-        display: flex;
-        flex-direction: row;
-        border: none;
-        gap: 1rem;
-        padding-left: 1rem;
-        font-size: 15px;
-        color: var(--color-text)
-    }
 
     @keyframes slideIn {
         from {
@@ -127,12 +107,6 @@
 
     @media (max-width: 850px) {
 
-
-        button {
-            flex-direction: column;
-            justify-content: flex-start;
-            text-align: left;
-        }
 
         ul {
             padding-right: 1rem;

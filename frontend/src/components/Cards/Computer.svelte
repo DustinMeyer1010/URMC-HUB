@@ -1,18 +1,11 @@
 <script lang="ts">
     import type { ComputerSimpleInfo } from "@t/computer";
-    import { copyToClip, type CopyState } from '$lib/helper/copy.svelte';
+    import { copyToClip } from '$lib/helper/copy.svelte';
     import goToIcon from '$lib/assets/double-left-arrow-primary.png';
     import copyAllIcon from "$lib/assets/copy-color-text.png"
     import disabledIcon from '$lib/assets/disabled-computer.png'
-
-    let copyState: CopyState = $state({
-        copied: "",
-        timeout: null
-    })
+	import { ComputerStateClass } from "./ComputerState.svelte";
     
-    
-
-
     let {
         item,
         idx
@@ -21,17 +14,19 @@
         idx: number
     } = $props()
 
-    const disabled: boolean = item.ou.toLowerCase().includes("disabled")
-    const allCopyText: string = `Name: ${item.name}\nOU: ${item.ou}\nOS: ${item.operating_system}`;
+    let ComputerState: ComputerStateClass = new ComputerStateClass(
+        item.ou.toLowerCase().includes("disabled"),
+        `Name: ${item.name}\nOU: ${item.ou}\nOS: ${item.operating_system}`
+    )
 
 </script>
 
-<ul class:disabled={disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
-    {#if disabled}
+<ul class:disabled={ComputerState.Disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
+    {#if ComputerState.Disabled}
         <span class="disabled"><img src={disabledIcon} alt="">Computer Disabled</span>
     {/if}
-    {#if copyState.copied != allCopyText}
-        <button class="copy-all" title="Copy All" onclick={() => copyToClip(allCopyText, copyState)}><img src={copyAllIcon} alt="Copy All"></button>
+    {#if ComputerState.CopyState.copied != ComputerState.AllText}
+        <button class="copy-all" title="Copy All" onclick={() => copyToClip(ComputerState.AllText, ComputerState.CopyState)}><img src={copyAllIcon} alt="Copy All"></button>
     {:else}
         <span class="copied-all">ALL COPIED</span>
     {/if}
@@ -42,9 +37,9 @@
                 <button
                 type="button"
                 title={`Copy ${key[0]}`}
-                onclick={() => copyToClip(key[1], copyState)}>
+                onclick={() => copyToClip(key[1], ComputerState.CopyState)}>
                         {@html key[0] != "name" ? `<b>${key[0].toUpperCase()}:</b>` : ""}
-                        {copyState.copied == key[1] ? "Copied" : key[1]}
+                        {ComputerState.CopyState.copied == key[1] ? "Copied" : key[1]}
                 </button>
             </li>
         {/if}

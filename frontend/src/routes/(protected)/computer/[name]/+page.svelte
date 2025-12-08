@@ -1,37 +1,31 @@
 <script lang="ts">
 	import PageLoading from "@components/Loading-Animations/PageLoading.svelte";
-	import type { ComputerPageInfo } from "@t/computer";
     import ComputerOnlineIcon from "$lib/assets/computer-online.png"
     import ComputerOfflineIcon from "$lib/assets/computer-offline.png"
 	import { onMount } from "svelte";
     import DisabledIcon from "$lib/assets/disabled-computer.png"
 	import Ping from "@components/Computer/Ping.svelte";
-	import { isLoggedIn } from "$lib/login";
+	import { PageStateClass } from "./state.svelte";
+
+
+
+
 
     let { data } : {data: {name: string}} = $props();
 
-    let computer: ComputerPageInfo | null = $state(null)
-    let disabled: boolean | undefined = $derived.by(() => {
-        return computer?.computer_info.ou.toUpperCase().includes("DISABLED")
-    })
-
+    let PageState: PageStateClass = new PageStateClass(data.name)
 
     onMount(async () => {
-        if (!await isLoggedIn.CheckStatus()) {
-            return
-        }
-        let res = await fetch(`http://localhost:8000/api/computer/${data.name}/info`)
-
-        computer = await res.json()
+        PageState.GetComputerInfo()
     })
 </script>
 
 <section>
-{#if computer}
+{#if !PageState.Loading}
     <div class="header">
-        <h1>{computer?.computer_info.name}</h1>
+        <h1>{PageState.ComputerInformation.computer_info.name}</h1>
         <sup>
-            {#if computer.is_online}
+            {#if PageState.ComputerInformation.is_online}
                 <span>ONLINE <img src={ComputerOnlineIcon} alt=""></span>
             {:else}
                 <span title="Could be offline due to user being remote">OFFLINE <img src={ComputerOfflineIcon} alt=""></span>
@@ -40,15 +34,15 @@
     </div>
 
     <div class="main">
-            {#if disabled} 
+            {#if PageState.Disabled} 
                 <span class="disabled"><img src={DisabledIcon} alt="">Computer Disabled </span>
             {/if}
         <ul>
-            <li><b>OU: </b> {computer.computer_info.ou}</li>
-            <li><b>OS:</b> {computer.computer_info.operating_system}</li>
+            <li><b>OU: </b> {PageState.ComputerInformation.computer_info.ou}</li>
+            <li><b>OS:</b> {PageState.ComputerInformation.computer_info.operating_system}</li>
         </ul>
     </div>
-    <Ping isOnline={computer.is_online} pingResults={computer.ping_results}/>
+    <Ping isOnline={PageState.ComputerInformation.is_online} pingResults={PageState.ComputerInformation.ping_results}/>
 {:else}
 
 <PageLoading/>

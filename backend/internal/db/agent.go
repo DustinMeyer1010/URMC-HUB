@@ -63,18 +63,3 @@ func addAgent(db *sql.DB) error {
 	return nil
 
 }
-
-func createGenericAgent(db *sql.DB) error {
-
-	query := "INSERT INTO agent (username) VALUES (?)"
-
-	_, err := db.Exec(query, "generic")
-
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	return nil
-
-}
