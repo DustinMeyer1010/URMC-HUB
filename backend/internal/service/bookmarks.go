@@ -21,3 +21,7 @@ func AddBookmark(r *http.Request) error {
 
 	return db.AddBookmark(bookmark)
 }
+
+func GetAgentsWithBookmarks() error {
+	return db.GetAgentsWithBookmarks()
+}

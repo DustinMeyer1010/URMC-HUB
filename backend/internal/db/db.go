@@ -29,6 +29,8 @@ func Init() {
 
 	err := os.MkdirAll(path, os.ModePerm)
 
+	fmt.Println(path)
+
 	if err != nil {
 		fmt.Println("Error creating Directory: ", err)
 		return

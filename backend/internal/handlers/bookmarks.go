@@ -24,3 +24,7 @@ func GetGeneralBookmarks(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(bookmarks)
 }
+
+func GetAgentsWithBookmarks(w http.ResponseWriter, r *http.Request) {
+	service.GetAgentsWithBookmarks()
+}

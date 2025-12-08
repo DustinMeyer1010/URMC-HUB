@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/db"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
@@ -25,6 +26,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "INVALID_CREDENTIALS", http.StatusUnauthorized)
 		return
 	}
+
+	db.AgentDatabaseInit()
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("SUCESSFUL_LOGIN"))

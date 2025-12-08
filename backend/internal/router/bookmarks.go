@@ -27,6 +27,15 @@ func bookmarksRoutes(mux *mux.Router) {
 				middleware.AdminCheck,
 			},
 		},
+		{
+			methods{"GET"},
+			"/api/bookmarks/all/agents",
+			http.HandlerFunc(handlers.GetAgentsWithBookmarks),
+			middleware.Middleware{
+				middleware.CorsHandler,
+				middleware.AdminCheck,
+			},
+		},
 	}
 
 	routes.add(mux)
