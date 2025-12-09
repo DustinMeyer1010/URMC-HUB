@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
 	import { onMount } from "svelte";
 
     type Bookmark = {
@@ -10,6 +11,21 @@
 
     let bookmarks: Bookmark[] = $state([])
     let filter: string = $state("")
+    let currentBookmarks: string = $state("Generic")
+    let agent: string | null = $state("")
+
+    $effect(() => {
+        if (currentBookmarks == "Generic") {
+            goto("/bookmarks", {replaceState: true, invalidateAll: true})
+            return
+        }
+        if (agent) {
+            goto(`/bookmarks/${currentBookmarks}`, {replaceState: true, invalidateAll: true})
+        }
+        
+    })
+
+
     let filteredBookmarks: Bookmark[] = $derived.by(() => {
         if (filter === "") {
             return bookmarks
@@ -19,17 +35,29 @@
             return bookmark.name.toLocaleLowerCase().includes(filter) || bookmark.description.toLocaleLowerCase().includes(filter)
         })
 
-
         
     })
+
+    $inspect(currentBookmarks)
 
     onMount(async () => {
         await fetch("http://localhost:8000/api/generic/bookmarks")
         .then(async (res) => {
             bookmarks = await res.json()
         })
+
+        agent = localStorage.getItem("agent")
     })  
 </script>
+
+<header>
+<input placeholder="Search Link" type="text" bind:value={filter}>
+<select bind:value={currentBookmarks}>
+    <option value="Generic">Generic Bookmarks</option>
+    <option value={`${""}`}>My Bookmarks</option>
+    <option value={`${"brown"}`}>My Bookmarks</option>
+</select>
+</header>
 
 <section>
     {#each filteredBookmarks as bookmark}
@@ -39,7 +67,7 @@
     </a>
     {/each}
 
-    <input type="text" bind:value={filter}>
+
 </section>
 
 
@@ -65,17 +93,26 @@
     }
 
     section {
-        padding: 10px;
+        padding-top: 100px;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         gap: 20px;
         padding-bottom: 150px;
     }
 
-    input {
+    header {
         position: fixed;
-        bottom: 50px;
-        left: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        background-color: var(--color-bg);
+        padding: 20px 0px;
+        box-sizing: border-box;
+        gap: 10px;
+    }
+
+    input {
         width: 50%;
         max-width: 500px;
         min-width: 100px;
@@ -83,7 +120,6 @@
         font-size: 18px;
         border-radius: 5px;
         height: 35px;
-        transform: translateX(-50%);
         border: 2px solid #b4b8d9;
         background-color: var(--color-bg-opacity-80);
         color: var(--text-color)
@@ -91,6 +127,15 @@
 
     input:focus {
         outline: none;
+    }
+
+    select {
+        background: var(--color-surface);
+        border: none;
+        color: var(--text-color);
+        padding: 10px;
+        font-size: 15px;
+        margin: 0;
     }
 
 </style>

@@ -88,7 +88,6 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, *customError.
 		"description",
 		"physicalDeliveryOfficeName",
 		"givenName",
-		"memberOf",
 		"URRoleStatus",
 		"sn",
 	)
@@ -106,7 +105,34 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, *customError.
 
 	foundUser := results.Entries[0]
 
-	groups := user.FillAttributes(foundUser)
+	user.FillAttributes(foundUser)
+	return user, nil
+}
+
+func PullUserMembersOf(username string) ([]models.GroupSimpleInfo, *customError.Error) {
+	catagory := "user"
+	attribute := "SAMAccountName"
+
+	results, ldapError := SearchAllByCategory(
+		catagory,
+		attribute,
+		username,
+		"memberOf",
+	)
+
+	if ldapError != nil {
+		logger.Error(ldapError)
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return []models.GroupSimpleInfo{}, &cError
+	}
+
+	if results == nil || len(results.Entries) == 0 {
+		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO USER FOUND FOR: %s", username))
+		return []models.GroupSimpleInfo{}, &cError
+	}
+
+	groups := results.Entries[0].GetAttributeValues("memberOf")
+
 	memberOfChan := make(chan models.GroupSimpleInfo, len(groups))
 	var wg sync.WaitGroup
 	for _, group := range groups {
@@ -130,10 +156,10 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, *customError.
 		memberOf = append(memberOf, result)
 	}
 
-	user.MemberOf = memberOf
+	return memberOf, nil
 
-	return user, nil
 }
+
 func AddGroup(username string, groups []string) ([]models.GroupModifyResults, *customError.Error) {
 
 	l, cError := connectToLDAP()

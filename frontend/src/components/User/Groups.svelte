@@ -1,24 +1,28 @@
 <!-- REFACTOR -->
 
 <script lang="ts">
-	import type { GroupSimpleInfo } from "@t/group";
 	import { fly } from "svelte/transition";
 	import Remove from "./Remove.svelte";
 
 	import Message from "./Message.svelte";
 	import { GroupStateClass } from "./GroupState.svelte";
 	import CopyButton from "@components/CopyButton.svelte";
+	import { onMount } from "svelte";
 
 
     let {
-        groups,
         username
     } : {
         username: string
-        groups: GroupSimpleInfo[]
     } = $props();
 
-    let GroupState: GroupStateClass = new GroupStateClass(groups)
+    let GroupState: GroupStateClass = new GroupStateClass()
+
+
+    onMount(async () => {
+        await GroupState.GetGroupForUser(username)
+        GroupState.Groups = GroupState.Groups.sort((a, b) => a.name.localeCompare(b.name))
+    })
 </script>
 
 

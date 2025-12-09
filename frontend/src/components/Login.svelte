@@ -30,6 +30,7 @@
 
         if (res.status == 200) {
             window.location.reload()
+            localStorage.setItem("agent", form.username)
             login()
             return
         }

@@ -8,12 +8,13 @@ interface GroupState {
     FilteredGroups: GroupSimpleInfo[]
     Results: ModifyResults[]
     RemoveGroup: (username: string, group: string) => void
+    GetGroupForUser: (username: string) => void
 }
 
 export class GroupStateClass implements GroupState {
     CopyState: CopyState = $state({copied: "", timeout: null});
     Filter: string = $state("");
-    Groups: GroupSimpleInfo[];
+    Groups: GroupSimpleInfo[] = $state([]);
     Results: ModifyResults[] = $state([]);
 
     FilteredGroups: GroupSimpleInfo[] = $derived.by(() => {
@@ -25,9 +26,11 @@ export class GroupStateClass implements GroupState {
     })
 
 
-    constructor(groups: GroupSimpleInfo[]) {
-        this.Groups = $state(groups.sort((a, b) => a.name.localeCompare(b.name)))
+    GetGroupForUser = async (username: string) => {
+        await fetch(`http://localhost:8000/api/user/${username}/memberof`)
+        .then(async (res) => this.Groups = await res.json()) 
     }
+
 
     RemoveGroup = async (username: string, group: string) => {
         this.Results = []
@@ -41,5 +44,6 @@ export class GroupStateClass implements GroupState {
                 })
             })
         .then(async (res) => this.Results = await res.json()) 
+        await this.GetGroupForUser(username)
     }
 }

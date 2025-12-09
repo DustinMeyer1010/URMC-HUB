@@ -4,6 +4,9 @@ import (
 	"mime/multipart"
 	"strings"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/utils"
 	excel "github.com/xuri/excelize/v2"
 )
@@ -35,6 +38,10 @@ func BulkUserSearch(files []*multipart.FileHeader) *excel.File {
 func BulkUserSearchValues(values []string) *excel.File {
 
 	return utils.ParseValuesArray(values)
+}
+
+func GetMemberOf(username string) ([]models.GroupSimpleInfo, *customError.Error) {
+	return ad.PullUserMembersOf(username)
 }
 
 /*
