@@ -30,7 +30,7 @@
 {#if UserPageState.pageData != null}
     <nav>
         <h1>{UserPageState.pageData.name}</h1>
-        <Nav sections={Sections} swapSection={UserPageState.SwapSections}/>
+        <Nav sections={Sections} swapSection={UserPageState.SwapSections} currentSection={UserPageState.currentSection}/>
     </nav>
 
     {#if !UserPageState.loading}
@@ -40,9 +40,9 @@
             {:else if UserPageState.currentSection == "LOCKOUT"}
                 <Lockout username={UserPageState.pageData.username}/>
             {:else if UserPageState.currentSection == "DRIVES"}
-                <Drive groups={UserPageState.pageData.member_of}/>
+                <Drive username={UserPageState.pageData.username}/>
             {:else if UserPageState.currentSection == "GROUPS"}
-                <Groups username={UserPageState.pageData.username} groups={UserPageState.pageData.member_of}/>
+                <Groups username={UserPageState.pageData.username}/>
             {:else if UserPageState.currentSection == "ADD"}
                 <Add currentUser={UserPageState.pageData.username}/>
             {/if}

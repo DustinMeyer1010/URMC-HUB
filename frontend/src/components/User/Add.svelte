@@ -16,7 +16,7 @@
 </script>
 
 <form onsubmit={AddState.SearchGroup}>
-    <input oncontextmenu={(e: Event) => {e.preventDefault();AddState.Search=""}} bind:value={AddState.Search} type="text" placeholder="Search For Group" >
+    <input oncontextmenu={(e: Event) => {e.preventDefault();AddState.Search=""}} bind:value={AddState.Search} type="text" placeholder="Search for Group to Add" >
     <button type="submit">Search</button>
 </form>
 

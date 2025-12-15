@@ -5,7 +5,7 @@ import { writable } from "svelte/store";
 async function createLoginState() {
 
     var stored: boolean = true
-    await fetch("http://localhost:8000/api/verify", {mode: "cors"})
+    await fetch("http://localhost:8000/api/verify", {credentials: "include",mode: "cors"})
     .then((res) => {
         if (res.status == 200) {
             stored = true

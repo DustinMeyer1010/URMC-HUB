@@ -57,10 +57,8 @@ func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
 	groupInfo := models.GroupSimpleInfo{}
 	group = LDAP_STRING_REPLACE.Replace(group)
 
-	results, ldapError := SearchByCategory(
-		"group",
-		"cn",
-		group,
+	results, ldapError := SearchWithFilter(
+		fmt.Sprintf("(&(objectCategory=group)(|(sAMAccountName=%s)(cn=%s)))", group, group),
 		"cn",
 		"distinguishedName",
 		"sAMAccountName",
@@ -75,9 +73,9 @@ func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
 	}
 
 	if results == nil || len(results.Entries) == 0 {
-
 		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO GROUP FOUND FOR: %s", group))
-		logger.Errorf("%v+", cError)
+		logger.Errorf("%v", cError)
+		logger.Debug(results.Entries)
 		return groupInfo, &cError
 	}
 
@@ -176,17 +174,9 @@ func GetGroupsDN(groups []string) (map[string]string, *customError.Error) {
 
 func GetGroupDN(group string) (string, *customError.Error) {
 
-	l, cError := connectToLDAP()
-	if cError != nil {
-		logger.Error(cError.ToString())
-		return "", cError
-	}
-	defer l.Close()
-	defer l.Unbind()
-
 	group = LDAP_STRING_REPLACE.Replace(group)
 
-	results, ldapError := SearchByCategory("group", "cn", group, "dn")
+	results, ldapError := SearchWithFilter(fmt.Sprintf("(&(objectCategory=group)(|(sAMAccountName=%s)(cn=%s)))", group, group), "dn")
 
 	if ldapError != nil {
 		logger.Error(ldapError)
@@ -225,6 +215,7 @@ func ModifyGroupNewMember(groupDN, user string) *customError.Error {
 	return nil
 }
 
+// Sends a modify request to remove a member from group
 func ModifyGroupRemoveMember(groupDN, user string) *customError.Error {
 	l, cError := connectToLDAP()
 
@@ -248,6 +239,8 @@ func ModifyGroupRemoveMember(groupDN, user string) *customError.Error {
 	return nil
 }
 
+// Retrives all the members of a specific group
+//
 // NOTE: Total Retrive per request 1500
 func GetAllMembers(group string) ([]string, *customError.Error) {
 	start := 0
@@ -312,7 +305,7 @@ func GetAllMembers(group string) ([]string, *customError.Error) {
 		end += 1500
 	}
 
-	logger.Info(len(final_memeber))
+	logger.Info("Total Members: ", len(final_memeber))
 
 	return final_memeber, nil
 

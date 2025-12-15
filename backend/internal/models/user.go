@@ -63,13 +63,15 @@ type UserModifyMemberOf struct {
 }
 
 type UserDetails struct {
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
+	Name       string `json:"name"`
+	Username   string `json:"username"`
+	Email      string `json:"email"`
+	Department string `json:"department"`
 }
 
 func (u *UserDetails) FillAttributes(user *ldap.Entry) {
 	u.Name = user.GetAttributeValue("name")
 	u.Username = user.GetAttributeValue("sAMAccountName")
 	u.Email = user.GetAttributeValue("mail")
+	u.Department = user.GetAttributeValue("department")
 }

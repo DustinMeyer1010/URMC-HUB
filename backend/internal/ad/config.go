@@ -88,3 +88,18 @@ func SearchByCategory(category, attribute, value string, attrs ...string) (*ldap
 
 	return ldapConfig.Search(conn)
 }
+
+func SearchWithFilter(filter string, attrs ...string) (*ldap.SearchResult, error) {
+	conn, cError := connectToLDAP()
+
+	if cError != nil {
+		return nil, cError.GetErrorValue()
+	}
+
+	defer conn.Close()
+	defer conn.Unbind()
+
+	ldapConfig := SearchConfig(filter)
+
+	return ldapConfig.Search(conn)
+}

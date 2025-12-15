@@ -11,9 +11,7 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 )
 
-var initalized bool
-
-var path string
+var DBLocation string
 
 //go:embed schema/*
 var schema embed.FS
@@ -25,11 +23,11 @@ func Init() {
 
 	exe, _ := os.Executable()
 	base := filepath.Dir(exe)
-	path = filepath.Join(base, "URMC_DB")
+	DBLocation = filepath.Join(base, "URMC_DB")
 
-	err := os.MkdirAll(path, os.ModePerm)
+	err := os.MkdirAll(DBLocation, os.ModePerm)
 
-	fmt.Println(path)
+	fmt.Println(DBLocation)
 
 	if err != nil {
 		fmt.Println("Error creating Directory: ", err)
@@ -52,5 +50,5 @@ func createTables(db *sql.DB) error {
 }
 
 func OpenAgentDB() (*sql.DB, error) {
-	return sql.Open("sqlite", fmt.Sprintf("%s/%s.db", path, global.Username))
+	return sql.Open("sqlite", fmt.Sprintf("%s/%s.db", DBLocation, global.Username))
 }

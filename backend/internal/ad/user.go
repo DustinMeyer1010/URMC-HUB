@@ -299,6 +299,7 @@ func UserDetails(input string) ([]models.UserDetails, error) {
 		"name",
 		"mail",
 		"sAMAccountName",
+		"department",
 	)
 
 	if persistConn == nil {

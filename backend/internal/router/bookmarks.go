@@ -16,7 +16,11 @@ func bookmarksRoutes(mux *mux.Router) {
 			methods{"POST", "OPTION"},
 			"/api/add/bookmark",
 			http.HandlerFunc(handlers.AddBookmark),
-			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+			middleware.Middleware{
+				middleware.IsAuthorized,
+				middleware.ValidateUser,
+				middleware.CorsHandler,
+			},
 		},
 		{
 			methods{"GET"},

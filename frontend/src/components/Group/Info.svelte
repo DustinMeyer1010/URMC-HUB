@@ -1,6 +1,7 @@
 <script lang="ts">
 
-	import { InfoStateClass } from "./InfoState.svelte";
+	import CopyButton from "@components/CopyButton.svelte";
+    import { InfoStateClass } from "./InfoState.svelte";
 	import { onMount } from "svelte";
 
     let {
@@ -20,12 +21,24 @@
 </script>
 
 <section>
-test
-DriveSimpleInfoadfa
-
+    <CopyButton value={InfoState.GroupInfo.information == "" ? "NA" : InfoState.GroupInfo.information} label="Information"/>
+    <CopyButton value={InfoState.GroupInfo.description == "" ? "NA" : InfoState.GroupInfo.description} label="Description"/>
+    <CopyButton value={InfoState.GroupInfo.ou == "" ? "NA" : InfoState.GroupInfo.description} label="OU"/>
 </section>
 
 
 <style>
 
+    section {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        background: var(--color-surface);
+    }
+
 </style>
+

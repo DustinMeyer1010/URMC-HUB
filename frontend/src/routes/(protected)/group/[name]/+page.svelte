@@ -17,10 +17,8 @@
 
 <main>
     <h1>{data.name}</h1>
-    <Nav sections={Sections} swapSection={PageState.swapSection} />
-
+    <Nav sections={Sections} swapSection={PageState.swapSection} currentSection={PageState.section} />
         {#if PageState.section == "INFO"}
-            <h1>info</h1>
             <Info group={data.name}></Info>
         {:else if PageState.section == "MEMBERS"}
             <Members group={data.name}/>

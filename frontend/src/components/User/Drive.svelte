@@ -1,20 +1,21 @@
 <!-- Refactor  -->
 <script lang="ts">
-	import type { GroupSimpleInfo } from "@t/group";
 	import { onMount } from "svelte";
 	import { DriveStateClass } from "./DriveState.svelte";
+	import CopyButton from "@components/CopyButton.svelte";
 
 
     let {
-        groups
+        username
     } : {
-        groups: GroupSimpleInfo[]
+        username: string
     } = $props();
 
-    let DriveState: DriveStateClass = new DriveStateClass()
+    let DriveState: DriveStateClass = new DriveStateClass(username)
     
     onMount(async () => {
-        await DriveState.GetDrives(groups)
+        await DriveState.GetGroups()
+        await DriveState.GetDrives()
     })
 
 
@@ -24,10 +25,10 @@
     {#if !DriveState.Loading}
         {#each DriveState.DrivesAccess as access, idx}
             <div style="--delay: {idx * 50}ms">
-                <h1 class="title">{access.drive}</h1>
+                <h1 class="title"><CopyButton value={access.drive} label=""/></h1>
                 <ul>
                     {#each access.groups as group}
-                        <li>{group}</li>
+                        <li><CopyButton value={group} label=""/></li>
                     {/each}
                 </ul>
             </div>
@@ -85,6 +86,7 @@
     }
 
     div.loading {
+        height: 100px;
         opacity: 1;
         animation: pulse 3s infinite;
         animation-delay: var(--delay);

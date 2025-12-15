@@ -28,3 +28,7 @@ func GetGeneralBookmarks(w http.ResponseWriter, r *http.Request) {
 func GetAgentsWithBookmarks(w http.ResponseWriter, r *http.Request) {
 	service.GetAgentsWithBookmarks()
 }
+
+func SaveBookmark(w http.ResponseWriter, r *http.Request) {
+
+}

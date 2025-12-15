@@ -5,9 +5,11 @@
 
     let {
         sections,
+        currentSection,
         swapSection
     } : {
         sections: Section[]
+        currentSection: string
         swapSection: (section: Section) => void
     } = $props()
 
@@ -16,7 +18,7 @@
 
 <nav>
     {#each sections as section}
-        <button onclick={() => swapSection(section)}>{section}</button>
+        <button class:active={currentSection == section} onclick={() => swapSection(section)}>{section}</button>
     {/each}
 </nav>
 
@@ -42,6 +44,10 @@
         text-wrap: nowarp;
         word-break: keep-all;
         white-space: nowrap;
+    }
+
+    button.active {
+        background: var(--color-surface-lighter);
     }
 
     button:hover {

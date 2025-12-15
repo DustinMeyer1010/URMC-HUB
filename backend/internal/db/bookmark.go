@@ -27,7 +27,7 @@ func AddBookmark(bookmark models.Bookmark) error {
 }
 
 func GetAgentsWithBookmarks() error {
-	files, _ := os.ReadDir(path)
+	files, _ := os.ReadDir(DBLocation)
 
 	for _, file := range files {
 		fmt.Print(file.Name())
