@@ -3,6 +3,7 @@
 body, html {
     background: var(--color-bg);
     transition: background 0.3s ease;
+    overflow-x: hidden;
 }
 
 

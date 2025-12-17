@@ -19,6 +19,8 @@ var LDAP_STRING_REPLACE = strings.NewReplacer(
 	"\x00", `\00`,
 )
 
+var RATE_LIMIT = 100
+
 // Pull all groups that match the search value returning CN, distinguishedName, description, info for each group
 func SearchAllGroups(searchValue string) ([]models.GroupSimpleInfo, *customError.Error) {
 	matches := make([]models.GroupSimpleInfo, 0)
@@ -245,7 +247,6 @@ func ModifyGroupRemoveMember(groupDN, user string) *customError.Error {
 func GetAllMembers(group string) ([]string, *customError.Error) {
 	start := 0
 	end := 1499
-	rateLimit := 100
 
 	var final_memeber []string = []string{}
 	var temp_members []string = []string{}
@@ -295,7 +296,7 @@ func GetAllMembers(group string) ([]string, *customError.Error) {
 			break
 		}
 
-		if rateLimit < 0 {
+		if RATE_LIMIT < 0 {
 			logger.Errorf("RATE LIMIT WAS REACH FOR MEMBERS: %s", group)
 			cError := customError.NewError(http.StatusInternalServerError, "RATE_LIMIT_HIT", fmt.Sprintf("RATE LIMIT WAS REACH FOR MEMBERS: %s", group))
 			return []string{}, &cError

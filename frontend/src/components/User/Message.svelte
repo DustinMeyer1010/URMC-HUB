@@ -24,7 +24,7 @@
 
 
 <div class:failed={!result.successful}>
-    <span>{result.group} | </span>
+    <span>{result.group}</span>
     <span>{message}</span>
 </div>
 
@@ -38,9 +38,11 @@
         position: relative;
         border: 2px solid var(--color-success);
         color: var(--text-color);
+        justify-content: space-between;
         padding: 1rem;
         border-radius: 10px;
         font-weight: bold;
+        word-break: break-all;
     }
 
 

@@ -9,7 +9,7 @@
 	import User from "./Cards/User.svelte";
 	import Drive from "./Cards/Drive.svelte";
 	import type { AllResults } from "@t/resutls";
-	import type { Component } from 'svelte';
+	import type { Component, Snippet } from 'svelte';
 
 
     let {
@@ -20,7 +20,7 @@
         data: AllResults
     } = $props()
 
-    const FilterMap: Record<string, { items: any[], Component: Component<{item: any, idx: number}> }> = {
+    const FilterMap: Record<string, { items: any[], Component: Component<{item: any, idx: number, children: any}> }> = {
         COMPUTERS: { items: data.computers, Component: Computer },
         PRINTERS:  { items: data.printers, Component: Printer },
         USERS:     { items: data.users, Component: User },
@@ -33,7 +33,7 @@
 
 <div>
         {#each FilterMap[filter].items as item, idx}
-            <Card item={item} idx={idx}/>
+            <Card item={item} idx={idx} children={undefined}/>
         {:else}
             {@render NotFound(filter)}
         {/each}

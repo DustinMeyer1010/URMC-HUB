@@ -82,7 +82,8 @@ func GetAllMembers(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	group := vars["group"]
 
-	members, cError := service.GetAllMembers(group)
+	membersDNs, cError := service.GetAllMembers(group)
+	members := ad.PullMembersInformation(membersDNs)
 
 	if cError != nil {
 		http.Error(w, cError.Type, cError.StatusCode)

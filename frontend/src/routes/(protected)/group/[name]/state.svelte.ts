@@ -1,7 +1,7 @@
 import type { GroupPageInfo } from "@t/group";
 
-export type Section = "INFO" | "ADD" | "REMOVE" | "MEMBERS"
-export const Sections: Section[] = ["INFO", "ADD", "REMOVE", "MEMBERS"]
+export type Section = "ADD" | "REMOVE" | "MEMBERS"
+export const Sections: Section[] = [ "ADD", "REMOVE", "MEMBERS"]
 
 interface GroupPageState {
     loading: boolean,
@@ -16,7 +16,7 @@ interface GroupPageState {
 export class GroupPageStateClass implements GroupPageState {
     loading = $state(false)
     PageInfo: GroupPageInfo | null = $state(null)
-    section: Section = $state("INFO")
+    section: Section = $state("ADD")
 
 
     retrievePageData = async (group: string) => {

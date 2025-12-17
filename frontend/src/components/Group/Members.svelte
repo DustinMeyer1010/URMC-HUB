@@ -1,5 +1,9 @@
 <script lang="ts">
+	import User from "@components/Cards/User.svelte";
+	import { MembersStateClass } from "./MembersState.svelte";
 	import { onMount } from "svelte";
+	import PageLoading from "@components/Loading-Animations/PageLoading.svelte";
+	import MembersLoading from "@components/Loading-Animations/MembersLoading.svelte";
 
     let {
         group
@@ -7,15 +11,110 @@
         group: string
     } = $props()
 
-    let members: string[] = $state([])
+    let MembersState: MembersStateClass = new MembersStateClass(group)
 
     onMount(async () => {
-        await fetch(`http://localhost:8000/api/group/${group}/members`).then( async (res) => {
-            members = await res.json()
-        })
+        await MembersState.GetMembers()
     })
+
+
 </script>
 
-{#each members as member}
-    {member}
-{/each}
+<section>
+    {#if MembersState.Loading}
+        <MembersLoading/>
+    {:else}
+        <div class="member-filtering">
+            <input type="text" bind:value={MembersState.Filter} placeholder="Search for member">
+            <div class="paging-buttons">
+                <button onclick={MembersState.PrevPage}>-</button>
+                <button onclick={MembersState.NextPage}>+</button>
+                <span>Page: {Math.ceil(MembersState.Page / 10)} / {Math.ceil(MembersState.MembersLength / 10)}</span>
+                <span>Total Members: {MembersState.MembersLength}</span>
+            </div>
+        </div>
+        <div class="users">
+            {#each MembersState.PagedMembers as member, idx}
+                <User item={member} idx={idx}/>
+            {/each}
+        </div>
+    {/if}
+</section>
+
+
+<style>
+    section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+        width: 80%;
+        padding-bottom: 100px;
+    }
+
+    input {
+        font-size: 15px;
+        padding: 10px;
+        background: var(--color-surface);
+        border: none;
+        color: var(--text-color);
+        border-radius: 5px;
+        align-self: center;
+        flex-grow: 1;
+    }
+
+    div.users {
+        display: flex;
+        flex-direction: column;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        flex-grow: 1;
+        gap: 10px;
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+    div.paging-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        gap: 10px;
+
+    }
+
+    div.member-filtering {
+        padding: 20px 50px;
+        box-sizing: border-box;
+        background: var(--color-bg);
+        gap: 10px;
+        position: fixed;
+        width: 100%;
+        left: 50%;
+        bottom: 0px;
+        transform: translateX(-50%);
+        z-index: 9;
+        justify-content: space-between;
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+    }
+
+    button {
+        padding: 5px;
+        width: 200px;
+        background: var(--color-surface);
+        border: none;
+        font-size: 20px;
+        border-radius: 5px;
+        color: var(--text-color);
+    }
+
+    button:hover {
+        background: var(--color-surface-hover);
+    }
+
+
+</style>

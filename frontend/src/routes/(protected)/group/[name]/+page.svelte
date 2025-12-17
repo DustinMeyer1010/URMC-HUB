@@ -11,19 +11,20 @@
     } = $props()
 
     let PageState: GroupPageStateClass = new GroupPageStateClass()
-    $inspect(PageState.section == "INFO")
 
 </script>
 
 <main>
-    <h1>{data.name}</h1>
-    <Nav sections={Sections} swapSection={PageState.swapSection} currentSection={PageState.section} />
-        {#if PageState.section == "INFO"}
-            <Info group={data.name}></Info>
-        {:else if PageState.section == "MEMBERS"}
+    <header>
+        <h1>{data.name}</h1>
+        <Info group={data.name}></Info>
+        <Nav sections={Sections} swapSection={PageState.swapSection} currentSection={PageState.section} />
+    </header>
+    <section>
+        {#if PageState.section == "MEMBERS"}
             <Members group={data.name}/>
-
         {/if}
+    </section>
 </main>
 
 
@@ -35,5 +36,25 @@
         justify-content: center;
         align-items: center;
     }
+
+    header {
+        top: 50px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        justify-content: center;
+        position: fixed;
+        background: var(--color-bg);
+        z-index: 10;
+    }
+
+    section {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 300px;
+    }
+
 </style>
 

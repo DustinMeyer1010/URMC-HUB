@@ -11,19 +11,21 @@ func createExcelFile(single []ad.BulkSearchResult, duplicates [][]ad.BulkSearchR
 	f := excel.NewFile()
 	sheetName := "Sheet1"
 
-	f.SetColWidth(sheetName, "A", "C", 50)
+	f.SetColWidth(sheetName, "A", "D", 50)
 
 	currentRow := 1
 
 	f.SetCellValue(sheetName, "A1", "Name")
 	f.SetCellValue(sheetName, "B1", "Username")
 	f.SetCellValue(sheetName, "C1", "Email")
+	f.SetCellValue(sheetName, "D1", "Department")
 
 	for _, user := range single {
 		currentRow += 1
 		f.SetCellValue(sheetName, fmt.Sprintf("A%d", currentRow), user.UserDetails.Name)
 		f.SetCellValue(sheetName, fmt.Sprintf("B%d", currentRow), user.UserDetails.Username)
 		f.SetCellValue(sheetName, fmt.Sprintf("C%d", currentRow), user.UserDetails.Email)
+		f.SetCellValue(sheetName, fmt.Sprintf("D%d", currentRow), user.UserDetails.Department)
 	}
 
 	currentRow += 3
@@ -49,6 +51,7 @@ func createExcelFile(single []ad.BulkSearchResult, duplicates [][]ad.BulkSearchR
 			f.SetCellValue(sheetName, fmt.Sprintf("A%d", currentRow), user.UserDetails.Name)
 			f.SetCellValue(sheetName, fmt.Sprintf("B%d", currentRow), user.UserDetails.Username)
 			f.SetCellValue(sheetName, fmt.Sprintf("C%d", currentRow), user.UserDetails.Email)
+			f.SetCellValue(sheetName, fmt.Sprintf("D%d", currentRow), user.UserDetails.Department)
 			currentRow += 1
 		}
 		currentRow += 1

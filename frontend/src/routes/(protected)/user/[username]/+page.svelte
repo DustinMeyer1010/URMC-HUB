@@ -97,7 +97,7 @@
 
 
 
-    @media (max-width: 465px) {
+    @media (max-width: 450px) {
         h1 {
             font-size: 18px;
         }

@@ -12,7 +12,7 @@
 
     let {
         item,
-        idx
+        idx,
     } : {
         item: UserSimpleInfo
         idx: number
@@ -49,6 +49,7 @@
         {/if}
     {/each}
 </ul>
+
 
 <style >
 

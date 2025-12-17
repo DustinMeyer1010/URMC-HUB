@@ -6,6 +6,7 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
+	"github.com/go-ldap/ldap/v3"
 )
 
 func AllSearch(search string) (models.AllResults, *customError.Error) {
@@ -87,4 +88,72 @@ func startGoRouteSearch(search string, ch chan any) {
 
 	wg.Wait()
 	close(ch)
+}
+
+func PullMembersInformation(membersDNs []string) []models.UserSimpleInfo {
+	const workers = 8
+
+	jobs := make(chan string)
+	results := make(chan models.UserSimpleInfo, workers*2)
+
+	var wg sync.WaitGroup
+
+	for range workers {
+		wg.Add(1)
+		go SearchForObject(&wg, results, jobs)
+	}
+
+	go createJobs(membersDNs, jobs)
+	go closeResults(&wg, results)
+
+	members := []models.UserSimpleInfo{}
+	for username := range results {
+		members = append(members, username)
+	}
+
+	return members
+}
+
+func createJobs(membersDNs []string, jobs chan string) {
+
+	for _, dn := range membersDNs {
+		jobs <- dn
+	}
+	close(jobs)
+}
+
+func closeResults(wg *sync.WaitGroup, results chan models.UserSimpleInfo) {
+	wg.Wait()
+	close(results)
+}
+
+func SearchForObject(wg *sync.WaitGroup, results chan models.UserSimpleInfo, jobs chan string) {
+	defer wg.Done()
+
+	conn, err := connectToLDAP()
+	if err != nil {
+		return
+	}
+	defer conn.Unbind()
+	defer conn.Close()
+
+	for dn := range jobs {
+		var user models.UserSimpleInfo
+		sr, err := conn.Search(ldap.NewSearchRequest(
+			dn,
+			ldap.ScopeBaseObject,
+			ldap.NeverDerefAliases,
+			0, 0, false,
+			"(|(&(objectCategory=person)(objectClass=user))(objectClass=group))",
+			[]string{"cn", "name", "sAMAccountName", "distinguishedName", "uid", "mail", "urid", "objectCategory"},
+			nil,
+		))
+
+		if err == nil && sr != nil && len(sr.Entries) > 0 {
+			user.FillAttributes(sr.Entries[0])
+		} else {
+			user.OU = dn
+		}
+		results <- user
+	}
 }

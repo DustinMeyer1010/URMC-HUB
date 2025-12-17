@@ -33,8 +33,10 @@
         margin-top: 20px;
         display: flex;
         flex-direction: column;
+        width: 40%;
         gap: 10px;
         padding: 20px;
+        align-self: center;
         text-align: center;
         border-radius: 10px;
         background: var(--color-surface);

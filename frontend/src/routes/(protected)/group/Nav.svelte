@@ -35,6 +35,8 @@
         gap: 1rem;
         padding: 0rem 1rem;
         width: 100%;
+        margin-top: 20px;
+        margin-bottom: 20px;
     }
 
     button {
