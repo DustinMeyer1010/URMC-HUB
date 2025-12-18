@@ -12,15 +12,11 @@
     let bookmarks: Bookmark[] = $state([])
     let filter: string = $state("")
     let currentBookmarks: string = $state("")
-    let agent: string | null = $state(localStorage.getItem("agent"))
 
     $effect(() => {
         if (currentBookmarks == "Generic") {
             goto("/bookmarks", {replaceState: true, invalidateAll: true})
             return
-        }
-        if (agent) {
-            goto(`/bookmarks/${currentBookmarks}`, {replaceState: true, invalidateAll: true})
         }
         
     }) 

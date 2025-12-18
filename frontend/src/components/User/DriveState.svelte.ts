@@ -8,7 +8,7 @@ interface DriveState {
 }
 
 export class DriveStateClass implements DriveState {
-    Loading: boolean = $state(false)
+    Loading: boolean = $state(true)
     DrivesAccess: DriveSimpleInfo[] = $state([])
     Groups: GroupSimpleInfo[] = $state([])
     Username: string;

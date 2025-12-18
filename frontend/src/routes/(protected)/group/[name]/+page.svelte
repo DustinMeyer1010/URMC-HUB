@@ -3,6 +3,7 @@
 	import Nav from '../Nav.svelte';
 	import { GroupPageStateClass, Sections } from './state.svelte';
 	import Members from '@components/Group/Members.svelte';
+	import Add from '@components/Group/Add.svelte';
 
     let {
         data
@@ -23,6 +24,8 @@
     <section>
         {#if PageState.section == "MEMBERS"}
             <Members group={data.name}/>
+        {:else if PageState.section == "ADD"}
+            <Add/>
         {/if}
     </section>
 </main>
@@ -38,7 +41,7 @@
     }
 
     header {
-        top: 50px;
+        top: 60px;
         width: 100%;
         display: flex;
         flex-direction: column;

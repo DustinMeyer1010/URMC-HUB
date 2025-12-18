@@ -33,15 +33,15 @@
     <input oncontextmenu={(e: Event) => {e.preventDefault();GroupState.Filter=""}} bind:value={GroupState.Filter} placeholder="Search For Group"/>
     {#each GroupState.FilteredGroups as group, idx }
         <ul style="--delay: {Math.min(idx * 50, 2000)}ms" out:fly={{x: 100}}>
-            <CopyButton label={""} value={group.name}/>
+            <CopyButton label={""} value={group.name} fontSize={20}/>
             {#if group.description != ""}
-                <CopyButton label={"Description"} value={group.description}/>
+                <CopyButton label={"Description"} value={group.description} fontSize={12}/>
             {/if}
             {#if group.information != ""}
-                <CopyButton label={"Information"} value={group.information}/>
+                <CopyButton label={"Information"} value={group.information} fontSize={12}/>
             {/if}
             {#if group.ou != ""}
-                <CopyButton label={"OU"} value={group.ou}/>
+                <CopyButton label={"OU"} value={group.ou} fontSize={12}/>
             {/if}
             <Remove group={group.name} username={username} removeGroup={GroupState.RemoveGroup}/>
         </ul>

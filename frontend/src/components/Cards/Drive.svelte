@@ -4,6 +4,8 @@
     import copyAllIcon from "$lib/assets/copy-color-text.png"
 	import type { DriveSimpleInfo } from "@t/drive";
 	import { blur } from 'svelte/transition';
+	import CopyAllButton from '@components/CopyAllButton.svelte';
+	import CopyButton from '@components/CopyButton.svelte';
 
     let copyState: CopyState = $state({
         copied: "",
@@ -33,39 +35,43 @@
         return encodeURIComponent(item.drive)
     })
 
-    let allCopyText: string = $derived(`Name: ${item.drive}\nLocal_Path: ${item.local_path}\nGroups:\n${groups.join("\n")}`);
+    let copyText: string = $derived(`Name: ${item.drive}\nLocal_Path: ${item.local_path}\nGroups:\n${groups.join("\n")}`);
 
 </script>
 
+<!-- * Renders the main content for the card-->
 <ul style="--delay: {Math.min(idx * 50, 2000)}ms">
-    {#if copyState.copied != allCopyText}
-        <button class="copy-all" title="Copy All" onclick={() => copyToClip(allCopyText, copyState)}><img src={copyAllIcon} alt="Copy All"></button>
-    {:else}
-        <span class="copied-all">ALL COPIED</span>
-    {/if}
+    <CopyAllButton {copyText} />
     <a href={`/drive/${santizedDrive}`}> <img src={goToIcon} alt=""></a>
-    <li class="name">
-        <button onclick={() => copyToClip(item.drive, copyState)}>
-            {copyState.copied === item.drive ? "Copied" : item.drive}
-        </button>
-    </li>
-    <li>
-        <button onclick={() => copyToClip(item.local_path, copyState)}>
-            LOCAL_PATH: {copyState.copied === item.local_path ? "Copied" : item.local_path}
-        </button>
-    </li>
+    <CopyButton value={item.drive} fontSize={18} marginBottom={15}/>
+    <CopyButton value={item.local_path} label={"LOCAL_PATH"}/>
+    {@render GroupsContent()}
+</ul>
+
+
+<!-- * Renders the Groups for the drive-->
+{#snippet GroupsContent()}
     <li>
         GROUPS: 
+        <!-- Note: If more than 10 groups then you can search for specific group by name-->
         {#if item.groups.length >= 10}
             <input placeholder="Search For Group" bind:value={searchValue}/> 
         {/if}
         <div >
+            <!-- Note: Each group is transitioned in and can be copied -->
             {#each groups as group,i }
-                <button class:active={copyState.copied === group} onclick={() => copyToClip(group, copyState)} out:blur={{ duration: 200}} class="group-button" style="--delay: {Math.min(i * 20, 2000)}ms">{copyState.copied === group ? `Copied` : group}</button>
+                <button 
+                    class:active={copyState.copied === group} 
+                    onclick={() => copyToClip(group, copyState)} 
+                    out:blur={{ duration: 200}} 
+                    class="group-button" 
+                    style="--delay: {Math.min(i * 20, 2000)}ms">
+                        {copyState.copied === group ? `Copied` : group}
+                </button>
             {/each}
         </div>
     </li>
-</ul>
+{/snippet}
 
 <style >
 
@@ -132,31 +138,6 @@
         outline: none;
     }
 
-    span.copied-all {
-        font-size: 10px;
-        position: absolute;
-        top: 0.4rem;
-        left: 0.4rem;
-        opacity: 0.3;
-        z-index: -1;
-        color: var(--color-text)
-    }
-
-    button.copy-all {
-        position: absolute;
-        top: 0.2rem;
-        left: 0.2rem;
-        opacity: 0.3;
-        z-index: -1;
-    }
-
-    button.copy-all img {
-        width: 20px;
-    }
-
-    button.copy-all:hover img {
-        transform: scale(1.1);
-    }
 
 
     ul {
@@ -202,11 +183,6 @@
         transform: rotate(130deg) translate(-3px, -1px);
     }
 
-    li.name {
-        font-weight: bold;
-        font-size: 18px;
-        margin-bottom: 1rem;
-    }
 
     li {
         text-align: left;

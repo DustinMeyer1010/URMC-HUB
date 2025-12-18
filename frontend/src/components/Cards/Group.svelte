@@ -1,13 +1,8 @@
 <script lang="ts">
 	import type { GroupSimpleInfo } from "@t/group";
-    import { copyToClip, type CopyState } from '$lib/helper/copy.svelte';
-    import outIcon from '$lib/assets/double-left-arrow-primary.png';
-    import copyAllIcon from '$lib/assets/copy-color-text.png';
-
-    let copyState: CopyState = $state({
-        copied: "",
-        timeout: null
-    })
+    import Icon from '$lib/assets/double-left-arrow-primary.png';
+	import CopyButton from "@components/CopyButton.svelte";
+	import CopyAllButton from "@components/CopyAllButton.svelte";
 
     let {
         item,
@@ -17,37 +12,26 @@
         idx: number
     } = $props()
 
-    const allCopyText: string = `Name: ${item.name}\nInformation: ${item.information !== "" ? item.information : "NA"}\nDescription: ${item.description !== "" ? item.description : "NA"}\nOU: ${item.ou}`
+    const copyText: string = `Name: ${item.name}\nInformation: ${item.information !== "" ? item.information : "NA"}\nDescription: ${item.description !== "" ? item.description : "NA"}\nOU: ${item.ou}`
 
 </script>
 
-
+<!-- * Renders the content of the Card -->
 <ul class:disabled={item.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <a href={`/group/${item.name}`}> <img src={outIcon} alt=""></a>
-    {#if copyState.copied != allCopyText}
-        <button 
-        class="copy-all" 
-        title="Copy All" 
-        onclick={() => copyToClip(allCopyText, copyState)}>
-            <img src={copyAllIcon} alt="Copy All">
-        </button>
-    {:else}
-        <span class="copied-all">ALL COPIED</span>
-    {/if}
-    <a href={`/group/${item.name}`}> <img src={outIcon} alt=""></a>
-    {#each Object.entries(item) as key}
+    <a href={`/group/${item.name}`}> <img src={Icon} alt=""></a>
+    <CopyButton value={item.name} fontSize={18} marginBottom={15}/>
+    <CopyAllButton {copyText}/>
+    {@render ObjectContent()}
+</ul>
+
+<!-- * Renders the object information in copy format -->
+{#snippet ObjectContent()}
+    {#each Object.entries(item).slice(1) as key}
         {#if key[1]}
-            <li class={key[0]}> 
-                <button
-                type="button"
-                onclick={() => copyToClip(key[1], copyState)}>
-                    {@html key[0] != "name" ? `<b>${key[0].toUpperCase()}:</b>`: ""}
-                    {copyState.copied == key[1] ? "Copied" : key[1]}
-                </button>
-            </li>
+            <CopyButton value={key[1]} label={key[0]}/>
         {/if}
     {/each}
-</ul>
+{/snippet}
 
 
 <style >
@@ -57,48 +41,6 @@
 
     img {
         width: 25px;
-    }
-
-    
-    button {
-        background: none;
-        border: none;
-        padding: 0;
-        font: inherit;
-        color: inherit;
-        cursor: pointer;
-    }
-
-    button:focus,
-    button:active{
-        outline: none;
-    }
-
-    span.copied-all {
-        font-size: 10px;
-        position: absolute;
-        top: 0.4rem;
-        left: 0.4rem;
-        opacity: 0.3;
-        z-index: -1;
-        color: var(--color-text)
-    }
-
-    button.copy-all {
-        position: absolute;
-        top: 0.2rem;
-        left: 0.2rem;
-        opacity: 0.3;
-        z-index: -1;
-    }
-
-    button.copy-all img {
-        color: var(--text-color);
-        width: 20px;
-    }
-
-    button.copy-all:hover img {
-        transform: scale(1.1);
     }
 
 
@@ -144,30 +86,6 @@
         transform: rotate(130deg) translate(-3px, -1px);
     }
 
-    li.name {
-        font-weight: bold;
-        font-size: 18px;
-        margin-bottom: 1rem;
-    }
-
-    li {
-        text-align: left;
-    }
-
-    button {
-        background: none;
-        border: none;
-        padding: 0;
-        font: inherit;
-        color: inherit;
-        cursor: pointer;
-    }
-
-    button:active,
-    button:focus { 
-        border:none;
-        outline: none;
-    }
 
     @media (max-width: 400px) {
 

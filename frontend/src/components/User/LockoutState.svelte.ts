@@ -10,9 +10,9 @@ interface LockoutState {
 
 
 /**
- * This class supports that state of the lockout component. Tracks all the information on the page
+ * This class supports that state of the lockout component. 
  *
- *  When to update and it the functions
+ * Tracks all the information on the page and the functions to make those updates
  */
 export class LockoutStateClass implements LockoutState {
     Username: string;

@@ -36,15 +36,15 @@
     {#if !UserPageState.loading}
         <main>
             {#if UserPageState.currentSection == "PROFILE"}
-                <Profile user={UserPageState.pageData}/>
+                <Profile username={data.username}/>
             {:else if UserPageState.currentSection == "LOCKOUT"}
-                <Lockout username={UserPageState.pageData.username}/>
+                <Lockout username={data.username}/>
             {:else if UserPageState.currentSection == "DRIVES"}
-                <Drive username={UserPageState.pageData.username}/>
+                <Drive username={data.username}/>
             {:else if UserPageState.currentSection == "GROUPS"}
-                <Groups username={UserPageState.pageData.username}/>
+                <Groups username={data.username}/>
             {:else if UserPageState.currentSection == "ADD"}
-                <Add currentUser={UserPageState.pageData.username}/>
+                <Add currentUser={data.username}/>
             {/if}
         </main>
     {:else}

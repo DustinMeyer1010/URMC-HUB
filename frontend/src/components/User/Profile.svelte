@@ -2,50 +2,71 @@
 	import type { UserFullInfo } from "@t/user";
     import  disabledIcon  from '$lib/assets/disabled-color-disabled.png'
 	import { copyToClip, type CopyState } from "$lib/helper/copy.svelte";
+	import { onMount } from "svelte";
+	import { redirect } from "@sveltejs/kit";
 
     const notWantedAttributes = ["member_of", "name"]
+
+
 
     let copyState: CopyState = $state({
         copied: "",
         timeout: null
     })
 
+    let user: UserFullInfo | null = $state(null)
     
 
     let {
-        user 
+        username,
     } : {
-        user: UserFullInfo
+        username: string
     } = $props()
 
+    onMount(async () => {
+        await GetUserFullInfo()
+    })
+
+    const GetUserFullInfo = async () => {
+
+        const response: Response = await fetch(`http://localhost:8000/api/user/${username}`);
+
+        if (!response.ok) {
+            throw redirect(301, "/search")
+        }
+
+        user = await response.json();
+    }
 
 
 </script>
 
 <section >
-    {#if user.ou.toLocaleLowerCase().includes("disabled")}
-        <h1 class="disabled"><img src={disabledIcon} alt=""/>Disabled Account</h1>
+    {#if user != null}
+        {#if user.ou.toLocaleLowerCase().includes("disabled")}
+            <h1 class="disabled"><img src={disabledIcon} alt=""/>Disabled Account</h1>
+        {/if}
+        <ul>
+            {#each Object.entries(user) as key}
+                {#if !notWantedAttributes.includes(key[0].toLocaleLowerCase())}
+                    <li>
+                        <button onclick={() => copyToClip(key[1] ? key[1] as string : "NA", copyState)}>
+                            <span><b>{key[0].toUpperCase()}: </b> </span>
+                            <span>
+                                {#if copyState.copied === key[1] && key[1] !== ""}
+                                    Copied
+                                {:else}
+                                    {key[1] ? key[1] : "NA"}
+                                {/if}
+                            </span>
+                        </button>
+                    </li>
+                {/if}
+
+            {/each}
+
+        </ul>
     {/if}
-    <ul>
-        {#each Object.entries(user) as key}
-            {#if !notWantedAttributes.includes(key[0].toLocaleLowerCase())}
-                <li>
-                    <button onclick={() => copyToClip(key[1] ? key[1] as string : "NA", copyState)}>
-                        <span><b>{key[0].toUpperCase()}: </b> </span>
-                        <span>
-                            {#if copyState.copied === key[1] && key[1] !== ""}
-                                Copied
-                            {:else}
-                                {key[1] ? key[1] : "NA"}
-                            {/if}
-                        </span>
-                    </button>
-                </li>
-            {/if}
-
-        {/each}
-
-    </ul>
 </section>
 
 

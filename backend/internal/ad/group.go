@@ -217,7 +217,7 @@ func ModifyGroupNewMember(groupDN, user string) *customError.Error {
 	return nil
 }
 
-// Sends a modify request to remove a member from group
+// * Sends a modify request to remove a member from group
 func ModifyGroupRemoveMember(groupDN, user string) *customError.Error {
 	l, cError := connectToLDAP()
 
@@ -241,7 +241,7 @@ func ModifyGroupRemoveMember(groupDN, user string) *customError.Error {
 	return nil
 }
 
-// Retrives all the members of a specific group
+// * Retrives all the members of a specific group
 //
 // NOTE: Total Retrive per request 1500
 func GetAllMembers(group string) ([]string, *customError.Error) {

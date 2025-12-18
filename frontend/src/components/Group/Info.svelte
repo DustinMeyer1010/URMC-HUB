@@ -23,7 +23,7 @@
 <section>
     <CopyButton value={InfoState.GroupInfo.information == "" ? "NA" : InfoState.GroupInfo.information} label="Information"/>
     <CopyButton value={InfoState.GroupInfo.description == "" ? "NA" : InfoState.GroupInfo.description} label="Description"/>
-    <CopyButton value={InfoState.GroupInfo.ou == "" ? "NA" : InfoState.GroupInfo.description} label="OU"/>
+    <CopyButton value={InfoState.GroupInfo.ou == "" ? "NA" : InfoState.GroupInfo.ou} label="OU"/>
 </section>
 
 
