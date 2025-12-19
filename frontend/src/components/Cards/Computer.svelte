@@ -5,6 +5,8 @@
     import copyAllIcon from "$lib/assets/copy-color-text.png"
     import disabledIcon from '$lib/assets/disabled-computer.png'
 	import { ComputerStateClass } from "./ComputerState.svelte";
+	import CopyButton from "@components/CopyButton.svelte";
+	import CopyAllButton from "@components/CopyAllButton.svelte";
     
     let {
         item,
@@ -22,29 +24,28 @@
 </script>
 
 <ul class:disabled={ComputerState.Disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
+    {@render DisabledContent()}
+    <CopyButton value={item.name} fontSize={18} marginBottom={15}/>
+    <CopyAllButton copyText={ComputerState.AllText} />
+    <a href={`/computer/${item.name}`}> <img src={goToIcon} alt=""></a>
+    {@render ObjectContent()}
+</ul>
+
+
+{#snippet DisabledContent()}
     {#if ComputerState.Disabled}
         <span class="disabled"><img src={disabledIcon} alt="">Computer Disabled</span>
     {/if}
-    {#if ComputerState.CopyState.copied != ComputerState.AllText}
-        <button class="copy-all" title="Copy All" onclick={() => copyToClip(ComputerState.AllText, ComputerState.CopyState)}><img src={copyAllIcon} alt="Copy All"></button>
-    {:else}
-        <span class="copied-all">ALL COPIED</span>
-    {/if}
-    <a href={`/computer/${item.name}`}> <img src={goToIcon} alt=""></a>
-    {#each Object.entries(item) as key}
+{/snippet}
+
+
+{#snippet ObjectContent()}
+    {#each Object.entries(item).slice(1) as key}
         {#if key[1]}
-            <li class={key[0]}> 
-                <button
-                type="button"
-                title={`Copy ${key[0]}`}
-                onclick={() => copyToClip(key[1], ComputerState.CopyState)}>
-                        {@html key[0] != "name" ? `<b>${key[0].toUpperCase()}:</b>` : ""}
-                        {ComputerState.CopyState.copied == key[1] ? "Copied" : key[1]}
-                </button>
-            </li>
+            <CopyButton value={key[1]} label={key[0]}/>
         {/if}
     {/each}
-</ul>
+{/snippet}
 
 <style >
     span.disabled {
@@ -66,49 +67,6 @@
 
     img {
         width: 25px;
-    }
-
-    
-    button {
-        background: none;
-        border: none;
-        padding: 0;
-        font: inherit;
-        color: inherit;
-        cursor: pointer;
-    }
-
-    button:focus,
-    button:active{
-        outline: none;
-    }
-
-
-
-    span.copied-all {
-        font-size: 10px;
-        position: absolute;
-        top: 0.4rem;
-        left: 0.4rem;
-        opacity: 0.3;
-        z-index: -1;
-        color: var(--color-text)
-    }
-
-    button.copy-all {
-        position: absolute;
-        top: 0.2rem;
-        left: 0.2rem;
-        opacity: 0.3;
-        z-index: -1;
-    }
-
-    button.copy-all img {
-        width: 20px;
-    }
-
-    button.copy-all:hover img {
-        transform: scale(1.1);
     }
 
 
@@ -152,31 +110,6 @@
 
     a:hover img {
         transform: rotate(130deg) translate(-3px, -1px);
-    }
-
-    li.name {
-        font-weight: bold;
-        font-size: 18px;
-        margin-bottom: 1rem;
-    }
-
-    li {
-        text-align: left;
-    }
-
-    button {
-        background: none;
-        border: none;
-        padding: 0;
-        font: inherit;
-        color: inherit;
-        cursor: pointer;
-    }
-
-    button:active,
-    button:focus { 
-        border:none;
-        outline: none;
     }
 
     @media (max-width: 800px) {

@@ -6,13 +6,16 @@
     import disabledIcon from '$lib/assets/disabled-color-disabled.png'
 	import CopyButton from "@components/CopyButton.svelte";
 	import CopyAllButton from "@components/CopyAllButton.svelte";
+	import type { Snippet } from "svelte";
 
     let {
         item,
         idx,
+        children
     } : {
         item: UserSimpleInfo
         idx: number
+        children?: Snippet
     } = $props();
 
     const copyText: string = `Name: ${item.name}\nUsername: ${item.username}\nNet_ID: ${item.net_id}\nURID: ${item.urid}\nEmail: ${item.email}\nOU: ${item.ou}\n`;
@@ -22,7 +25,9 @@
 <!-- * Renders the main content -->
 <ul class:disabled={disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
     <CopyAllButton {copyText} />
+    {#if item.name}
     <CopyButton value={item.name} fontSize={18} marginBottom={15}/>
+    {/if}
     {@render DisabledContent()}
     {@render LinkToUserPage()}
 

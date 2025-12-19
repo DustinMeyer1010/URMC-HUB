@@ -1,4 +1,7 @@
-<!-- Refactor  -->
+<!-- 
+ REFACTOR: GetDrives() should be call inside of GetGroups
+ REFACTOR: Fix the sizing and colors of groups to drives
+-->
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { DriveStateClass } from "./DriveState.svelte";
@@ -25,10 +28,10 @@
     {#if !DriveState.Loading}
         {#each DriveState.DrivesAccess as access, idx}
             <div style="--delay: {idx * 50}ms">
-                <h1 class="title"><CopyButton value={access.drive} label=""/></h1>
+                <CopyButton value={access.drive} label="" fontSize={18} marginBottom={10}/>
                 <ul>
                     {#each access.groups as group}
-                        <li><CopyButton value={group} label=""/></li>
+                        <li><CopyButton value={group} label="" fontSize={12}/></li>
                     {/each}
                 </ul>
             </div>
@@ -55,10 +58,6 @@
         flex-wrap: wrap;
         gap: 1rem;
         align-items: stretch;
-    }
-
-    h1.title {
-        font-weight: bolder;
     }
 
     h1.no-access {

@@ -47,6 +47,7 @@
 
     h1 {
         text-align: center;
+        font-size: 15px;
     }
 
     section {

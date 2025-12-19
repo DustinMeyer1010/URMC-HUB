@@ -20,7 +20,7 @@
         data: AllResults
     } = $props()
 
-    const FilterMap: Record<string, { items: any[], Component: Component<{item: any, idx: number, children: any}> }> = {
+    const FilterMap: Record<string, { items: any[], Component: Component<{item: any, idx: number}> }> = {
         COMPUTERS: { items: data.computers, Component: Computer },
         PRINTERS:  { items: data.printers, Component: Printer },
         USERS:     { items: data.users, Component: User },
@@ -33,7 +33,7 @@
 
 <div>
         {#each FilterMap[filter].items as item, idx}
-            <Card item={item} idx={idx} children={undefined}/>
+            <Card item={item} idx={idx} />
         {:else}
             {@render NotFound(filter)}
         {/each}

@@ -61,7 +61,7 @@
         font-weight: bold;
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 350px) {
         button {
             display: flex;
             gap: 5px;

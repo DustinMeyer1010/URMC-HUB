@@ -7,9 +7,9 @@ import "github.com/go-ldap/ldap/v3"
 // to display group search results or summaries.
 type GroupSimpleInfo struct {
 	Name        string `json:"name"`
-	OU          string `json:"ou"`
 	Information string `json:"information"`
 	Description string `json:"description"`
+	OU          string `json:"ou"`
 }
 
 // Converts a ldap entry into the a simple group info

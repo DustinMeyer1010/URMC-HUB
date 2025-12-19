@@ -1,7 +1,6 @@
 <script lang="ts">
     import { copyToClip, type CopyState } from '$lib/helper/copy.svelte';
-    import goToIcon from '$lib/assets/double-left-arrow-primary.png';
-    import copyAllIcon from "$lib/assets/copy-color-text.png"
+    import Icon from '$lib/assets/double-left-arrow-primary.png';
 	import type { DriveSimpleInfo } from "@t/drive";
 	import { blur } from 'svelte/transition';
 	import CopyAllButton from '@components/CopyAllButton.svelte';
@@ -42,7 +41,7 @@
 <!-- * Renders the main content for the card-->
 <ul style="--delay: {Math.min(idx * 50, 2000)}ms">
     <CopyAllButton {copyText} />
-    <a href={`/drive/${santizedDrive}`}> <img src={goToIcon} alt=""></a>
+    <a href={`/drive/${santizedDrive}`}> <img src={Icon} alt=""></a>
     <CopyButton value={item.drive} fontSize={18} marginBottom={15}/>
     <CopyButton value={item.local_path} label={"LOCAL_PATH"}/>
     {@render GroupsContent()}

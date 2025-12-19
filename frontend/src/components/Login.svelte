@@ -1,11 +1,5 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
-
-
-    type LoginForm = {
-        username: string,
-        password: string,
-    }
+	import { LoginStateClass } from "./LoginState.svelte";
 
     let {
         login
@@ -13,52 +7,35 @@
         login: () => void
     } = $props()
 
-    let error: boolean = $state(false)
+    let LoginState: LoginStateClass = new LoginStateClass(login)
 
-
-
-    let form: LoginForm = $state({username: "", password: ""})
-
-    const onsubmit = async (e: SubmitEvent) => {
-        e.preventDefault()
-        
-        const res = await fetch('http://localhost:8000/api/user/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form)
-        });
-
-        if (res.status == 200) {
-            window.location.reload()
-            localStorage.setItem("agent", form.username)
-            login()
-            return
-        }
-
-        error = true
-
-    }
 </script>
 
 
-<form onsubmit={(e) => onsubmit(e)} action="login">
+<form onsubmit={(e) => LoginState.onsubmit(e)} action="login">
     <h1>Login</h1>
 
     <span>
         <label for="username">Username</label>
-        <input class:error={error} type="text" id="username" bind:value={form.username}>
+        <input class:error={LoginState.Error} type="text" id="username" bind:value={LoginState.Form.username}>
     </span>
     <span>
         <label for="password">Password</label>
-        <input class:error={error} type="password" id="password" bind:value={form.password}>
+        <input class:error={LoginState.Error} type="password" id="password" bind:value={LoginState.Form.password}>
 
     </span>
 
-    {#if error}
-        <span class="error">Invalid Username or password</span>
-    {/if}
+    {@render Error()}
     <button type="submit">Login</button>
 </form>
+
+
+{#snippet Error()}
+    {#if LoginState.Error}
+        <span class="error">Invalid Username or password</span>
+    {/if}
+{/snippet}
+
 
 <style>
 

@@ -8,6 +8,7 @@
 	import { GroupStateClass } from "./GroupState.svelte";
 	import CopyButton from "@components/CopyButton.svelte";
 	import { onMount } from "svelte";
+	import { type GroupSimpleInfo } from "@t/group";
 
 
     let {
@@ -33,23 +34,23 @@
     <input oncontextmenu={(e: Event) => {e.preventDefault();GroupState.Filter=""}} bind:value={GroupState.Filter} placeholder="Search For Group"/>
     {#each GroupState.FilteredGroups as group, idx }
         <ul style="--delay: {Math.min(idx * 50, 2000)}ms" out:fly={{x: 100}}>
-            <CopyButton label={""} value={group.name} fontSize={20}/>
-            {#if group.description != ""}
-                <CopyButton label={"Description"} value={group.description} fontSize={12}/>
-            {/if}
-            {#if group.information != ""}
-                <CopyButton label={"Information"} value={group.information} fontSize={12}/>
-            {/if}
-            {#if group.ou != ""}
-                <CopyButton label={"OU"} value={group.ou} fontSize={12}/>
-            {/if}
+            <CopyButton label={""} value={group.name} fontSize={20} marginBottom={10}/>
+            {@render ObjectContent(group)}
             <Remove group={group.name} username={username} removeGroup={GroupState.RemoveGroup}/>
         </ul>
     {/each}
 
+    
+
 </section>
 
-
+{#snippet ObjectContent(group: GroupSimpleInfo)}
+    {#each Object.entries(group).slice(1) as key}
+        {#if key[1]}
+            <CopyButton value={key[1]} label={key[0].toUpperCase()} fontSize={12}/>
+        {/if}
+    {/each}
+{/snippet}
 
 <style>
 
@@ -92,6 +93,7 @@
         padding: 1rem 1rem;
         padding-right: 120px;
         border-radius: 10px;
+        margin-bottom: 10px;
         background: var(--color-surface);
         margin: 0;
     }

@@ -7,11 +7,7 @@
 
     let showMenu: boolean = $state(false)
     let button: HTMLButtonElement | undefined = $state()
-
     let width = $state(0);
-
-    $inspect(showMenu)
-    
 
     onMount(() => {
         width = window.innerWidth;
@@ -35,8 +31,6 @@
         showMenu = !showMenu
     }
 
-
-
     let breakDown: boolean = $derived.by(() => {
         return width <= 500
     })
@@ -44,8 +38,14 @@
 </script>
 <nav >
     <a href="/"><img  src={urmc} alt=""></a>
-    
-{#if !breakDown}
+    {#if !breakDown}
+        {@render RegularNav()}
+    {:else}
+        {@render DropDownOnly()}
+    {/if}
+</nav>
+
+{#snippet RegularNav()}
     <ul>
         <li>
             <a href="/">Search</a>
@@ -65,8 +65,10 @@
             {/if}
         </li>
     </ul>
-{:else}
-    
+{/snippet}
+
+
+{#snippet DropDownOnly()}
     <ul>
         <li class="dropdown">
             <button bind:this={button} onclick={openMenu}><img src={menuIcon} alt=""></button>
@@ -78,12 +80,10 @@
                     <a href="/api">API Docs</a>
                     <ToggleTheme/>
                 </div>
-                
             {/if}
         </li>
     </ul>
-{/if}
-</nav>
+{/snippet}
 
 
 <style>

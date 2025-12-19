@@ -102,6 +102,7 @@
         }
 
         button {
+            max-width: 200px;
             flex-grow: 1;
         }
 
