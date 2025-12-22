@@ -1,7 +1,12 @@
+<!--
+    TODO: Make an api endpoint that will return the most commonly used AD groups to add
+-->
+
 <script lang="ts">
 	import Confirm from "./Confirm.svelte";
 	import Message from "./Message.svelte";
 	import { AddStateClass } from "./AddState.svelte";
+	import Group from "@components/Cards/Group.svelte";
 
     let {
         currentUser
@@ -29,13 +34,9 @@
         {/each}
     {/if}
     {#each AddState.Groups as group, idx (group.name)}
-        <ul style="--delay: {Math.min(idx * 50, 2000)}ms">
-            <li class="title">{group.name !== "" ? group.name : "NA"}</li>
-            <li><b>Description:</b> {group.description !== "" ? group.description : "NA"}</li>
-            <li><b>Information:</b> {group.information !== "" ? group.information : "NA"}</li>
-            <li><b>OU:</b> {group.ou !== "" ? group.ou : "NA"}</li>
+        <Group item={group} {idx}>
             <Confirm name={group.name} username={currentUser} title={"Add Group?"} value={"Add"} action={AddState.AddGroup}/>
-        </ul>
+        </Group>
     {:else}
         <h1>Lookup Group To Add</h1>
     {/each}
@@ -51,13 +52,11 @@
     }
 
     section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
         height: 100%;
         width: 90%;
-    }
-
-    li.title {
-        font-weight: bold;
-        font-size: 18px;
     }
 
     form {

@@ -30,10 +30,9 @@
 <style>
 
     section {
-        margin-top: 20px;
         display: flex;
         flex-direction: column;
-        width: 40%;
+        max-width: 80%;
         gap: 10px;
         padding: 20px;
         align-self: center;

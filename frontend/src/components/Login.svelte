@@ -56,7 +56,7 @@
     }
 
     button:hover {
-        background-color: var(--color-primary-hover-opacity-20);
+        background-color: var(--color-primary-hover-opacity-10);
     }
 
     form {

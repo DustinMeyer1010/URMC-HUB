@@ -1,14 +1,12 @@
 <!-- REFACTOR -->
 
 <script lang="ts">
-	import { fly } from "svelte/transition";
 	import Remove from "./Remove.svelte";
 
 	import Message from "./Message.svelte";
 	import { GroupStateClass } from "./GroupState.svelte";
-	import CopyButton from "@components/CopyButton.svelte";
 	import { onMount } from "svelte";
-	import { type GroupSimpleInfo } from "@t/group";
+	import Group from "@components/Cards/Group.svelte";
 
 
     let {
@@ -24,6 +22,9 @@
         await GroupState.GetGroupForUser(username)
         GroupState.Groups = GroupState.Groups.sort((a, b) => a.name.localeCompare(b.name))
     })
+
+
+
 </script>
 
 
@@ -33,24 +34,15 @@
 <section>
     <input oncontextmenu={(e: Event) => {e.preventDefault();GroupState.Filter=""}} bind:value={GroupState.Filter} placeholder="Search For Group"/>
     {#each GroupState.FilteredGroups as group, idx }
-        <ul style="--delay: {Math.min(idx * 50, 2000)}ms" out:fly={{x: 100}}>
-            <CopyButton label={""} value={group.name} fontSize={20} marginBottom={10}/>
-            {@render ObjectContent(group)}
-            <Remove group={group.name} username={username} removeGroup={GroupState.RemoveGroup}/>
-        </ul>
+        <Group item={group} {idx} >
+            <Remove group={group.name} username={username} removeGroup={GroupState.RemoveGroup}/> 
+        </Group>
     {/each}
 
     
 
 </section>
 
-{#snippet ObjectContent(group: GroupSimpleInfo)}
-    {#each Object.entries(group).slice(1) as key}
-        {#if key[1]}
-            <CopyButton value={key[1]} label={key[0].toUpperCase()} fontSize={12}/>
-        {/if}
-    {/each}
-{/snippet}
 
 <style>
 
@@ -61,6 +53,7 @@
         width: 90%;
         flex-direction: column;
         justify-content: center;
+        padding-bottom: 100px;
     }
 
     input {
@@ -81,23 +74,6 @@
     input:focus {
         outline: none;
     }
-
-    ul {
-        display: flex;
-        flex-grow: 1;
-        flex-direction: column;
-        gap: 0.5rem;
-        list-style: none;
-        animation: slideIn 0.5s forwards var(--delay);
-        opacity: 0;
-        padding: 1rem 1rem;
-        padding-right: 120px;
-        border-radius: 10px;
-        margin-bottom: 10px;
-        background: var(--color-surface);
-        margin: 0;
-    }
-
 
     @keyframes slideIn {
         from {

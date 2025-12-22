@@ -15,7 +15,6 @@
 
         <h1>Ping Results</h1>
         <span>{pingResults}</span>
-
 {:else}
     <p>Computer is not responding to pings.</p>
     <h2>Causes: </h2>
@@ -31,7 +30,7 @@
 
 
     span{
-        width: 50%;
+        width: 75%;
         align-self: center;
     }
 

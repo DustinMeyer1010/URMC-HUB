@@ -32,7 +32,7 @@ export class GroupStateClass implements GroupState {
     }
 
 
-    RemoveGroup = async (username: string, group: string) => {
+    RemoveGroup = async (username: string, group: string): Promise<void> =>  {
         this.Results = []
         await fetch(
             `http://localhost:8000/api/user/${username}/memberof`,

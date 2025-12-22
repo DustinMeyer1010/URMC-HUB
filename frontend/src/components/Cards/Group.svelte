@@ -3,13 +3,16 @@
     import Icon from '$lib/assets/double-left-arrow-primary.png';
 	import CopyButton from "@components/CopyButton.svelte";
 	import CopyAllButton from "@components/CopyAllButton.svelte";
+	import type { Snippet } from "svelte";
 
     let {
         item,
-        idx
+        idx,
+        children
     } : {
         item: GroupSimpleInfo
         idx: number
+        children?: Snippet
     } = $props()
 
     const copyText: string = `Name: ${item.name}\nInformation: ${item.information !== "" ? item.information : "NA"}\nDescription: ${item.description !== "" ? item.description : "NA"}\nOU: ${item.ou}`
@@ -22,13 +25,16 @@
     <CopyButton value={item.name} fontSize={18} marginBottom={15}/>
     <CopyAllButton {copyText}/>
     {@render ObjectContent()}
+    {#if children}
+        {@render children()}
+    {/if}
 </ul>
 
 <!-- * Renders the object information in copy format -->
 {#snippet ObjectContent()}
     {#each Object.entries(item).slice(1) as key}
         {#if key[1]}
-            <CopyButton value={key[1]} label={key[0]}/>
+            <CopyButton value={key[1]} label={key[0].toUpperCase()}/>
         {/if}
     {/each}
 {/snippet}

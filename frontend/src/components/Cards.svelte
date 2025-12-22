@@ -9,7 +9,7 @@
 	import User from "./Cards/User.svelte";
 	import Drive from "./Cards/Drive.svelte";
 	import type { AllResults } from "@t/resutls";
-	import type { Component, Snippet } from 'svelte';
+	import type { Component } from 'svelte';
 
 
     let {
@@ -41,12 +41,18 @@
 
 
 {#snippet NotFound(filter: Filters)}
-    <span>No {filter} Found</span>
+    <h1>No {filter} Found</h1>
 {/snippet}
 
 
 
 <style>
+
+    h1 {
+        text-align: center;
+        font-size: 15px;
+    }
+
     div {
 
         display: flex;

@@ -1,6 +1,7 @@
 import { goto } from "$app/navigation";
+import { page } from "$app/state";
 import { isLoggedIn } from "$lib/login";
-import type { Filters, Results } from "@t/filters";
+import { Filter, type Filters, type Results } from "@t/filters";
 import type { AllResults } from "@t/resutls";
 
 const emptyResults: AllResults = {
@@ -67,11 +68,31 @@ export class SearchStateClass implements SearchStateInterface {
     SwitchFilter = (newFilter: Filters) => {
         this.filter = newFilter;
         window.scrollTo(0,0)
-        this.SetURL()
+        this.SetURLParams()
     };
 
-    SetURL() {
+    GetURLParams = () => {
+        let urlParams = page.url.searchParams
+        this.searchValue = urlParams.get("search") ?? ""
+        let filter = urlParams.get("filter")?.toUpperCase() ?? "USERS"
+        this.filter = Filter.isValid(filter) ? filter as Filters : "USERS"
+
+        if (this.filter == "USERS") {
+            this.filter = localStorage.getItem("filter")?.toUpperCase() as Filters ?? "USERS"
+        }
+
+        if (this.searchValue == "") {
+            this.searchValue = localStorage.getItem("search") ?? ""
+        }
+
+
+    }
+
+    SetURLParams() {
+        localStorage.setItem("filter", this.filter)
+        localStorage.setItem("search", this.searchValue)
         goto(`?search=${this.santizedSearch}&filter=${this.filter.toLowerCase()}`, { replaceState: true, keepFocus: true, noScroll: true })
+
     }
 
 }

@@ -22,6 +22,7 @@ func ToGroupSimpleInfo(entry *ldap.Entry) GroupSimpleInfo {
 	}
 }
 
+// Members to modified either to be added or removed from a group
 type ModifyMembers struct {
 	Members []string `json:"members"`
 }

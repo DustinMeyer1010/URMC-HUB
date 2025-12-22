@@ -37,6 +37,7 @@
         width: 100%;
         margin-top: 20px;
         margin-bottom: 20px;
+        box-sizing: border-box;
     }
 
     button {
@@ -58,7 +59,7 @@
 
     @media (max-width: 1000px) {
         nav {
-            width: 90%;
+            width: 100%;
             justify-content: center;
             flex-wrap: wrap;
         }

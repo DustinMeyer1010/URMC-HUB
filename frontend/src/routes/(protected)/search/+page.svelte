@@ -5,8 +5,6 @@
     import Cards from '@components/Cards.svelte';
 
 	import { onMount } from 'svelte';
-    import { page } from '$app/state';
-	import { getFilter, getSearchValue } from '../../helper';
 	import CardLoading from '@components/Loading-Animations/CardLoading.svelte';
 	import { SearchStateClass } from './state.svelte';
 
@@ -15,18 +13,10 @@
 
 
     onMount(() => {
-        let urlParams = page.url.searchParams;
-        SearchState.searchValue = getSearchValue(urlParams)
-        SearchState.filter = getFilter(urlParams)
+        SearchState.GetURLParams()
         SearchState.SwitchFilter(SearchState.filter)
         SearchState.Search()
     })
-
-
-    const setPreviousSearch = () => {
-        localStorage.setItem("searchValue", SearchState.searchValue)
-        localStorage.setItem("filter", SearchState.filter)
-    }
 
 </script>
 

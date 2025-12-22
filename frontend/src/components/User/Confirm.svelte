@@ -1,4 +1,7 @@
 <script lang="ts">
+
+    import Icon from "$lib/assets/Add-Green.png"
+
     let needsToBeConfirmed = $state(false)
 
     let {
@@ -29,7 +32,9 @@
 
 <div>
     {#if !needsToBeConfirmed}
-        <button title={`add ${name}`} class="add" onclick={() => needsToBeConfirmed = true}>{value}</button>
+        <button title={`ADD ${name}`} class="add" onclick={() => needsToBeConfirmed = true}>
+            <img src={Icon} alt="add"/>
+        </button>
     {:else}
         <span>{title}</span>
         <button class="yes" onclick={yes}>Yes</button>
@@ -39,27 +44,44 @@
 
 
 <style>
+
+    img {
+        height: 15px;
+        width: 15px;
+        transition: 0.3s ease;
+        
+    }
     
     div {
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        position: relative;
+        align-self: flex-end;
+        text-align: center;
+        gap: 10px;
         box-sizing: border-box;
-        gap: 3px;
+        margin-right: -35px;
+        margin-bottom: -15px;
     }
 
     button {
+        display: flex;
+        padding: 5px 0;
+        justify-content: center;
+        min-width: 50px;
         border: none;
         background: none;
-        border-radius: 10px;
-        padding: 0.5rem;
+        border-radius: 5px;
         height: 100%;
-        min-width: 30px;
         text-align: center;
-        color: var(--color-success);
         font-size: 12px;
+
+    }
+
+    button.add {
+        justify-content: flex-end;
     }
 
     span {
@@ -82,17 +104,14 @@
         background: var(--color-success-opacity-20);
     }
 
-    @media (max-width: 800px) {
+    button:hover img {
+        transform: scale(1.5);
+    }
+
+    @media (max-width: 400px) {
         div {
-            flex-direction: row;
-            position: relative;
-            align-self: center;
-            text-align: center;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            gap: 10px;
-            padding: 0 1rem;
+            flex-wrap: nowrap;
+            margin-right: -5px;
         }
         button {
             flex-grow: 1;

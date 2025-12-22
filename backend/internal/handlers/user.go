@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Request handler for getting the information about a user
 func PullUserInformation(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 	vars := mux.Vars(r)
@@ -33,6 +34,7 @@ func PullUserInformation(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
+// Request handler for getting the lockout information for a user
 func LockOutStatus(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 
@@ -47,6 +49,7 @@ func LockOutStatus(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
+// Request handler for removing a group from a user
 func RemoveGroup(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 
@@ -80,6 +83,7 @@ func RemoveGroup(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
+// Request handler for adding a group to a user
 func AddGroup(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 
@@ -114,6 +118,7 @@ func AddGroup(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Search for all the user in the file and pull simple information
 func BulkUserSearchFile(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 	r.ParseMultipartForm(1 << 20)

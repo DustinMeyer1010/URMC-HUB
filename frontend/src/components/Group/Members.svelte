@@ -1,8 +1,19 @@
+<!-- 
+ Refactor: Fix how long page takes to geneerate
+    ? Should I send a request per page of 1500 users
+    ? Agent can press a button that will load all the members
+    ? Generate the first 1500 and then press a button to generate more (Handles groups with smaller than 1500 members to always show members)
+ TODO: Add a button the will generate a excel file with all the memebers in it with
+    - Username
+    - Name
+    - Email
+    - Department   
+-->
+
 <script lang="ts">
 	import User from "@components/Cards/User.svelte";
 	import { MembersStateClass } from "./MembersState.svelte";
 	import { onMount } from "svelte";
-	import PageLoading from "@components/Loading-Animations/PageLoading.svelte";
 	import MembersLoading from "@components/Loading-Animations/MembersLoading.svelte";
 
     let {
@@ -50,6 +61,7 @@
         gap: 10px;
         width: 80%;
         padding-bottom: 100px;
+        padding-top: 30px;
     }
 
     input {

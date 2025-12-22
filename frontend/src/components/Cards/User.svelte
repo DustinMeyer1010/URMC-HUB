@@ -26,12 +26,15 @@
 <ul class:disabled={disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
     <CopyAllButton {copyText} />
     {#if item.name}
-    <CopyButton value={item.name} fontSize={18} marginBottom={15}/>
+        <CopyButton value={item.name} fontSize={18} marginBottom={15}/>
     {/if}
     {@render DisabledContent()}
     {@render LinkToUserPage()}
 
     {@render ObjectContent()}
+    {#if children}
+        {@render children()}
+    {/if}
 </ul>
 
 <!-- * Renders the disabled contnent if object return is disabled -->
@@ -54,7 +57,7 @@
 {#snippet ObjectContent()}
     {#each Object.entries(item).slice(1) as key}
         {#if key[1]}
-                <CopyButton value={key[1]} label={key[0]}/>
+            <CopyButton value={key[1]} label={key[0]}/>
         {/if}
     {/each}
 {/snippet}
@@ -149,8 +152,6 @@
 
     }
 
-
-    
     @keyframes slideIn {
         from {
             opacity: 0;

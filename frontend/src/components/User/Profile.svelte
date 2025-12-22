@@ -4,7 +4,6 @@
 	import { copyToClip, type CopyState } from "$lib/helper/copy.svelte";
 	import { onMount } from "svelte";
 	import { redirect } from "@sveltejs/kit";
-
     const notWantedAttributes = ["member_of", "name"]
 
 
