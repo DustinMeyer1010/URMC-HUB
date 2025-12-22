@@ -1,6 +1,5 @@
 <script lang="ts">
     import Icon from "$lib/assets/Remove-Red.png"
-	import { fade, fly } from "svelte/transition";
 
     let needsToBeConfirmed: boolean = $state(false)
 

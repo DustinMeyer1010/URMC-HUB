@@ -1,10 +1,10 @@
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
 import { isLoggedIn } from "$lib/login";
-import { Filter, type Filters, type Results } from "@t/filters";
-import type { AllResults } from "@t/resutls";
+import { type Results } from "@t/filters";
+import { Search } from "@t/search";
 
-const emptyResults: AllResults = {
+const emptyResults: Search.Results = {
     users: [],
     computers: [],
     groups: [],
@@ -13,21 +13,21 @@ const emptyResults: AllResults = {
 }
 
 interface SearchStateInterface {
-    data: AllResults 
+    data: Search.Results 
     currentFilterItems: Results
-    filter: Filters
+    filter: Search.Filters
     loading: boolean
     searchValue: string
     santizedSearch: string
     Search: () => Promise<void>
-    SwitchFilter: (newFilter: Filters) => void
+    SwitchFilter: (newFilter: Search.Filters) => void
 
 }
 
 
 
 export class SearchStateClass implements SearchStateInterface {
-    data: AllResults = $state(emptyResults)
+    data: Search.Results = $state(emptyResults)
 
 
     constructor() {
@@ -35,7 +35,7 @@ export class SearchStateClass implements SearchStateInterface {
     }
 
     currentFilterItems: Results = $state([])
-    filter: Filters = $state("USERS")
+    filter: Search.Filters = $state("USERS")
     loading: boolean = $state(true)
     searchValue: string = $state("")
     santizedSearch: string = $derived.by(() => {
@@ -65,7 +65,7 @@ export class SearchStateClass implements SearchStateInterface {
         this.loading = false
     }
 
-    SwitchFilter = (newFilter: Filters) => {
+    SwitchFilter = (newFilter: Search.Filters) => {
         this.filter = newFilter;
         window.scrollTo(0,0)
         this.SetURLParams()
@@ -75,11 +75,11 @@ export class SearchStateClass implements SearchStateInterface {
         let urlParams = page.url.searchParams
         this.searchValue = urlParams.get("search") ?? ""
         let filter = urlParams.get("filter")?.toUpperCase() ?? "USERS"
-        this.filter = Filter.isValid(filter) ? filter as Filters : "USERS"
+        this.filter = Search.isValidFilter(filter) ? filter as Search.Filters : "USERS"
 
         if (this.filter == "USERS") {
             filter = localStorage.getItem("filter")?.toUpperCase() ?? "USERS"
-            this.filter = Filter.isValid(filter) ? filter as Filters : "USERS"
+            this.filter = Search.isValidFilter(filter) ? filter as Search.Filters : "USERS"
         }
 
         if (this.searchValue == "") {

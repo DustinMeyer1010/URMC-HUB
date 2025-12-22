@@ -1,24 +1,22 @@
 
 
 <script lang="ts">  
-	import type { Section } from "../../types/section";
+	import { User } from "@t/user"
 
     let {
-        sections,
         currentSection,
         swapSection
     } : {
-        sections: Section[]
         currentSection: string
-        swapSection: (section: Section) => void
+        swapSection: (section: User.Section) => void
     } = $props()
 
 
 </script>
 
 <nav>
-    {#each sections as section}
-        <button class:active={currentSection == section} onclick={() => swapSection(section)}>{section}</button>
+    {#each User.Sections as section }
+        <button class:active={currentSection == section} onclick={() => swapSection(section as User.Section)}>{section}</button>
     {/each}
 </nav>
 

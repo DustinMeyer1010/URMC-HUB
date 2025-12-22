@@ -1,6 +1,6 @@
-import type { ComputerPageInfo } from "@t/computer"
+import type { Computer } from "@t/computer"
 
-export const EMPTY_COMPUTER_INFO: ComputerPageInfo = {
+export const EMPTY_COMPUTER_INFO: Computer.PageInfo = {
     computer_info: {
         name: "",
         ou: "",
@@ -12,7 +12,7 @@ export const EMPTY_COMPUTER_INFO: ComputerPageInfo = {
 
 interface PageState {
     ComputerName: string
-    ComputerInformation: ComputerPageInfo
+    ComputerInformation: Computer.PageInfo
     Disabled: boolean
     Loading: boolean
     GetComputerInfo: () => void
@@ -21,7 +21,7 @@ interface PageState {
 
 export class PageStateClass implements PageState {
     Loading: boolean = $state(true)
-    ComputerInformation: ComputerPageInfo = $state(EMPTY_COMPUTER_INFO)
+    ComputerInformation: Computer.PageInfo = $state(EMPTY_COMPUTER_INFO)
     Disabled: boolean = $derived.by(() => this.ComputerInformation.computer_info.ou.toUpperCase().includes("DISABLED"))
     ComputerName: string;
 

@@ -1,9 +1,9 @@
 
 import { goto } from "$app/navigation"
-import type { GroupSimpleInfo } from "@t/group"
+import type { Group } from "@t/group"
 
 
-const EMPTY_GROUP_INFO: GroupSimpleInfo = {
+const EMPTY_GROUP_INFO: Group.CardInfo = {
     name: "",
     description: "",
     information: "",
@@ -12,14 +12,14 @@ const EMPTY_GROUP_INFO: GroupSimpleInfo = {
 
 interface InfoState {
     GroupName: string
-    GroupInfo: GroupSimpleInfo
+    GroupInfo: Group.CardInfo
     GetGroupInfo: () => void
 }
 
 
 export class InfoStateClass implements InfoState {
     GroupName: string;
-    GroupInfo: GroupSimpleInfo = $state(EMPTY_GROUP_INFO)
+    GroupInfo: Group.CardInfo = $state(EMPTY_GROUP_INFO)
 
 
     constructor(groupName: string) {

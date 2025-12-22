@@ -1,5 +1,7 @@
-export type DriveSimpleInfo = {
-    groups: string[],
-    drive: string,
-    local_path: string,
+export namespace Drive {
+    export type CardInfo = {
+        groups: string[],
+        drive: string,
+        local_path: string,
+    }
 }

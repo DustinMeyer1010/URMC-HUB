@@ -1,11 +1,11 @@
-import type { GroupPageInfo } from "@t/group";
+import type { Group } from "@t/group";
 
 export type Section = "ADD" | "REMOVE" | "MEMBERS"
 export const Sections: Section[] = [ "ADD", "REMOVE", "MEMBERS"]
 
 interface GroupPageState {
     loading: boolean,
-    PageInfo: GroupPageInfo | null,
+    PageInfo: Group.PageInfo | null,
     section: Section,
     retrievePageData: (group: string) => void
     swapSection: (section: Section) => void
@@ -15,7 +15,7 @@ interface GroupPageState {
 
 export class GroupPageStateClass implements GroupPageState {
     loading = $state(false)
-    PageInfo: GroupPageInfo | null = $state(null)
+    PageInfo: Group.PageInfo | null = $state(null)
     section: Section = $state("ADD")
 
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { UserFullInfo } from "@t/user";
+	import type { User } from "@t/user";
     import  disabledIcon  from '$lib/assets/disabled-color-disabled.png'
 	import { copyToClip, type CopyState } from "$lib/helper/copy.svelte";
 	import { onMount } from "svelte";
@@ -13,7 +13,7 @@
         timeout: null
     })
 
-    let user: UserFullInfo | null = $state(null)
+    let user: User.PageInfo | null = $state(null)
     
 
     let {

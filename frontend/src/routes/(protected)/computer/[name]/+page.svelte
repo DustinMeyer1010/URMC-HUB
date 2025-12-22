@@ -7,10 +7,6 @@
 	import Ping from "@components/Computer/Ping.svelte";
 	import { PageStateClass } from "./state.svelte";
 
-
-
-
-
     let { data } : {data: {name: string}} = $props();
 
     let PageState: PageStateClass = new PageStateClass(data.name)

@@ -3,16 +3,16 @@
 -->
 
 <script lang="ts">
-	import User from "@components/Cards/User.svelte";
+	import UserCard from "@components/Cards/User.svelte";
 	import Confirm from "@components/User/Confirm.svelte";
-	import type { UserSimpleInfo } from "@t/user";
+	import type { User } from "@t/user";
 
 
     let { group } : { group: string } = $props()
 
 
     let searchValue: string = $state("")
-    let users: UserSimpleInfo[] = $state([])
+    let users: User.CardInfo[] = $state([])
 
     const onsubmit = async (e: SubmitEvent) => {
         e.preventDefault()
@@ -34,11 +34,11 @@
 
 <section>
 {#each users as user, idx }
-    <User item={user} {idx}>
+    <UserCard item={user} {idx}>
         {#if !user.ou.toLowerCase().includes("disabled") && !user.ou.toLocaleLowerCase().includes("offboarded") && user.username}
             <Confirm name={group} username={user.username} title={"Add Group?"} value={"Add"} action={test}/>
         {/if}
-    </User>
+    </UserCard>
 {/each}
 </section>
 

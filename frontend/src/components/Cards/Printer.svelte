@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { PrinterSimpleInfo } from "@t/printer";
+    import type { Printer } from "@t/printer";
     import Icon from '$lib/assets/double-left-arrow-primary.png';
 	import CopyAllButton from "@components/CopyAllButton.svelte";
 	import CopyButton from "@components/CopyButton.svelte";
@@ -9,7 +9,7 @@
         item,
         idx
     } : {
-        item: PrinterSimpleInfo
+        item: Printer.CardInfo
         idx: number
     } = $props()
 

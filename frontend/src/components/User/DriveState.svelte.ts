@@ -1,16 +1,16 @@
-import type { DriveSimpleInfo } from "@t/drive"
-import type { GroupSimpleInfo } from "@t/group"
+import type { Drive } from "@t/drive"
+import type { Group } from "@t/group"
 
 interface DriveState {
     Loading: boolean
-    DrivesAccess: DriveSimpleInfo[]
+    DrivesAccess: Drive.CardInfo[]
     GetDrives: () => void
 }
 
 export class DriveStateClass implements DriveState {
     Loading: boolean = $state(true)
-    DrivesAccess: DriveSimpleInfo[] = $state([])
-    Groups: GroupSimpleInfo[] = $state([])
+    DrivesAccess: Drive.CardInfo[] = $state([])
+    Groups: Group.CardInfo[] = $state([])
     Username: string;
 
     constructor(username: string) {

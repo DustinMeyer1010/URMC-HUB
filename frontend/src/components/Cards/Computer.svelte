@@ -1,8 +1,6 @@
 <script lang="ts">
-    import type { ComputerSimpleInfo } from "@t/computer";
-    import { copyToClip } from '$lib/helper/copy.svelte';
+    import type { Computer } from "@t/computer";
     import goToIcon from '$lib/assets/double-left-arrow-primary.png';
-    import copyAllIcon from "$lib/assets/copy-color-text.png"
     import disabledIcon from '$lib/assets/disabled-computer.png'
 	import { ComputerStateClass } from "./ComputerState.svelte";
 	import CopyButton from "@components/CopyButton.svelte";
@@ -12,7 +10,7 @@
         item,
         idx
     } : {
-        item: ComputerSimpleInfo
+        item: Computer.CardInfo
         idx: number
     } = $props()
 

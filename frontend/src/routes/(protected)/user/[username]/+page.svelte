@@ -9,7 +9,8 @@
 	import { onMount } from "svelte";
 	import { page } from "$app/state";
 
-    import  { type Section, Sections } from "@t/section";
+    import {User} from "@t/user"
+
 	import { UserStateClass } from "./state.svelte";
 	import PageLoading from "@components/Loading-Animations/PageLoading.svelte";
 
@@ -19,7 +20,7 @@
     onMount(async () => {
         UserPageState.pageData = await UserPageState.UserFullInfo(data.username)
         let urlParams = page.url.searchParams;
-        UserPageState.currentSection = urlParams.get("section")?.toUpperCase() as Section ?? "PROFILE"
+        UserPageState.currentSection = urlParams.get("section")?.toUpperCase() as User.Section ?? "PROFILE"
         UserPageState.SetURL()
         UserPageState.loading = false
     })
@@ -30,7 +31,7 @@
 {#if UserPageState.pageData != null}
     <nav>
         <h1>{UserPageState.pageData.name}</h1>
-        <Nav sections={Sections} swapSection={UserPageState.SwapSections} currentSection={UserPageState.currentSection}/>
+        <Nav sections={User.Sections} swapSection={UserPageState.SwapSections} currentSection={UserPageState.currentSection}/>
     </nav>
 
     {#if !UserPageState.loading}

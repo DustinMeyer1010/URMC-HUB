@@ -1,6 +1,4 @@
 <script lang="ts">
-    // === TYPES ===
-    import type { Filters } from '@t/filters'
     
     // === COMPONENTS ===
     import Group from "./Cards/Group.svelte";
@@ -8,7 +6,7 @@
 	import Printer from "./Cards/Printer.svelte";
 	import User from "./Cards/User.svelte";
 	import Drive from "./Cards/Drive.svelte";
-	import type { AllResults } from "@t/resutls";
+	import { Search } from "@t/search";
 	import type { Component } from 'svelte';
 
 
@@ -16,8 +14,8 @@
         data,
         filter
     } : {
-        filter: Filters,
-        data: AllResults
+        filter: Search.Filters,
+        data: Search.Results
     } = $props()
 
     const FilterMap: Record<string, { items: any[], Component: Component<{item: any, idx: number}> }> = {
@@ -40,7 +38,7 @@
 </div>
 
 
-{#snippet NotFound(filter: Filters)}
+{#snippet NotFound(filter: Search.Filters)}
     <h1>No {filter} Found</h1>
 {/snippet}
 

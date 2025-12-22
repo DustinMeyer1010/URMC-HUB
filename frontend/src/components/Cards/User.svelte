@@ -1,7 +1,7 @@
 <!-- Add: This component should allow for children. Needed for adding extra buttons like add, remove, etc -->
 
 <script lang="ts">
-	import type { UserSimpleInfo } from "@t/user";
+	import type { User } from "@t/user";
     import Icon from '$lib/assets/double-left-arrow-primary.png';
     import disabledIcon from '$lib/assets/disabled-color-disabled.png'
 	import CopyButton from "@components/CopyButton.svelte";
@@ -13,7 +13,7 @@
         idx,
         children
     } : {
-        item: UserSimpleInfo
+        item: User.CardInfo
         idx: number
         children?: Snippet
     } = $props();

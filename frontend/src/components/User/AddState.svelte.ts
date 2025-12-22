@@ -1,10 +1,10 @@
-import type { GroupSimpleInfo } from "@t/group"
-import type { ModifyResults } from "@t/resutls"
+import type { Group } from "@t/group"
+import type { Modification } from "@t/resutls"
 
 interface AddState {
     Search: string
-    Groups: GroupSimpleInfo[]
-    Results: ModifyResults[]
+    Groups: Group.CardInfo[]
+    Results: Modification.Results[]
     SearchGroup: (e: SubmitEvent) => void
     AddGroup: (username: string, group: string) => void
 }
@@ -12,8 +12,8 @@ interface AddState {
 
 export class AddStateClass implements AddState {
     Search: string = $state("")
-    Groups: GroupSimpleInfo[] = $state([])
-    Results: ModifyResults[] = $state([])
+    Groups: Group.CardInfo[] = $state([])
+    Results: Modification.Results[] = $state([])
 
     SearchGroup = async (e: SubmitEvent) => {
         e.preventDefault()

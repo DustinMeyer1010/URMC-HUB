@@ -10,12 +10,16 @@ type PrinterSimpleInfo struct {
 }
  */
 
-export type PrinterSimpleInfo = {
-    server: string,
-    queue: string, 
-    model: string,
-    ip: string,
-    print_processor: string,
-    location: string, 
-    notes: string
+
+export namespace Printer {
+    export type CardInfo = {
+        server: string,
+        queue: string, 
+        model: string,
+        ip: string,
+        print_processor: string,
+        location: string, 
+        notes: string
+    }
 }
+

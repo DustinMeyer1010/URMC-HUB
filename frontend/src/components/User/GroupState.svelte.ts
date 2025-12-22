@@ -1,12 +1,12 @@
 import type { CopyState } from "$lib/helper/copy.svelte";
-import type { GroupSimpleInfo } from "@t/group";
-import type { ModifyResults } from "@t/resutls";
+import { Group } from "@t/group";
+import type { Modification } from "@t/resutls";
 
 interface GroupState {
     CopyState: CopyState
     Filter: string
-    FilteredGroups: GroupSimpleInfo[]
-    Results: ModifyResults[]
+    FilteredGroups: Group.CardInfo[]
+    Results: Modification.Results[]
     RemoveGroup: (username: string, group: string) => void
     GetGroupForUser: (username: string) => void
 }
@@ -14,10 +14,10 @@ interface GroupState {
 export class GroupStateClass implements GroupState {
     CopyState: CopyState = $state({copied: "", timeout: null});
     Filter: string = $state("");
-    Groups: GroupSimpleInfo[] = $state([]);
-    Results: ModifyResults[] = $state([]);
+    Groups: Group.CardInfo[] = $state([]);
+    Results: Modification.Results[] = $state([]);
 
-    FilteredGroups: GroupSimpleInfo[] = $derived.by(() => {
+    FilteredGroups: Group.CardInfo[] = $derived.by(() => {
         if (this.Filter == "") {
             return this.Groups
         }

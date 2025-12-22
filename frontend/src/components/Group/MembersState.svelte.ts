@@ -1,11 +1,11 @@
-import type { UserSimpleInfo } from "@t/user";
+import type { User } from "@t/user";
 
 export class MembersStateClass {
-    Members: UserSimpleInfo[] = $state([])
+    Members: User.CardInfo[] = $state([])
     Page: number = $state(0)
     MembersLength: number = $derived(this.Members.length)
     Loading: boolean = $state(false)
-    PagedMembers: UserSimpleInfo[] = $derived.by(() => {
+    PagedMembers: User.CardInfo[] = $derived.by(() => {
         if (this.Filter.length <= 3) {
             if (this.Page == this.MembersLength) {
                 return this.Members.slice(this.MembersLength-11, this.MembersLength-1)
@@ -23,7 +23,7 @@ export class MembersStateClass {
         this.Group = group
     }
 
-    FilteredMembers = (): UserSimpleInfo[] => {
+    FilteredMembers = (): User.CardInfo[] => {
         return this.Members.filter((member) => 
             member.name.toLowerCase().includes(this.Filter.toLocaleLowerCase()) 
         || member.username.toLowerCase().includes(this.Filter.toLowerCase())

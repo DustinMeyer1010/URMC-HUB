@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { ModifyResults } from "@t/resutls";
+	import type { Modification } from "@t/resutls";
 
 
     let {
         result
     } : { 
-        result: ModifyResults
+        result: Modification.Results
     } = $props()
 
     let message: string = $derived.by(() => {
