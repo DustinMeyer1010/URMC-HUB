@@ -1,29 +1,30 @@
 <script lang="ts">
-	import type { GroupSimpleInfo } from "@t/group";
+	import type { Group } from "@t/group";
     import Icon from '$lib/assets/double-left-arrow-primary.png';
 	import CopyButton from "@components/CopyButton.svelte";
 	import CopyAllButton from "@components/CopyAllButton.svelte";
 	import type { Snippet } from "svelte";
+	import { GroupStateClass } from "./GroupState.svelte";
 
     let {
         item,
         idx,
         children
     } : {
-        item: GroupSimpleInfo
+        item: Group.CardInfo
         idx: number
         children?: Snippet
     } = $props()
 
-    const copyText: string = `Name: ${item.name}\nInformation: ${item.information !== "" ? item.information : "NA"}\nDescription: ${item.description !== "" ? item.description : "NA"}\nOU: ${item.ou}`
+    let GroupState: GroupStateClass = new GroupStateClass(item, idx)
 
 </script>
 
 <!-- * Renders the content of the Card -->
-<ul class:disabled={item.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <a href={`/group/${item.name}`}> <img src={Icon} alt=""></a>
-    <CopyButton value={item.name} fontSize={18} marginBottom={15}/>
-    <CopyAllButton {copyText}/>
+<ul class:disabled={GroupState.CurrentGroup.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(GroupState.Idx * 50, 2000)}ms">
+    <a href={`/group/${GroupState.CurrentGroup.name}`}> <img src={Icon} alt=""></a>
+    <CopyButton value={GroupState.CurrentGroup.name} fontSize={18} marginBottom={15}/>
+    <CopyAllButton copyText={GroupState.CopyText}/>
     {@render ObjectContent()}
     {#if children}
         {@render children()}
@@ -32,7 +33,7 @@
 
 <!-- * Renders the object information in copy format -->
 {#snippet ObjectContent()}
-    {#each Object.entries(item).slice(1) as key}
+    {#each Object.entries(GroupState.CurrentGroup).slice(1) as key}
         {#if key[1]}
             <CopyButton value={key[1]} label={key[0].toUpperCase()}/>
         {/if}

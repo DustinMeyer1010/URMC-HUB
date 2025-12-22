@@ -1,12 +1,9 @@
 <script lang="ts">
-	import { copyToClip, type CopyState } from "$lib/helper/copy.svelte";
+    import { Copy } from "@t/copy"
 
  
 
-    let copyState: CopyState = $state({
-        copied: "",
-        timeout: null
-    })
+    let copyState: Copy.State = $state(Copy.EMPTY_COPY_STATE)
 
     let {
         value,
@@ -27,7 +24,7 @@
 
 
 
-<button style={`--margin-bottom: ${marginBottom}px`} onclick={() => copyToClip(value, copyState)}>
+<button style={`--margin-bottom: ${marginBottom}px`} onclick={() => Copy.ToClipboard(value, copyState)}>
     {#if label != ""}
     <b style="--font-size: {fontSize}px">{label}:</b>
     {/if}

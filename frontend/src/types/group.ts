@@ -1,4 +1,10 @@
 export namespace Group {
+    export const EMPTY_GROUP: CardInfo = {
+        name: "",
+        information: "",
+        description: "",
+        ou: ""
+    } 
     export type Section = "PROFILE" | "LOCKOUT" | "DRIVES" | "GROUPS" | "ADD" | "REMOVE"
     export const Sections: string[] = ["PROFILE", "LOCKOUT", "DRIVES", "GROUPS", "ADD", "REMOVE"]
 

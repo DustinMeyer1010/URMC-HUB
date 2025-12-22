@@ -5,8 +5,8 @@ import type { Group } from "./group"
 import type { Drive } from "./drive"
 
 export namespace Search {
-    export type Filters = 'COMPUTERS' | 'USERS' | "GROUPS" | 'PRINTERS' | 'DRIVES'
-    export const ValidFilters: string[] = ['COMPUTERS' , 'USERS' , "GROUPS" , 'PRINTERS' , 'DRIVES']  
+    export type Filter = 'COMPUTERS' | 'USERS' | "GROUPS" | 'PRINTERS' | 'DRIVES'
+    export const ValidFilters: string[] = ['USERS' , 'COMPUTERS' ,  "GROUPS" , 'PRINTERS' , 'DRIVES']  
 
     export type Results = {
         users: User.CardInfo[],

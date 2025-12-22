@@ -1,7 +1,7 @@
 <script lang="ts">
 
 
-    import type{ Filters } from '@t/filters'
+    import { Search } from '@t/search'
     import { fly } from 'svelte/transition'
     import filterIconDark from '$lib/assets/filter-color-accent-dark.png'
     import filterIconLight from '$lib/assets/filter-color-accent-light.png'
@@ -18,16 +18,14 @@
         currentFilter,
         switchFilter
     } : {
-        currentFilter: Filters,
-        switchFilter: (newFilter: Filters) => void
+        currentFilter: Search.Filter,
+        switchFilter: (newFilter: Search.Filter) => void
     } = $props();
-
-    let allFilters: Filters[] = ['USERS','COMPUTERS', "GROUPS", 'PRINTERS', 'DRIVES']
 
 
 </script>
     <div>
-        {#each allFilters as filter, idx}
+        {#each Search.ValidFilters as filter, idx}
             {#if isFiltersOpen}
                 <button 
                     class="filter-options"
@@ -35,7 +33,7 @@
                     in:fly={{delay: 80*idx, y:20, x:-20 * idx}}
                     out:fly={{delay: 0, y:20, x:-20 * idx}}
                     class:active={currentFilter == filter}
-                    onclick={() => switchFilter(filter)}>
+                    onclick={() => switchFilter(filter as Search.Filter)}>
                     {filter}
                 </button>
             {/if}

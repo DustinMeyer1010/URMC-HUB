@@ -1,49 +1,30 @@
 <script lang="ts">
-    import { copyToClip, type CopyState } from '$lib/helper/copy.svelte';
+    import { Copy } from '@t/copy';
     import Icon from '$lib/assets/double-left-arrow-primary.png';
-	import type { DriveSimpleInfo } from "@t/drive";
+	import { Drive } from "@t/drive";
 	import { blur } from 'svelte/transition';
 	import CopyAllButton from '@components/CopyAllButton.svelte';
 	import CopyButton from '@components/CopyButton.svelte';
-
-    let copyState: CopyState = $state({
-        copied: "",
-        timeout: null
-    })
-
-
-    let searchValue: string = $state("")
+	import { DriveStateClass } from './DriveState.svelte';
 
     let {
         item,
         idx
     } : {
-        item: DriveSimpleInfo
+        item: Drive.CardInfo
         idx: number
     } = $props()
 
-    let groups: string[] = $derived.by(() => {
-        if (!searchValue) {
-            return item.groups
-        }
-        return item.groups.filter((group) => group.toUpperCase().includes(searchValue.toUpperCase()))
-    })
-
-
-    let santizedDrive: string = $derived.by(() => {
-        return encodeURIComponent(item.drive)
-    })
-
-    let copyText: string = $derived(`Name: ${item.drive}\nLocal_Path: ${item.local_path}\nGroups:\n${groups.join("\n")}`);
+    let DriveState: DriveStateClass = new DriveStateClass(idx, item)
 
 </script>
 
 <!-- * Renders the main content for the card-->
 <ul style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton {copyText} />
-    <a href={`/drive/${santizedDrive}`}> <img src={Icon} alt=""></a>
-    <CopyButton value={item.drive} fontSize={18} marginBottom={15}/>
-    <CopyButton value={item.local_path} label={"LOCAL_PATH"}/>
+    <CopyAllButton copyText={DriveState.CopyText} />
+    <a href={`/drive/${DriveState.SerializedSearch}`}> <img src={Icon} alt=""></a>
+    <CopyButton value={DriveState.CurrentDrive.drive} fontSize={18} marginBottom={15}/>
+    <CopyButton value={DriveState.CurrentDrive.local_path} label={"LOCAL_PATH"}/>
     {@render GroupsContent()}
 </ul>
 
@@ -53,19 +34,19 @@
     <li>
         GROUPS: 
         <!-- Note: If more than 10 groups then you can search for specific group by name-->
-        {#if item.groups.length >= 10}
-            <input placeholder="Search For Group" bind:value={searchValue}/> 
+        {#if DriveState.CurrentDrive.groups.length >= 10}
+            <input placeholder="Search For Group" bind:value={DriveState.SearchValue}/> 
         {/if}
         <div >
             <!-- Note: Each group is transitioned in and can be copied -->
-            {#each groups as group,i }
+            {#each DriveState.CurrentDrive.groups as group,i }
                 <button 
-                    class:active={copyState.copied === group} 
-                    onclick={() => copyToClip(group, copyState)} 
+                    class:active={DriveState.CopyState.copied === group} 
+                    onclick={() => Copy.ToClipboard(group, DriveState.CopyState)} 
                     out:blur={{ duration: 200}} 
                     class="group-button" 
                     style="--delay: {Math.min(i * 20, 2000)}ms">
-                        {copyState.copied === group ? `Copied` : group}
+                        {DriveState.CopyState.copied === group ? `Copied` : group}
                 </button>
             {/each}
         </div>

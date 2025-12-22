@@ -12,6 +12,16 @@ type PrinterSimpleInfo struct {
 
 
 export namespace Printer {
+    export const EMPTY_PRINTER: CardInfo = {
+        server: "",
+        queue: "",
+        model: "",
+        ip: "",
+        print_processor: "",
+        location: "",
+        notes: ""
+    }
+
     export type CardInfo = {
         server: string,
         queue: string, 

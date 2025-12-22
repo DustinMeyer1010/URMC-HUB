@@ -15,12 +15,12 @@ const emptyResults: Search.Results = {
 interface SearchStateInterface {
     data: Search.Results 
     currentFilterItems: Results
-    filter: Search.Filters
+    filter: Search.Filter
     loading: boolean
     searchValue: string
     santizedSearch: string
     Search: () => Promise<void>
-    SwitchFilter: (newFilter: Search.Filters) => void
+    SwitchFilter: (newFilter: Search.Filter) => void
 
 }
 
@@ -35,7 +35,7 @@ export class SearchStateClass implements SearchStateInterface {
     }
 
     currentFilterItems: Results = $state([])
-    filter: Search.Filters = $state("USERS")
+    filter: Search.Filter = $state("USERS")
     loading: boolean = $state(true)
     searchValue: string = $state("")
     santizedSearch: string = $derived.by(() => {
@@ -65,7 +65,7 @@ export class SearchStateClass implements SearchStateInterface {
         this.loading = false
     }
 
-    SwitchFilter = (newFilter: Search.Filters) => {
+    SwitchFilter = (newFilter: Search.Filter) => {
         this.filter = newFilter;
         window.scrollTo(0,0)
         this.SetURLParams()
@@ -75,11 +75,11 @@ export class SearchStateClass implements SearchStateInterface {
         let urlParams = page.url.searchParams
         this.searchValue = urlParams.get("search") ?? ""
         let filter = urlParams.get("filter")?.toUpperCase() ?? "USERS"
-        this.filter = Search.isValidFilter(filter) ? filter as Search.Filters : "USERS"
+        this.filter = Search.isValidFilter(filter) ? filter as Search.Filter : "USERS"
 
         if (this.filter == "USERS") {
             filter = localStorage.getItem("filter")?.toUpperCase() ?? "USERS"
-            this.filter = Search.isValidFilter(filter) ? filter as Search.Filters : "USERS"
+            this.filter = Search.isValidFilter(filter) ? filter as Search.Filter : "USERS"
         }
 
         if (this.searchValue == "") {

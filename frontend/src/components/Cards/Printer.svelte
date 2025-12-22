@@ -3,6 +3,7 @@
     import Icon from '$lib/assets/double-left-arrow-primary.png';
 	import CopyAllButton from "@components/CopyAllButton.svelte";
 	import CopyButton from "@components/CopyButton.svelte";
+	import { PrinterStateClass } from "./PrinterState.svelte";
 
 
     let {
@@ -13,18 +14,16 @@
         idx: number
     } = $props()
 
-    const printerName = `${item.server}?queue=${item.queue}`;
-    const copyText: string = `Name: \\\\${item.server}\\${item.queue}\nModel: ${item.model}\nIP: ${item.ip}\nPrint_Processor: ${item.print_processor}\nLocation: ${item.location}\nNotes: ${item.notes}`;
-    const printQueueName: string = `\\\\${item.server}\\${item.queue}`;
+    let PrinterState: PrinterStateClass = new PrinterStateClass(item, idx)
 
 </script>
 
 
 <!-- * Renders main content -->
-<ul style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton {copyText} />
-    <a href={`/printer/${printerName}`}> <img src={Icon} alt=""></a>
-    <CopyButton value={printQueueName} fontSize={15} marginBottom={15}/>
+<ul style="--delay: {Math.min(PrinterState.Idx * 50, 2000)}ms">
+    <CopyAllButton copyText={PrinterState.CopyText} />
+    <a href={`/printer/${PrinterState.URLQuery}`}> <img src={Icon} alt=""></a>
+    <CopyButton value={PrinterState.PrinterName} fontSize={15} marginBottom={15}/>
     {@render ObjectContent()}
 </ul>
 
@@ -32,7 +31,7 @@
 <!-- * Renders the object information in copy format -->
 <!-- NOTE: Slice starts at two to skip server & queue -->
 {#snippet ObjectContent()}
-    {#each Object.entries(item).slice(2) as key}
+    {#each Object.entries(PrinterState.Printer).slice(2) as key}
         {#if key[1]}
             <CopyButton value={key[1]} label={key[0]} />
         {/if}

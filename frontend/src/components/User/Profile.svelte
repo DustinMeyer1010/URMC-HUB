@@ -1,17 +1,14 @@
 <script lang="ts">
 	import type { User } from "@t/user";
     import  disabledIcon  from '$lib/assets/disabled-color-disabled.png'
-	import { copyToClip, type CopyState } from "$lib/helper/copy.svelte";
+	import { Copy } from "@t/copy";
 	import { onMount } from "svelte";
 	import { redirect } from "@sveltejs/kit";
     const notWantedAttributes = ["member_of", "name"]
 
 
 
-    let copyState: CopyState = $state({
-        copied: "",
-        timeout: null
-    })
+    let copyState: Copy.State = $state(Copy.EMPTY_COPY_STATE)
 
     let user: User.PageInfo | null = $state(null)
     
@@ -49,7 +46,7 @@
             {#each Object.entries(user) as key}
                 {#if !notWantedAttributes.includes(key[0].toLocaleLowerCase())}
                     <li>
-                        <button onclick={() => copyToClip(key[1] ? key[1] as string : "NA", copyState)}>
+                        <button onclick={() => Copy.ToClipboard(key[1] ? key[1] as string : "NA", copyState)}>
                             <span><b>{key[0].toUpperCase()}: </b> </span>
                             <span>
                                 {#if copyState.copied === key[1] && key[1] !== ""}

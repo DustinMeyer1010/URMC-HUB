@@ -1,17 +1,14 @@
 <script lang="ts">
-	import { copyToClip, type CopyState } from "$lib/helper/copy.svelte";
+	import { Copy } from "@t/copy";
     import Icon from "$lib/assets/copy-color-text.png"
     let { copyText } : {copyText: string} = $props()
 
-let copyState: CopyState = $state({
-        copied: "",
-        timeout: null
-    })
+let copyState: Copy.State = $state(Copy.EMPTY_COPY_STATE)
 
 </script>
 
 {#if copyState.copied != copyText}
-    <button class="copy-all" title="Copy All" onclick={() => copyToClip(copyText, copyState)}><img src={Icon} alt="Copy All"></button>
+    <button class="copy-all" title="Copy All" onclick={() => Copy.ToClipboard(copyText, copyState)}><img src={Icon} alt="Copy All"></button>
 {:else}
     <span class="copied-all">ALL COPIED</span>
 {/if}

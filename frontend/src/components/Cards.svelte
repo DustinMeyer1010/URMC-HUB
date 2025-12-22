@@ -14,7 +14,7 @@
         data,
         filter
     } : {
-        filter: Search.Filters,
+        filter: Search.Filter,
         data: Search.Results
     } = $props()
 
@@ -38,7 +38,7 @@
 </div>
 
 
-{#snippet NotFound(filter: Search.Filters)}
+{#snippet NotFound(filter: Search.Filter)}
     <h1>No {filter} Found</h1>
 {/snippet}
 

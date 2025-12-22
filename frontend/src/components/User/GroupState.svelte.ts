@@ -1,9 +1,9 @@
-import type { CopyState } from "$lib/helper/copy.svelte";
+import { Copy } from "@t/copy";
 import { Group } from "@t/group";
 import type { Modification } from "@t/resutls";
 
 interface GroupState {
-    CopyState: CopyState
+    CopyState: Copy.State
     Filter: string
     FilteredGroups: Group.CardInfo[]
     Results: Modification.Results[]
@@ -12,7 +12,7 @@ interface GroupState {
 }
 
 export class GroupStateClass implements GroupState {
-    CopyState: CopyState = $state({copied: "", timeout: null});
+    CopyState: Copy.State = $state({copied: "", timeout: null});
     Filter: string = $state("");
     Groups: Group.CardInfo[] = $state([]);
     Results: Modification.Results[] = $state([]);
