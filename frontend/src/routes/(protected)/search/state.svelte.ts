@@ -78,7 +78,8 @@ export class SearchStateClass implements SearchStateInterface {
         this.filter = Filter.isValid(filter) ? filter as Filters : "USERS"
 
         if (this.filter == "USERS") {
-            this.filter = localStorage.getItem("filter")?.toUpperCase() as Filters ?? "USERS"
+            filter = localStorage.getItem("filter")?.toUpperCase() ?? "USERS"
+            this.filter = Filter.isValid(filter) ? filter as Filters : "USERS"
         }
 
         if (this.searchValue == "") {
