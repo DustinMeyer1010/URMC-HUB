@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
@@ -26,14 +27,16 @@ func AddBookmark(bookmark models.Bookmark) error {
 	return nil
 }
 
-func GetAgentsWithBookmarks() error {
+func GetAgentsWithBookmarks() []string {
 	files, _ := os.ReadDir(DBLocation)
-
+	agentsWithBookmarks := []string{}
 	for _, file := range files {
+		name := strings.Split(file.Name(), ".")[0]
+		agentsWithBookmarks = append(agentsWithBookmarks, name)
 		fmt.Print(file.Name())
 	}
 
-	return nil
+	return agentsWithBookmarks
 }
 
 func GenericBookmarks() []byte {

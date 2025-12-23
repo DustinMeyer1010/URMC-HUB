@@ -1,13 +1,13 @@
-import type { CopyState } from "$lib/helper/copy.svelte";
+import { Copy } from "@t/copy"
 
 interface ComputerState {
-    CopyState: CopyState
+    CopyState: Copy.State
     Disabled: boolean
     AllText: string
 }
 
 export class ComputerStateClass implements ComputerState {
-    CopyState: CopyState = $state(
+    CopyState: Copy.State = $state(
         {
             copied: "",
             timeout: null

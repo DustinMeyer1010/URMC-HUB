@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -26,7 +27,11 @@ func GetGeneralBookmarks(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAgentsWithBookmarks(w http.ResponseWriter, r *http.Request) {
-	service.GetAgentsWithBookmarks()
+	agents := service.GetAgentsWithBookmarks()
+	jsonData, _ := json.Marshal(agents)
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 }
 
 func SaveBookmark(w http.ResponseWriter, r *http.Request) {

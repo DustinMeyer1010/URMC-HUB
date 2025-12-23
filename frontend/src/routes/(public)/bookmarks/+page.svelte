@@ -13,15 +13,14 @@
     let filter: string = $state("")
     let currentBookmarks: string = $state("Generic")
     let agent: string | null = $state("")
+    let agentWithBookmarks: string[] = $state([])
 
     $effect(() => {
         if (currentBookmarks == "Generic") {
             goto("/bookmarks", {replaceState: true, invalidateAll: true})
             return
         }
-        if (agent) {
-            goto(`/bookmarks/${currentBookmarks}`, {replaceState: true, invalidateAll: true})
-        }
+        goto(`/bookmarks/${currentBookmarks}`, {replaceState: true, invalidateAll: true})
         
     })
 
@@ -41,21 +40,29 @@
     $inspect(currentBookmarks)
 
     onMount(async () => {
-        await fetch("http://localhost:8000/api/generic/bookmarks")
-        .then(async (res) => {
-            bookmarks = await res.json()
-        })
+            agent = localStorage.getItem("agent") ?? ""
+            await fetch("http://localhost:8000/api/generic/bookmarks")
+            .then(async (res) => {
+                    bookmarks = await res.json()
+                })
 
-        agent = localStorage.getItem("agent")
-    })  
+            await fetch("http://localhost:8000/api/bookmarks/all/agents").then(async (res) => {
+                agentWithBookmarks = await res.json()
+                agentWithBookmarks = agentWithBookmarks.filter((agentB) => agentB != agent)
+            })
+        }) 
+
+
 </script>
 
 <header>
 <input placeholder="Search Link" type="text" bind:value={filter}>
 <select bind:value={currentBookmarks}>
     <option value="Generic">Generic Bookmarks</option>
-    <option value={`${""}`}>My Bookmarks</option>
-    <option value={`${"brown"}`}>My Bookmarks</option>
+    <option value={`${agent}`}>My Bookmarks</option>
+    {#each agentWithBookmarks as agentB}
+        <option value={`${agentB}`}>{agentB}</option>
+    {/each}
 </select>
 </header>
 

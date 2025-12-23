@@ -46,10 +46,15 @@ export class SearchStateClass implements SearchStateInterface {
 
     Search = async () => {
 
+        console.log("here")
+
         this.loading = true
         if (this.searchValue == "") {
-            this.loading = false
-            return
+            this.searchValue = localStorage.getItem("agent") ?? ""
+            if (this.searchValue == "") {
+                this.loading = false
+                return
+            }
         }
 
         await fetch(`http://localhost:8000/api/search/all/${this.santizedSearch}`)

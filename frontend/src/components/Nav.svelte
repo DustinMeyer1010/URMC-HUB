@@ -7,10 +7,18 @@
 	import { NavStateClass } from './NavState.svelte';
 
 
-    let NavState: NavStateClass = new NavStateClass()
 
+    let NavState: NavStateClass = new NavStateClass()
+    let CurrentUser: string = $state("")
+    let BookmarksRoute: string = $derived.by(() => {
+        if (CurrentUser == "") {
+            return "/bookmarks"
+        }
+        return `/bookmarks/${CurrentUser}`
+    })
     onMount(() => {
         NavState.ResizeSetup()
+        CurrentUser = localStorage.getItem("agent") ?? ""
 
         return () => window.removeEventListener("resize", NavState.HandleResize);
     });
@@ -31,7 +39,7 @@
             <a href="/">Search</a>
         </li>
         <li>
-            <a href="/bookmarks">Bookmarks</a>
+            <a href={BookmarksRoute}>Bookmarks</a>
         </li>
         <button bind:this={NavState.DropDownButton} onclick={NavState.OpenMenu}><img src={menuIcon} alt=""></button>
         <li class="dropdown">
@@ -55,7 +63,7 @@
             {#if NavState.ShowMenu}
                 <div>
                     <a href="/">Search</a>
-                    <a href="/bookmarks">Bookmarks</a>
+                    <a href={BookmarksRoute}>Bookmarks</a>
                     <a href="/bulk-lookup">Bulk User Lookup</a>
                     <a href="/api">API Docs</a>
                     <ToggleTheme/>
