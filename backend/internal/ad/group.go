@@ -60,7 +60,7 @@ func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
 	group = LDAP_STRING_REPLACE.Replace(group)
 
 	results, ldapError := SearchWithFilter(
-		fmt.Sprintf("(&(objectCategory=group)(|(sAMAccountName=%s)(cn=%s)))", group, group),
+		fmt.Sprintf("(&(objectCategory=group)(sAMAccountName=%s))", group),
 		"cn",
 		"distinguishedName",
 		"sAMAccountName",
@@ -83,6 +83,41 @@ func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
 
 	if len(results.Entries) > 1 {
 		logger.Debugf("Multiple Group Entries: %+v\n Input: %s", results.Entries, group)
+	}
+
+	entry := results.Entries[0]
+
+	return models.ToGroupSimpleInfo(entry), nil
+}
+
+func PullGroupInfoByDN(groupDN string) (models.GroupSimpleInfo, *customError.Error) {
+	groupInfo := models.GroupSimpleInfo{}
+	groupDN = LDAP_STRING_REPLACE.Replace(groupDN)
+
+	results, ldapError := SearchWithFilter(
+		fmt.Sprintf("(&(objectCategory=group)(cn=%s))", groupDN),
+		"cn",
+		"distinguishedName",
+		"sAMAccountName",
+		"description",
+		"info",
+	)
+
+	if ldapError != nil {
+		logger.Error(ldapError)
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return groupInfo, &cError
+	}
+
+	if results == nil || len(results.Entries) == 0 {
+		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO GROUP FOUND FOR: %s", groupDN))
+		logger.Errorf("%v", cError)
+		logger.Debug(results.Entries)
+		return groupInfo, &cError
+	}
+
+	if len(results.Entries) > 1 {
+		logger.Debugf("Multiple Group Entries: %+v\n Input: %s", results.Entries, groupDN)
 	}
 
 	entry := results.Entries[0]

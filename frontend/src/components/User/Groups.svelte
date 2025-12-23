@@ -33,14 +33,11 @@
 {/each}
 <section>
     <input oncontextmenu={(e: Event) => {e.preventDefault();GroupState.Filter=""}} bind:value={GroupState.Filter} placeholder="Search For Group"/>
-    {#each GroupState.FilteredGroups as group, idx }
-        <Group item={group} {idx} >
+    {#each GroupState.FilteredGroups as group, idx (group.name) }
+        <Group item={group} idx={idx} >
             <Remove group={group.name} username={username} removeGroup={GroupState.RemoveGroup}/> 
         </Group>
     {/each}
-
-    
-
 </section>
 
 
@@ -85,17 +82,5 @@
             transform: translateY(0px);
         }
     }
-
-
-    @media (max-width: 850px) {
-
-
-        ul {
-            padding-right: 1rem;
-        }
-
-
-    }
-
 
 </style>

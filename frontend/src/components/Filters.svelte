@@ -9,10 +9,7 @@
     import { theme } from '$lib/theme';
 
     let isFiltersOpen: boolean = $state(true)
-
     let currentTheme = get(theme)
-
-
 
     let {
         currentFilter,

@@ -38,6 +38,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		}
 
 		logger.Infof("Database Generated Successfully Location: %s", db.DBLocation)
+	} else {
+		logger.Info(fmt.Sprintf("%s/%s.db", db.DBLocation, global.Username))
 	}
 	http.SetCookie(w, &http.Cookie{
 		Name:     "username",

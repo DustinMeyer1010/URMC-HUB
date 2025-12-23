@@ -1,9 +1,12 @@
 package ad
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/go-ldap/ldap/v3"
 )
 
@@ -99,7 +102,52 @@ func SearchWithFilter(filter string, attrs ...string) (*ldap.SearchResult, error
 	defer conn.Close()
 	defer conn.Unbind()
 
-	ldapConfig := SearchConfig(filter)
+	ldapConfig := SearchConfig(filter, attrs...)
 
 	return ldapConfig.Search(conn)
+}
+
+func SearchByUserDN(UserDN string, attrs ...string) (*ldap.SearchResult, error) {
+	conn, cError := connectToLDAP()
+
+	if cError != nil {
+		return nil, cError.GetErrorValue()
+	}
+
+	defer conn.Close()
+	defer conn.Unbind()
+
+	ldapConfig := SearchConfig("(|(&(objectCategory=person)(objectClass=user)))", attrs...)
+	ldapConfig.BaseDN = UserDN
+
+	return ldapConfig.Search(conn)
+}
+
+func SearchGroupByDN(groupDN string, attrs ...string) (*ldap.SearchResult, error) {
+	conn, cError := connectToLDAP()
+
+	if cError != nil {
+		return nil, cError.GetErrorValue()
+	}
+
+	defer conn.Close()
+	defer conn.Unbind()
+
+	ldapConfig := SearchConfig("(objectClass=group)", attrs...)
+	ldapConfig.BaseDN = groupDN
+
+	return ldapConfig.Search(conn)
+}
+
+func openLogonServer() (*bufio.Scanner, *os.File, error) {
+	file, err := os.Open(global.LOGON)
+
+	if err != nil {
+		logger.Error(err)
+		return nil, nil, err
+	}
+
+	scanner := bufio.NewScanner(file)
+
+	return scanner, file, err
 }

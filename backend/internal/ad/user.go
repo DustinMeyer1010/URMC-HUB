@@ -113,7 +113,7 @@ func PullUserMembersOf(username string) ([]models.GroupSimpleInfo, *customError.
 	catagory := "user"
 	attribute := "SAMAccountName"
 
-	results, ldapError := SearchAllByCategory(
+	results, ldapError := SearchByCategory(
 		catagory,
 		attribute,
 		username,
@@ -140,7 +140,7 @@ func PullUserMembersOf(username string) ([]models.GroupSimpleInfo, *customError.
 		go func(group string) {
 			defer wg.Done()
 			g := strings.Split(group, ",")[0][3:]
-			found, _ := PullGroupInfo(g)
+			found, _ := PullGroupInfoByDN(g)
 			memberOfChan <- found
 		}(group)
 	}

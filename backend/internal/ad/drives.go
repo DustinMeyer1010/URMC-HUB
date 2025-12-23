@@ -1,12 +1,9 @@
 package ad
 
 import (
-	"bufio"
-	"os"
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
@@ -113,17 +110,4 @@ func seperateShareDrives(line string) []string {
 
 	return sharedrives
 
-}
-
-func openLogonServer() (*bufio.Scanner, *os.File, error) {
-	file, err := os.Open(global.LOGON)
-
-	if err != nil {
-		logger.Error(err)
-		return nil, nil, err
-	}
-
-	scanner := bufio.NewScanner(file)
-
-	return scanner, file, err
 }

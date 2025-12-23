@@ -4,41 +4,21 @@
 	import ToggleTheme from './ToggleTheme.svelte';
     import menuIcon from "$lib/assets/menu-color-text-dark.png"
 	import { onMount } from 'svelte';
+	import { NavStateClass } from './NavState.svelte';
 
-    let showMenu: boolean = $state(false)
-    let button: HTMLButtonElement | undefined = $state()
-    let width = $state(0);
+
+    let NavState: NavStateClass = new NavStateClass()
 
     onMount(() => {
-        width = window.innerWidth;
+        NavState.ResizeSetup()
 
-        const handleResize = () => {
-            width = window.innerWidth;
-        }
-
-        window.addEventListener("resize", handleResize);
-
-        document.addEventListener("click", (e) => {
-            if (!button?.contains(e.target as Node | null)) {
-                showMenu = false
-            }
-        })
-
-        return () => window.removeEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", NavState.HandleResize);
     });
-
-    const openMenu = () => {
-        showMenu = !showMenu
-    }
-
-    let breakDown: boolean = $derived.by(() => {
-        return width <= 500
-    })
 
 </script>
 <nav >
     <a href="/"><img  src={urmc} alt=""></a>
-    {#if !breakDown}
+    {#if !NavState.Compact}
         {@render RegularNav()}
     {:else}
         {@render DropDownOnly()}
@@ -53,9 +33,9 @@
         <li>
             <a href="/bookmarks">Bookmarks</a>
         </li>
-        <button bind:this={button} onclick={openMenu}><img src={menuIcon} alt=""></button>
+        <button bind:this={NavState.DropDownButton} onclick={NavState.OpenMenu}><img src={menuIcon} alt=""></button>
         <li class="dropdown">
-            {#if showMenu}
+            {#if NavState.ShowMenu}
                 <div>
                     <a href="/bulk-lookup">Bulk User Lookup</a>
                     <a href="/api">API Docs</a>
@@ -71,8 +51,8 @@
 {#snippet DropDownOnly()}
     <ul>
         <li class="dropdown">
-            <button bind:this={button} onclick={openMenu}><img src={menuIcon} alt=""></button>
-            {#if showMenu}
+            <button bind:this={NavState.DropDownButton} onclick={NavState.OpenMenu}><img src={menuIcon} alt=""></button>
+            {#if NavState.ShowMenu}
                 <div>
                     <a href="/">Search</a>
                     <a href="/bookmarks">Bookmarks</a>

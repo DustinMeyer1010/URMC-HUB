@@ -22,13 +22,19 @@ export class GroupStateClass implements GroupState {
             return this.Groups
         }
 
-        return this.Groups.filter((group) => group.name.toLowerCase().includes(this.Filter.toLowerCase()))
+        return this.Groups.filter((group) => {
+            return group.name.toLowerCase().includes(this.Filter.toLowerCase())
+        })
+
     })
 
 
     GetGroupForUser = async (username: string) => {
         await fetch(`http://localhost:8000/api/user/${username}/memberof`)
-        .then(async (res) => this.Groups = await res.json()) 
+        .then(async (res) => {
+            this.Groups = await res.json()
+            this.Groups = this.Groups.sort((a, b) => a.name.localeCompare(b.name))
+        }) 
     }
 
 

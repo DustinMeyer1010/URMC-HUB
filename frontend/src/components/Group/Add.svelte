@@ -5,38 +5,32 @@
 <script lang="ts">
 	import UserCard from "@components/Cards/User.svelte";
 	import Confirm from "@components/User/Confirm.svelte";
-	import type { User } from "@t/user";
-
+	import { AddStateClass } from "./AddState.svelte";
+	import { fly } from "svelte/transition";
 
     let { group } : { group: string } = $props()
 
-
-    let searchValue: string = $state("")
-    let users: User.CardInfo[] = $state([])
-
-    const onsubmit = async (e: SubmitEvent) => {
-        e.preventDefault()
-        await fetch(`http://localhost:8000/api/search/users/${searchValue}`)
-        .then(async (res) => users = await res.json())
-
-    }
-
-    
-
-    const test = (username: string, name: string) => {
-        return
-    }
-
+    let AddState: AddStateClass = new AddStateClass()
 
 
 </script>
 
 
+{#if AddState.Results.length != 0}
+        {#each AddState.Results as Result }
+            <div class:success={Result.successful} class:error={!Result.successful} in:fly={{y: -100}} out:fly={{y: -100}}>
+                <span>{Result.group}</span>
+                <span>{Result.message}</span>
+            </div>
+        {/each}
+
+{/if}
+
 <section>
-{#each users as user, idx }
+{#each AddState.Users as user, idx }
     <UserCard item={user} {idx}>
         {#if !user.ou.toLowerCase().includes("disabled") && !user.ou.toLocaleLowerCase().includes("offboarded") && user.username}
-            <Confirm name={group} username={user.username} title={"Add Group?"} value={"Add"} action={test}/>
+            <Confirm name={group} username={user.username} title={"Add Group?"} value={"Add"} action={AddState.AddToGroup}/>
         {/if}
     </UserCard>
 {/each}
@@ -44,8 +38,8 @@
 
 
 
-<form action="" onsubmit={onsubmit}>
-    <input type="text" placeholder="Search for user to Add" bind:value={searchValue}>
+<form action="" onsubmit={AddState.Search}>
+    <input type="text" placeholder="Search for user to Add" bind:value={AddState.SearchValue}>
     <button type="submit">Search</button>
 </form>
 
@@ -88,6 +82,29 @@
         left: 50%;
         width: 50%;
         transform: translateX(-50%);
+    }
+
+    div {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        left: 50%;
+        top: 30px;
+        transform: translateX(-50%);
+        padding: 20px;
+        z-index: 100;
+        border-radius: 10px;
+        background: var(--color-bg-opacity-30);
+        backdrop-filter: blur(20px);
+    }
+
+    div.success {
+        border: 2px solid green;
+    }
+
+    div.error {
+        border: 2px solid red;
     }
 
     button {

@@ -4,6 +4,7 @@
 	import { GroupPageStateClass, Sections } from './state.svelte';
 	import Members from '@components/Group/Members.svelte';
 	import Add from '@components/Group/Add.svelte';
+	import Remove from '@components/Group/Remove.svelte';
 
     let {
         data
@@ -26,6 +27,8 @@
             <Members group={data.name}/>
         {:else if PageState.section == "ADD"}
             <Add group={data.name}/>
+        {:else if PageState.section == "REMOVE"}
+            <Remove group={data.name}/>
         {/if}
     </section>
 </main>
