@@ -2,20 +2,39 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/db"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 )
 
 func AddBookmark(w http.ResponseWriter, r *http.Request) {
-	err := service.AddBookmark(r)
+	r.ParseMultipartForm(1 << 20)
+
+	image, header, err := r.FormFile("image")
+	var bookmark models.Bookmark
+	json.Unmarshal([]byte(r.FormValue("bookmark")), &bookmark)
 
 	if err != nil {
-		fmt.Println(err)
+		http.Error(w, "missing image", http.StatusBadRequest)
 		return
 	}
+
+	defer image.Close()
+
+	bookmark.ImagePath = db.SaveImage(image, header)
+
+	db.AddBookmark(bookmark)
+
+	/*
+		err = service.AddBookmark(r)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	*/
 
 }
 
@@ -26,6 +45,7 @@ func GetGeneralBookmarks(w http.ResponseWriter, r *http.Request) {
 	w.Write(bookmarks)
 }
 
+// Returns the generic bookmarks for
 func GetAgentsWithBookmarks(w http.ResponseWriter, r *http.Request) {
 	agents := service.GetAgentsWithBookmarks()
 	jsonData, _ := json.Marshal(agents)

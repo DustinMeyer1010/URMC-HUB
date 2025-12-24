@@ -3,6 +3,7 @@
 	import { onMount } from "svelte";
 
     type Bookmark = {
+        type: string,
         name: string,
         url: string,
         image_path: string,
@@ -52,27 +53,47 @@
             })
         }) 
 
+    const OpenDirectory = async (directory: string) => {
+        await fetch("http://localhost:8000/api/directory", {
+            mode: "cors",
+            method: "POST",
+            body: JSON.stringify({path: directory})
+        })
+    }
+
 
 </script>
 
 <header>
-<input placeholder="Search Link" type="text" bind:value={filter}>
-<select bind:value={currentBookmarks}>
-    <option value="Generic">Generic Bookmarks</option>
-    <option value={`${agent}`}>My Bookmarks</option>
-    {#each agentWithBookmarks as agentB}
-        <option value={`${agentB}`}>{agentB}</option>
-    {/each}
-</select>
+    <div>
+        <input placeholder="Search Link" type="text" bind:value={filter}>
+        <select bind:value={currentBookmarks}>
+            <option value="Generic">Generic Bookmarks</option>
+            <option value={`${agent}`}>My Bookmarks</option>
+            {#each agentWithBookmarks as agentB}
+                <option value={`${agentB}`}>{agentB}</option>
+            {/each}
+        </select>
+    </div>
 </header>
 
 <section>
     {#each filteredBookmarks as bookmark}
-    <a href={bookmark.url}>
-        <h1>{bookmark.name}</h1>
-        <span>{bookmark.description}</span>
-        <img src="http://localhost:8000/api/image/{bookmark.image_path}" alt="">
-    </a>
+        {#if bookmark.type == "url"}
+            <a href={bookmark.url} target="_blank">
+                <img src="http://localhost:8000/api/static/image/{bookmark.image_path}" alt="">
+                <h1>{bookmark.name}</h1>
+                <span>{bookmark.description}</span>
+                
+            </a>
+        {:else}
+        <button onclick={() => OpenDirectory(bookmark.url)}> 
+            <img src="http://localhost:8000/api/static/image/{bookmark.image_path}" alt="">
+            <h1>{bookmark.name}</h1>
+            <span>{bookmark.description}</span>
+        </button>
+
+        {/if}
     {/each}
 
 
@@ -95,43 +116,70 @@
     }
 
     a {
-        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
         background: var(--color-surface);
         border-radius: 10px;
+        gap: 20px;
+        border: 3px solid transparent
     }
 
     img {
         width: 400px;
+        border-radius: 20px;
+        margin-top: -100px;
+        transition: var(--transition-normal);
+    }
+
+    a:hover,
+    a:focus {
+        outline: none;
+        border: 3px solid var(--color-primary);
+    }
+
+
+    a:focus img {
+        transform: translateY(-10px);
+    }
+
+    a:hover img {
+        transform: translateY(-10px);
     }
 
     section {
-        padding-top: 100px;
         display: grid;
+        box-sizing: border-box;
         grid-template-columns: 1fr 1fr 1fr;
-        gap: 20px;
-        padding-bottom: 150px;
+        gap: 100px 20px;
+        padding: 200px 50px;
     }
+
 
     header {
         position: fixed;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
         width: 100%;
-        background-color: var(--color-bg);
-        padding: 20px 0px;
+        background-color: var(--color-bg-opacity-80);
+        backdrop-filter: blur(10px);
+        padding: 20px 20px;
         box-sizing: border-box;
         gap: 10px;
+        z-index: 3;
     }
 
     input {
         width: 50%;
-        max-width: 500px;
-        min-width: 100px;
-        text-align: center;
+        min-width: 600px;
         font-size: 18px;
-        border-radius: 5px;
+        border-radius: 10px;
         height: 35px;
+        padding: 5px;
         border: 2px solid #b4b8d9;
         background-color: var(--color-bg-opacity-80);
         color: var(--text-color)
@@ -147,7 +195,7 @@
         color: var(--text-color);
         padding: 10px;
         font-size: 15px;
-        margin: 0;
+        height: 100%;
     }
 
 </style>

@@ -38,6 +38,7 @@
         
     })
 
+    // This will need to call the api to get the users bookmarks
     onMount( async () => {
         agent = localStorage.getItem("agent") ?? ""
         currentBookmarks = data.username
@@ -46,20 +47,24 @@
             agentWithBookmarks = await res.json()
             agentWithBookmarks = agentWithBookmarks.filter((agentB) => agentB != agent)
         })
-
     })  
 
 </script>
 
+
+
 <header>
-<input placeholder="Search Link" type="text" bind:value={filter}>
-<select bind:value={currentBookmarks}>
-    <option value="Generic">Generic Bookmarks</option>
-    <option value={`${agent}`}>My Bookmarks</option>
-    {#each agentWithBookmarks as agentB}
-        <option value={`${agentB}`}>{agentB}</option>
-    {/each}
-</select>
+    <div>
+        <input placeholder="Search Link" type="text" bind:value={filter}>
+        <select bind:value={currentBookmarks}>
+            <option value="Generic">Generic Bookmarks</option>
+            <option value={`${agent}`}>My Bookmarks</option>
+            {#each agentWithBookmarks as agentB}
+                <option value={`${agentB}`}>{agentB}</option>
+            {/each}
+        </select>
+    </div>
+{@render AddBookmarks()}
 </header>
 
 <section>
@@ -71,6 +76,14 @@
     {/each}
 </section>
 
+
+{#snippet AddBookmarks()}
+    {#if agent != "" && agent == currentBookmarks}
+        <button>
+            Add Book Mark
+        </button>
+    {/if}
+{/snippet}
 
 <style>
 
@@ -104,23 +117,24 @@
     header {
         position: fixed;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
         width: 100%;
-        background-color: var(--color-bg);
-        padding: 20px 0px;
+        background-color: var(--color-bg-opacity-80);
+        backdrop-filter: blur(10px);
+        padding: 20px 20px;
         box-sizing: border-box;
         gap: 10px;
+        z-index: 3;
     }
 
     input {
         width: 50%;
-        max-width: 500px;
-        min-width: 100px;
-        text-align: center;
+        min-width: 600px;
         font-size: 18px;
-        border-radius: 5px;
+        border-radius: 10px;
         height: 35px;
+        padding: 5px;
         border: 2px solid #b4b8d9;
         background-color: var(--color-bg-opacity-80);
         color: var(--text-color)

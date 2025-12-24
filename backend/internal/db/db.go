@@ -12,6 +12,8 @@ import (
 )
 
 var DBLocation string
+var ImagesLocation string
+var DBImageLocation string
 
 //go:embed schema/*
 var schema embed.FS
@@ -24,15 +26,20 @@ func Init() {
 	exe, _ := os.Executable()
 	base := filepath.Dir(exe)
 	DBLocation = filepath.Join(base, "URMC_DB")
-
-	err := os.MkdirAll(DBLocation, os.ModePerm)
+	ImagesLocation = filepath.Join(base, "URMC_HUB_IMAGES/STATIC")
+	DBImageLocation = filepath.Join(base, "URMC_HUB_IMAGES/DB_IMAGES")
 
 	fmt.Println(DBLocation)
+
+	err := os.MkdirAll(DBLocation, os.ModePerm)
 
 	if err != nil {
 		fmt.Println("Error creating Directory: ", err)
 		return
 	}
+	// TODO: Needs to handle errors
+	err = os.MkdirAll(ImagesLocation, os.ModePerm)
+	err = os.MkdirAll(DBImageLocation, os.ModePerm)
 
 }
 

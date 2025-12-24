@@ -14,10 +14,11 @@ func bookmarksRoutes(mux *mux.Router) {
 	routes := routes{
 		{
 			methods{"POST", "OPTION"},
-			"/api/add/bookmark",
+			"/api/bookmark/{username}",
 			http.HandlerFunc(handlers.AddBookmark),
 			middleware.Middleware{
 				middleware.IsAuthorized,
+				middleware.IsAuthorizedUser,
 				middleware.CorsHandler,
 			},
 		},
@@ -26,8 +27,8 @@ func bookmarksRoutes(mux *mux.Router) {
 			"/api/generic/bookmarks",
 			http.HandlerFunc(handlers.GetGeneralBookmarks),
 			middleware.Middleware{
+				middleware.IsAuthorized,
 				middleware.CorsHandler,
-				middleware.AdminCheck,
 			},
 		},
 		{
@@ -35,8 +36,8 @@ func bookmarksRoutes(mux *mux.Router) {
 			"/api/bookmarks/all/agents",
 			http.HandlerFunc(handlers.GetAgentsWithBookmarks),
 			middleware.Middleware{
+				middleware.IsAuthorized,
 				middleware.CorsHandler,
-				middleware.AdminCheck,
 			},
 		},
 	}

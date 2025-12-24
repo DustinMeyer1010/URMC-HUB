@@ -126,21 +126,21 @@ func BulkUserSearchFile(w http.ResponseWriter, r *http.Request) {
 	uploadedfiles, ok := r.MultipartForm.File["file"]
 
 	if !ok {
-		http.Error(w, "No Files Provided", http.StatusBadRequest)
+		http.Error(w, "NO_FILE_PROVIDED", http.StatusBadRequest)
 		return
 	}
 
 	f := service.BulkUserSearch(uploadedfiles)
 
 	if f == nil {
-		http.Error(w, "Failed to generate Excel file", http.StatusInternalServerError)
+		http.Error(w, "EXCEL_GENERATION_FAILED", http.StatusInternalServerError)
 		return
 	}
 
 	buf := new(bytes.Buffer)
 
 	if err := f.Write(buf); err != nil {
-		http.Error(w, "Failed to generate Excel file", http.StatusInternalServerError)
+		http.Error(w, "EXCEL_GENERATION_FAILED", http.StatusInternalServerError)
 		return
 	}
 
@@ -159,7 +159,7 @@ func BulkUserSearch(w http.ResponseWriter, r *http.Request) {
 	decoder.DisallowUnknownFields()
 
 	if jsonError := decoder.Decode(&values); jsonError != nil {
-		http.Error(w, "failed to parse body", http.StatusBadRequest)
+		http.Error(w, "INVALID_BODY", http.StatusBadRequest)
 		return
 	}
 
@@ -167,12 +167,12 @@ func BulkUserSearch(w http.ResponseWriter, r *http.Request) {
 
 	buf := new(bytes.Buffer)
 	if f == nil {
-		http.Error(w, "Failed to generate Excel file", http.StatusInternalServerError)
+		http.Error(w, "EXCEL_GENERATION_FAILED", http.StatusInternalServerError)
 		return
 	}
 
 	if err := f.Write(buf); err != nil {
-		http.Error(w, "Failed to generate Excel file", http.StatusInternalServerError)
+		http.Error(w, "EXCEL_GENERATION_FAILED", http.StatusInternalServerError)
 		return
 	}
 

@@ -33,7 +33,6 @@ func GetAgentsWithBookmarks() []string {
 	for _, file := range files {
 		name := strings.Split(file.Name(), ".")[0]
 		agentsWithBookmarks = append(agentsWithBookmarks, name)
-		fmt.Print(file.Name())
 	}
 
 	return agentsWithBookmarks

@@ -30,3 +30,5 @@ creds.go
 *.db
 notes.md
 *.exe
+
+temp/

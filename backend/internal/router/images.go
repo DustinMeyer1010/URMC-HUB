@@ -13,8 +13,14 @@ func imageRoutes(mux *mux.Router) {
 	routes := routes{
 		{
 			methods{"GET"},
-			"/api/image/{imageName}",
-			http.HandlerFunc(handlers.StaticPhotos),
+			"/api/static/image/{imageName}",
+			http.HandlerFunc(handlers.StaticImage),
+			middleware.Middleware{middleware.CorsHandler},
+		},
+		{
+			methods{"GET"},
+			"/api/db/image/{imageName}",
+			http.HandlerFunc(handlers.StaticImage),
 			middleware.Middleware{middleware.CorsHandler},
 		},
 	}
