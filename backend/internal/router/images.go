@@ -20,7 +20,7 @@ func imageRoutes(mux *mux.Router) {
 		{
 			methods{"GET"},
 			"/api/db/image/{imageName}",
-			http.HandlerFunc(handlers.StaticImage),
+			http.HandlerFunc(handlers.DBImage),
 			middleware.Middleware{middleware.CorsHandler},
 		},
 	}

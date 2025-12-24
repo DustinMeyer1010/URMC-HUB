@@ -19,3 +19,14 @@ func StaticImage(w http.ResponseWriter, r *http.Request) {
 
 	http.ServeFile(w, r, image)
 }
+
+func DBImage(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	imageName := vars["imageName"]
+	exePath, _ := os.Executable()
+	exeDir := filepath.Dir(exePath)
+
+	image := filepath.Join(exeDir, "URMC_HUB_IMAGES/DB_IMAGES", imageName)
+
+	http.ServeFile(w, r, image)
+}

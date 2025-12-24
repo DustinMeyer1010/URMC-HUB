@@ -20,5 +20,4 @@ func SaveImage(image multipart.File, header *multipart.FileHeader) string {
 	file.Close()
 
 	return imageName
-
 }

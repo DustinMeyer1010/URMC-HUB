@@ -24,6 +24,16 @@ func bookmarksRoutes(mux *mux.Router) {
 		},
 		{
 			methods{"GET"},
+			"/api/bookmarks/{username}",
+			http.HandlerFunc(handlers.GetBookForAgent),
+			middleware.Middleware{
+				middleware.IsAuthorized,
+				middleware.IsAuthorizedUser,
+				middleware.CorsHandler,
+			},
+		},
+		{
+			methods{"GET"},
 			"/api/generic/bookmarks",
 			http.HandlerFunc(handlers.GetGeneralBookmarks),
 			middleware.Middleware{

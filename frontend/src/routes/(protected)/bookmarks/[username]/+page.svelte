@@ -47,6 +47,10 @@
             agentWithBookmarks = await res.json()
             agentWithBookmarks = agentWithBookmarks.filter((agentB) => agentB != agent)
         })
+
+        await fetch(`http://localhost:8000/api/bookmarks/${data.username}`).then(async (res) => {
+            bookmarks = await res.json()
+        })
     })  
 
 </script>
@@ -70,6 +74,7 @@
 <section>
     {#each filteredBookmarks as bookmark}
     <a href={bookmark.url}>
+        <img src="http://localhost:8000/api/db/image/{bookmark.image_path}" alt="">
         <h1>{bookmark.name}</h1>
         <span>{bookmark.description}</span>
     </a>

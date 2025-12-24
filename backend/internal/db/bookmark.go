@@ -53,6 +53,25 @@ func GetAllBookmarks(username string) ([]models.Bookmark, error) {
 }
 
 // TODO
-func GetBookmark(id string) error {
-	return nil
+func GetBookmark(id string) ([]models.Bookmark, error) {
+	db, err := OpenAgentDB()
+	var bookmarks []models.Bookmark
+	if err != nil {
+		return bookmarks, err
+	}
+
+	query := "SELECT * FROM bookmarks"
+
+	rows, _ := db.Query(query)
+
+	for rows.Next() {
+		var bookmark models.Bookmark
+		err := rows.Scan(&bookmark.Id, &bookmark.Name, &bookmark.URL, &bookmark.Description, &bookmark.ImagePath)
+		fmt.Println(err)
+		bookmarks = append(bookmarks, bookmark)
+	}
+
+	fmt.Println(bookmarks)
+
+	return bookmarks, nil
 }

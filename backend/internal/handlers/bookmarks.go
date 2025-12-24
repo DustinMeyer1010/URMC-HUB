@@ -7,6 +7,7 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/db"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
+	"github.com/gorilla/mux"
 )
 
 func AddBookmark(w http.ResponseWriter, r *http.Request) {
@@ -55,7 +56,14 @@ func GetAgentsWithBookmarks(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetBookForAgent(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	username := vars["username"]
 
+	bookmarks, _ := db.GetBookmark(username)
+
+	jsonData, _ := json.Marshal(bookmarks)
+
+	w.Write(jsonData)
 }
 
 func SaveBookmark(w http.ResponseWriter, r *http.Request) {
