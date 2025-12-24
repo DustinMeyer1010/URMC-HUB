@@ -18,7 +18,6 @@ func bookmarksRoutes(mux *mux.Router) {
 			http.HandlerFunc(handlers.AddBookmark),
 			middleware.Middleware{
 				middleware.IsAuthorized,
-				middleware.ValidateUser,
 				middleware.CorsHandler,
 			},
 		},

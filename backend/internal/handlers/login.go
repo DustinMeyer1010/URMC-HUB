@@ -41,14 +41,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	} else {
 		logger.Info(fmt.Sprintf("%s/%s.db", db.DBLocation, global.Username))
 	}
-	http.SetCookie(w, &http.Cookie{
-		Name:     "username",
-		Value:    user.Username,
-		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
-		HttpOnly: true,
-		Secure:   false, // must be false on localhost
-	})
+
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("SUCESSFUL_LOGIN"))
 }

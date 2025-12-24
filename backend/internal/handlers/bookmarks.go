@@ -34,6 +34,10 @@ func GetAgentsWithBookmarks(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
+func GetBookForAgent(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func SaveBookmark(w http.ResponseWriter, r *http.Request) {
 
 }

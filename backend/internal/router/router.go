@@ -11,6 +11,7 @@ func Create() *mux.Router {
 
 	mux := mux.NewRouter()
 
+	// Add a function to list with the routes that need to be added
 	createRoutes(mux,
 		searchRoutes,
 		printerRoutes,
@@ -19,6 +20,7 @@ func Create() *mux.Router {
 		computerRoutes,
 		groupRoutes,
 		bookmarksRoutes,
+		imageRoutes,
 		reactSvelte,
 	)
 

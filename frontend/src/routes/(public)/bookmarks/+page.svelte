@@ -71,6 +71,7 @@
     <a href={bookmark.url}>
         <h1>{bookmark.name}</h1>
         <span>{bookmark.description}</span>
+        <img src="http://localhost:8000/api/image/{bookmark.image_path}" alt="">
     </a>
     {/each}
 
@@ -97,6 +98,10 @@
         padding: 5px;
         background: var(--color-surface);
         border-radius: 10px;
+    }
+
+    img {
+        width: 400px;
     }
 
     section {
