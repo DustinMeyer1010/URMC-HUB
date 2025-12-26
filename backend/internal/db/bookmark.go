@@ -8,18 +8,19 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func AddBookmark(bookmark models.Bookmark) error {
-	db, err := OpenAgentDB()
-
+// Add bookmark for specific agent
+func AddBookmark(username string, bookmark models.Bookmark) error {
+	db, err := OpenAgentDB(username)
 	if err != nil {
-		return nil
+		return fmt.Errorf("AGENT DATABASE NOT FOUND")
 	}
+	defer db.Close()
+
 	query := "INSERT INTO bookmarks (name, description, url, image_path) VALUES (?, ?, ?, ?)"
 
 	_, err = db.Exec(query, bookmark.Name, bookmark.Description, bookmark.URL, bookmark.ImagePath)
 
 	if err != nil {
-
 		fmt.Println(err)
 		return err
 	}
@@ -52,17 +53,22 @@ func GetAllBookmarks(username string) ([]models.Bookmark, error) {
 	return []models.Bookmark{}, nil
 }
 
-// TODO
-func GetBookmark(id string) ([]models.Bookmark, error) {
-	db, err := OpenAgentDB()
-	var bookmarks []models.Bookmark
+// Retrieves the bookmarks for specific agent
+func GetBookmark(username string) ([]models.Bookmark, error) {
+	bookmarks := []models.Bookmark{}
+	db, err := OpenAgentDB(username)
 	if err != nil {
 		return bookmarks, err
 	}
+	defer db.Close()
 
 	query := "SELECT * FROM bookmarks"
+	rows, err := db.Query(query)
 
-	rows, _ := db.Query(query)
+	if err != nil {
+		fmt.Println(err)
+		return bookmarks, err
+	}
 
 	for rows.Next() {
 		var bookmark models.Bookmark
@@ -70,8 +76,6 @@ func GetBookmark(id string) ([]models.Bookmark, error) {
 		fmt.Println(err)
 		bookmarks = append(bookmarks, bookmark)
 	}
-
-	fmt.Println(bookmarks)
 
 	return bookmarks, nil
 }

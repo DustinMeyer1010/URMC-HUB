@@ -11,31 +11,28 @@ import (
 )
 
 func AddBookmark(w http.ResponseWriter, r *http.Request) {
-	r.ParseMultipartForm(1 << 20)
+	err := r.ParseMultipartForm(1 << 20)
+
+	vars := mux.Vars(r)
+	username := vars["username"]
+
+	if err != nil {
+		http.Error(w, "FILE_PARSE_FAILED", http.StatusBadRequest)
+	}
 
 	image, header, err := r.FormFile("image")
 	var bookmark models.Bookmark
 	json.Unmarshal([]byte(r.FormValue("bookmark")), &bookmark)
 
 	if err != nil {
-		http.Error(w, "missing image", http.StatusBadRequest)
+		http.Error(w, "NO_IMAGE_PROVIDED", http.StatusBadRequest)
 		return
 	}
 
 	defer image.Close()
 
 	bookmark.ImagePath = db.SaveImage(image, header)
-
-	db.AddBookmark(bookmark)
-
-	/*
-		err = service.AddBookmark(r)
-
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-	*/
+	db.AddBookmark(username, bookmark)
 
 }
 

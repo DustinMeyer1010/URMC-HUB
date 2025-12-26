@@ -1,38 +1,59 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
+	import Bookmark from "@components/Bookmarks/Bookmark.svelte";
 	import { onMount } from "svelte";
+    import editIcon from "$lib/assets/edit.png";
+	import AddForm from "@components/Bookmarks/AddForm.svelte";
 
     let { data } : { data: {username: string} } = $props()
 
-    type Bookmark = {
+    export type BookmarkT = {
+        id: string,
         name: string,
         url: string,
         image_path: string,
         description: string
     }
 
-    let bookmarks: Bookmark[] = $state([])
+    let bookmarks: BookmarkT[] = $state([])
     let filter: string = $state("")
     let currentBookmarks: string = $state("")
     let agent: string = $state("")
     let agentWithBookmarks: string[] = $state([])
+    let owner: boolean = $derived(agent == currentBookmarks)
+    let editMode: boolean = $state(false)
+    let addFormVisiabled: boolean = $state(false)
 
-    $effect(() => {
+    const UpdateLocation = async () => {
         if (currentBookmarks == "Generic") {
-            goto("/bookmarks", {replaceState: true, invalidateAll: true})
+            await goto("/bookmarks", {replaceState: true, invalidateAll: true})
             return
         }
-        goto(`/bookmarks/${currentBookmarks}`, {replaceState: true, invalidateAll: true})
-    }) 
+        await goto(`/bookmarks/${currentBookmarks}`, {replaceState: true, invalidateAll: true})
+        await fetch(`http://localhost:8000/api/bookmarks/${data.username}`).then(async (res) => {
+            bookmarks = await res.json()
+        })
+        editMode = false
+        return
+    }
+
+    const showAddForm = () => {
+        addFormVisiabled = true
+    }
+
+    const closeForm = () => {
+        addFormVisiabled = false
+    }
 
 
-    let filteredBookmarks: Bookmark[] = $derived.by(() => {
+    let filteredBookmarks: BookmarkT[] = $derived.by(() => {
         if (filter === "") {
             return bookmarks
         }
 
+        const lowerFilter = filter.toLocaleLowerCase()
         return bookmarks.filter((bookmark) => {
-            return bookmark.name.toLocaleLowerCase().includes(filter) || bookmark.description.toLocaleLowerCase().includes(filter)
+            return bookmark?.name?.toLocaleLowerCase().includes(lowerFilter) || bookmark?.description?.toLocaleLowerCase().includes(lowerFilter)
         })
 
         
@@ -60,64 +81,79 @@
 <header>
     <div>
         <input placeholder="Search Link" type="text" bind:value={filter}>
-        <select bind:value={currentBookmarks}>
+        <select onchange={UpdateLocation} bind:value={currentBookmarks}>
             <option value="Generic">Generic Bookmarks</option>
             <option value={`${agent}`}>My Bookmarks</option>
             {#each agentWithBookmarks as agentB}
                 <option value={`${agentB}`}>{agentB}</option>
             {/each}
         </select>
+
+
     </div>
-{@render AddBookmarks()}
+        {#if owner}
+            <button class="edit" onclick={() => editMode = !editMode}><img src={editIcon} alt=""/></button>
+        {/if}
+
 </header>
 
+{#if addFormVisiabled} 
+    <AddForm username={agent} {closeForm}/>
+{/if}
+
 <section>
+    {@render AddBookmarks()}
     {#each filteredBookmarks as bookmark}
-    <a href={bookmark.url}>
-        <img src="http://localhost:8000/api/db/image/{bookmark.image_path}" alt="">
-        <h1>{bookmark.name}</h1>
-        <span>{bookmark.description}</span>
-    </a>
+        <Bookmark {bookmark} editMode={editMode} />
     {/each}
 </section>
 
 
 {#snippet AddBookmarks()}
-    {#if agent != "" && agent == currentBookmarks}
-        <button>
-            Add Book Mark
+    {#if editMode}
+        <button class="add-bookmark" onclick={() => showAddForm()}>
+            +
         </button>
     {/if}
 {/snippet}
 
+
+
 <style>
 
-    a,
-    a:visited,
-    a:hover {
-        text-decoration: none;
+
+    button.add-bookmark {
+        border: 3px solid var(--color-surface);
+        background: none;
         color: var(--text-color);
-        text-align: center;
-    }
-
-    h1 {
-        margin: 0;
-        padding: 0;
-    }
-
-    a {
-        padding: 5px;
-        background: var(--color-surface);
         border-radius: 10px;
+        font-weight: bold;
+        font-size: 50px;
     }
+
+    button.add-bookmark:hover {
+        background: var(--color-surface);
+    }
+
+    button.edit img {
+        width: 25px;
+    }
+
+    button.edit {
+        background: none;
+        border: none;
+    }
+
+
 
     section {
-        padding-top: 100px;
         display: grid;
+        box-sizing: border-box;
         grid-template-columns: 1fr 1fr 1fr;
-        gap: 20px;
-        padding-bottom: 150px;
+        gap: 100px 20px;
+        padding: 200px 50px;
     }
+
 
     header {
         position: fixed;
@@ -136,9 +172,8 @@
     input {
         width: 50%;
         min-width: 600px;
-        font-size: 18px;
-        border-radius: 10px;
-        height: 35px;
+        font-size: 15px;
+        border-radius: 5px;
         padding: 5px;
         border: 2px solid #b4b8d9;
         background-color: var(--color-bg-opacity-80);
@@ -153,9 +188,8 @@
         background: var(--color-surface);
         border: none;
         color: var(--text-color);
-        padding: 10px;
+        padding: 5px;
         font-size: 15px;
-        margin: 0;
     }
 
 </style>

@@ -19,6 +19,7 @@ func bookmarksRoutes(mux *mux.Router) {
 			middleware.Middleware{
 				middleware.IsAuthorized,
 				middleware.IsAuthorizedUser,
+				middleware.CheckForDatabase,
 				middleware.CorsHandler,
 			},
 		},
@@ -28,7 +29,7 @@ func bookmarksRoutes(mux *mux.Router) {
 			http.HandlerFunc(handlers.GetBookForAgent),
 			middleware.Middleware{
 				middleware.IsAuthorized,
-				middleware.IsAuthorizedUser,
+				middleware.CheckForDatabase,
 				middleware.CorsHandler,
 			},
 		},

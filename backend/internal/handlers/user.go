@@ -183,7 +183,6 @@ func BulkUserSearch(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetMemberOf(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Memberof")
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 	vars := mux.Vars(r)
 	username := vars["username"]

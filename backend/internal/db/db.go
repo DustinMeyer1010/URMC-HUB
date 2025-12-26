@@ -7,8 +7,6 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-
-	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 )
 
 var DBLocation string
@@ -21,6 +19,7 @@ var schema embed.FS
 //go:embed generic_bookmarks.json
 var bookmarks []byte
 
+// * Creates all the directories needed for the databases
 func Init() {
 
 	exe, _ := os.Executable()
@@ -56,6 +55,6 @@ func createTables(db *sql.DB) error {
 
 }
 
-func OpenAgentDB() (*sql.DB, error) {
-	return sql.Open("sqlite", fmt.Sprintf("%s/%s.db", DBLocation, global.Username))
+func OpenAgentDB(username string) (*sql.DB, error) {
+	return sql.Open("sqlite", fmt.Sprintf("%s/%s.db", DBLocation, username))
 }

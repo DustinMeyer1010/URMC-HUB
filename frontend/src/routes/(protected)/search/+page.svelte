@@ -42,6 +42,7 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
+        padding-top: 10px;
     }
 
 
