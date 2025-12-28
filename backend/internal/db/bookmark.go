@@ -72,10 +72,26 @@ func GetBookmark(username string) ([]models.Bookmark, error) {
 
 	for rows.Next() {
 		var bookmark models.Bookmark
-		err := rows.Scan(&bookmark.Id, &bookmark.Name, &bookmark.URL, &bookmark.Description, &bookmark.ImagePath)
+		err := rows.Scan(&bookmark.Id, &bookmark.Name, &bookmark.Description, &bookmark.URL, &bookmark.ImagePath)
 		fmt.Println(err)
 		bookmarks = append(bookmarks, bookmark)
 	}
 
 	return bookmarks, nil
+}
+
+func RemoveBookmark(username string, id string) error {
+	db, _ := OpenAgentDB(username)
+
+	defer db.Close()
+
+	fmt.Println(id)
+
+	query := "DELETE FROM bookmarks WHERE id = (?)"
+
+	_, err := db.Exec(query, id)
+
+	fmt.Println(err)
+
+	return nil
 }

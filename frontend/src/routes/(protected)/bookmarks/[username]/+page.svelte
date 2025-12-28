@@ -104,7 +104,7 @@
 <section>
     {@render AddBookmarks()}
     {#each filteredBookmarks as bookmark}
-        <Bookmark {bookmark} editMode={editMode} />
+        <Bookmark username={agent} {bookmark} editMode={editMode} />
     {/each}
 </section>
 

@@ -34,6 +34,16 @@ func bookmarksRoutes(mux *mux.Router) {
 			},
 		},
 		{
+			methods{"DELETE", "OPTIONS"},
+			"/api/bookmarks/{username}/{id}",
+			http.HandlerFunc(handlers.RemoveBookmark),
+			middleware.Middleware{
+				middleware.IsAuthorized,
+				middleware.CheckForDatabase,
+				middleware.CorsHandler,
+			},
+		},
+		{
 			methods{"GET"},
 			"/api/generic/bookmarks",
 			http.HandlerFunc(handlers.GetGeneralBookmarks),

@@ -66,3 +66,11 @@ func GetBookForAgent(w http.ResponseWriter, r *http.Request) {
 func SaveBookmark(w http.ResponseWriter, r *http.Request) {
 
 }
+
+func RemoveBookmark(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	username := vars["username"]
+	id := vars["id"]
+
+	db.RemoveBookmark(username, id)
+}

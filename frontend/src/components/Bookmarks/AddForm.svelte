@@ -1,28 +1,47 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-
 
     let {username, closeForm} : {username: string, closeForm: () => void} = $props()
 
     let form: HTMLFormElement;
+
+    type Bookmark = {
+        name: string,
+        url: string,
+        description: string,
+    }
+
+    let newBookmark: Bookmark = $state({
+        name: "",
+        url: "",
+        description: "",
+    })
+
+
     
     const onsubmit = async () => {
         let formData = new FormData(form) 
+
+        formData.append("bookmark", JSON.stringify(newBookmark))
+
+        await fetch(`http://localhost:8000/api/bookmark/${username}`, {
+            method: "POST",
+            mode: "cors",
+            body: formData
+        })
     }
-
-
-
 
 </script>
 
 <div>
+
     <form bind:this={form} {onsubmit}>
+        <button class="close" onclick={closeForm}>X</button>
         <label for="name">Name</label>
-        <input class="text" type="text" id="name" name="name" required>
+        <input bind:value={newBookmark.name} class="text" type="text" id="name" name="name" required>
         <label for="url" >URL</label>
-        <input class="text" type="text" id="url" name="url" required>
+        <input bind:value={newBookmark.url} class="text" type="text" id="url" name="url" required>
         <label for="description">Description</label>
-        <input class="text" type="text" id="description" name="description">
+        <input bind:value={newBookmark.description} class="text" type="text" id="description" name="description">
         <label for="photo">Photo</label>
         <input type="file" id="image" name="image" required>
         <button type="submit">Add Bookmark</button>
@@ -68,6 +87,10 @@
         padding: 8px;
         font-weight: bold;
         border-radius: 5px;
+    }
+
+    button.close {
+        align-self: flex-end;
     }
 
     button:hover {

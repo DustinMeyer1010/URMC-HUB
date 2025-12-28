@@ -2,13 +2,20 @@
 	import type { BookmarkT } from "../../routes/(protected)/bookmarks/[username]/+page.svelte";
 
 
-    let {bookmark, editMode = false} : {bookmark: BookmarkT, editMode?: boolean} = $props()
+    let {username,bookmark, editMode = false} : {username: string,bookmark: BookmarkT, editMode?: boolean} = $props()
+
+    const removeBookmark = async (id: string) => {
+        await fetch(`http://localhost:8000/api/bookmarks/${username}/${id}`, {
+            method: "DELETE",
+            mode: "cors"
+        })
+    }
 
 </script>
 
     <div>
         {@render RemoveBookmark(bookmark.id)}
-        <a href={bookmark.url}> 
+        <a href={bookmark.url.includes("http") ? bookmark.url : "https://" + bookmark.url} target="_blank"> 
             <img src="http://localhost:8000/api/db/image/{bookmark.image_path}" alt="">
             <h1>{bookmark.name}</h1>
             <span>{bookmark.description}</span>
@@ -18,7 +25,7 @@
 
     {#snippet RemoveBookmark(id: string)}
         {#if editMode}
-            <button class="remove-bookmark" onclick={() => console.log(id)}>
+            <button class="remove-bookmark" onclick={() => removeBookmark(id)}>
                 X
             </button>
         {/if}
@@ -26,7 +33,7 @@
 
 <style>
 
-        div {
+    div {
         position: relative;
     }
 
@@ -41,6 +48,7 @@
         border: none;
         background: var(--color-surface-hover);
         border-radius: 30px;
+        z-index: 1;
     }
 
     button.remove-bookmark:hover {
@@ -80,7 +88,8 @@
     }
 
     img {
-        width: 400px;
+        height: 200px;
+        background: var(--color-surface);
         border-radius: 20px;
         margin-top: -100px;
         transition: var(--transition-normal);
