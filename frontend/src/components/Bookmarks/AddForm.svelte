@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    let {username, closeForm} : {username: string, closeForm: () => void} = $props()
+    let {username, closeForm, updateBookmarks} : {username: string, closeForm: () => void, updateBookmarks: () => Promise<void>} = $props()
 
     let form: HTMLFormElement;
 
@@ -18,7 +18,8 @@
 
 
     
-    const onsubmit = async () => {
+    const onsubmit = async (e: SubmitEvent) => {
+        e.preventDefault()
         let formData = new FormData(form) 
 
         formData.append("bookmark", JSON.stringify(newBookmark))
@@ -28,6 +29,9 @@
             mode: "cors",
             body: formData
         })
+
+        closeForm()
+        await updateBookmarks()
     }
 
 </script>

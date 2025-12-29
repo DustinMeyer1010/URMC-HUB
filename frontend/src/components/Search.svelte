@@ -14,13 +14,19 @@
         searchValue: string;
     } = $props();
 
+    let disabled = $derived(searchValue.includes("/"))
+
     onMount(async () => {
-    search()
-    loading = false
+        search()
+        loading = false
 
     })
 
     async function onsubmit(e: SubmitEvent) {
+        if (disabled) {
+            return
+        }
+
         e.preventDefault()
         search()
     }
@@ -29,7 +35,7 @@
 
 <form {onsubmit}>
     <input oncontextmenu={(e: Event) => {e.preventDefault();searchValue=""}} type="text" bind:value={searchValue}>
-    <button type="submit">Search</button>
+    <button disabled={disabled} type="submit">Search</button>
 </form>
 
 <style>

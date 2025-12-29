@@ -1,77 +1,21 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
 	import Bookmark from "@components/Bookmarks/Bookmark.svelte";
 	import { onMount } from "svelte";
     import editIcon from "$lib/assets/edit.png";
 	import AddForm from "@components/Bookmarks/AddForm.svelte";
+	import { BookmarkStateClass } from "./state.svlete";
 
     let { data } : { data: {username: string} } = $props()
 
-    export type BookmarkT = {
-        id: string,
-        name: string,
-        url: string,
-        image_path: string,
-        description: string
-    }
+    let state: BookmarkStateClass = new BookmarkStateClass(data.username)
 
-    let bookmarks: BookmarkT[] = $state([])
-    let filter: string = $state("")
-    let currentBookmarks: string = $state("")
-    let agent: string = $state("")
-    let agentWithBookmarks: string[] = $state([])
-    let owner: boolean = $derived(agent == currentBookmarks)
-    let editMode: boolean = $state(false)
-    let addFormVisiabled: boolean = $state(false)
-
-    const UpdateLocation = async () => {
-        if (currentBookmarks == "Generic") {
-            await goto("/bookmarks", {replaceState: true, invalidateAll: true})
-            return
-        }
-        await goto(`/bookmarks/${currentBookmarks}`, {replaceState: true, invalidateAll: true})
-        await fetch(`http://localhost:8000/api/bookmarks/${data.username}`).then(async (res) => {
-            bookmarks = await res.json()
-        })
-        editMode = false
-        return
-    }
-
-    const showAddForm = () => {
-        addFormVisiabled = true
-    }
-
-    const closeForm = () => {
-        addFormVisiabled = false
-    }
-
-
-    let filteredBookmarks: BookmarkT[] = $derived.by(() => {
-        if (filter === "") {
-            return bookmarks
-        }
-
-        const lowerFilter = filter.toLocaleLowerCase()
-        return bookmarks.filter((bookmark) => {
-            return bookmark?.name?.toLocaleLowerCase().includes(lowerFilter) || bookmark?.description?.toLocaleLowerCase().includes(lowerFilter)
-        })
-
-        
-    })
 
     // This will need to call the api to get the users bookmarks
     onMount( async () => {
-        agent = localStorage.getItem("agent") ?? ""
-        currentBookmarks = data.username
-
-        await fetch("http://localhost:8000/api/bookmarks/all/agents").then(async (res) => {
-            agentWithBookmarks = await res.json()
-            agentWithBookmarks = agentWithBookmarks.filter((agentB) => agentB != agent)
-        })
-
-        await fetch(`http://localhost:8000/api/bookmarks/${data.username}`).then(async (res) => {
-            bookmarks = await res.json()
-        })
+        state.LoggedInAgent = localStorage.getItem("agent") ?? ""
+        state.SelectedAgentBookmarks = data.username
+        await state.UpdateAgentBookmarksList()
+        await state.UpdateBookmarks()
     })  
 
 </script>
@@ -80,38 +24,38 @@
 
 <header>
     <div>
-        <input placeholder="Search Link" type="text" bind:value={filter}>
-        <select onchange={UpdateLocation} bind:value={currentBookmarks}>
+        <input placeholder="Search Link" type="text" bind:value={state.Filter}>
+        <select onchange={state.UpdateLocation} bind:value={state.SelectedAgentBookmarks}>
             <option value="Generic">Generic Bookmarks</option>
-            <option value={`${agent}`}>My Bookmarks</option>
-            {#each agentWithBookmarks as agentB}
-                <option value={`${agentB}`}>{agentB}</option>
+            <option value={`${state.LoggedInAgent}`}>My Bookmarks</option>
+            {#each state.AgentsWithBookmarks as agent}
+                <option value={`${agent}`}>{agent}</option>
             {/each}
         </select>
 
 
     </div>
-        {#if owner}
-            <button class="edit" onclick={() => editMode = !editMode}><img src={editIcon} alt=""/></button>
+        {#if state.Owner}
+            <button class="edit" onclick={() => state.EditMode = !state.EditMode}><img src={editIcon} alt=""/></button>
         {/if}
 
 </header>
 
-{#if addFormVisiabled} 
-    <AddForm username={agent} {closeForm}/>
+{#if state.AddFormVisiable} 
+    <AddForm username={state.LoggedInAgent} closeForm={state.HideForm} updateBookmarks={state.UpdateBookmarks}/>
 {/if}
 
 <section>
     {@render AddBookmarks()}
-    {#each filteredBookmarks as bookmark}
-        <Bookmark username={agent} {bookmark} editMode={editMode} />
+    {#each state.FilteredBookmarks as bookmark}
+        <Bookmark username={state.LoggedInAgent} {bookmark} editMode={state.EditMode}/>
     {/each}
 </section>
 
 
 {#snippet AddBookmarks()}
-    {#if editMode}
-        <button class="add-bookmark" onclick={() => showAddForm()}>
+    {#if state.EditMode}
+        <button class="add-bookmark" onclick={() => state.ShowForm()}>
             +
         </button>
     {/if}

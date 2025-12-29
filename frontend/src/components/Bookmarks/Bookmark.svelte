@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { BookmarkT } from "../../routes/(protected)/bookmarks/[username]/+page.svelte";
+	import type { BookmarkT } from '@t/bookmark';
 
 
     let {username,bookmark, editMode = false} : {username: string,bookmark: BookmarkT, editMode?: boolean} = $props()

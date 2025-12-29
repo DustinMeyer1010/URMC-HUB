@@ -38,15 +38,11 @@ export class SearchStateClass implements SearchStateInterface {
     filter: Search.Filter = $state("USERS")
     loading: boolean = $state(true)
     searchValue: string = $state("")
-    santizedSearch: string = $derived.by(() => {
-        return encodeURIComponent(this.searchValue.trim())
-    });
+    santizedSearch: string = $derived(encodeURIComponent(this.searchValue.trim()));
     
 
 
     Search = async () => {
-
-        console.log("here")
 
         this.loading = true
         if (this.searchValue == "") {
@@ -56,6 +52,8 @@ export class SearchStateClass implements SearchStateInterface {
                 return
             }
         }
+
+
 
         await fetch(`http://localhost:8000/api/search/all/${this.santizedSearch}`)
         .then(async (res) => {
@@ -96,7 +94,7 @@ export class SearchStateClass implements SearchStateInterface {
 
     SetURLParams() {
         localStorage.setItem("filter", this.filter)
-        localStorage.setItem("search", this.searchValue)
+        localStorage.setItem("search", encodeURIComponent(this.searchValue) )
         goto(`?search=${this.santizedSearch}&filter=${this.filter.toLowerCase()}`, { replaceState: true, keepFocus: true, noScroll: true })
 
     }
