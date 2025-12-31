@@ -3,7 +3,7 @@
 	import { onMount } from "svelte";
     import editIcon from "$lib/assets/edit.png";
 	import AddForm from "@components/Bookmarks/AddForm.svelte";
-	import { BookmarkStateClass } from "./state.svlete";
+	import {BookmarkStateClass}  from "./state.svelte";
 
     let { data } : { data: {username: string} } = $props()
 

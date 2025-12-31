@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS bookmarks (
     name VARCHAR(50) NOT NULL,
     description VARCHAR(150) NOT NULL,
     url TEXT NOT NULL,
-    image_path TEXT NOT NULL
+    image_path TEXT NOT NULL,
+    deleted INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS articles (

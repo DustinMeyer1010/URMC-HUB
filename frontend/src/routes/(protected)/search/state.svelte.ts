@@ -77,6 +77,7 @@ export class SearchStateClass implements SearchStateInterface {
     GetURLParams = () => {
         let urlParams = page.url.searchParams
         this.searchValue = urlParams.get("search") ?? ""
+
         let filter = urlParams.get("filter")?.toUpperCase() ?? "USERS"
         this.filter = Search.isValidFilter(filter) ? filter as Search.Filter : "USERS"
 
@@ -88,7 +89,7 @@ export class SearchStateClass implements SearchStateInterface {
         if (this.searchValue == "") {
             this.searchValue = localStorage.getItem("search") ?? ""
         }
-
+        this.searchValue = decodeURIComponent(this.searchValue)
 
     }
 

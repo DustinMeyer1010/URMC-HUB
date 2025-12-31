@@ -1,4 +1,4 @@
-import { goto, invalidateAll, replaceState } from "$app/navigation";
+import { goto } from "$app/navigation";
 import type { BookmarkT } from "@t/bookmark";
 
 export class BookmarkStateClass {
@@ -33,6 +33,7 @@ export class BookmarkStateClass {
             await goto("/bookmarks", {replaceState: true, invalidateAll: true})
         }
         await goto(`/bookmarks/${this.SelectedAgentBookmarks}`, {replaceState: true, invalidateAll: true})
+        this.Username = this.SelectedAgentBookmarks
         await this.UpdateBookmarks()
         this.EditMode = false
     }

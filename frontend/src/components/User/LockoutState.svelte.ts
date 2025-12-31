@@ -1,7 +1,7 @@
-import type { LockoutInfo } from "@t/user";
+import { User } from "@t/user";
 
 interface LockoutState {
-    LockoutInformation: LockoutInfo[]
+    LockoutInformation: User.LockoutInfo[]
     RefreshMsg: string
     RefreshTimeout: ReturnType<typeof setTimeout> | null
     Username: string
@@ -16,7 +16,7 @@ interface LockoutState {
  */
 export class LockoutStateClass implements LockoutState {
     Username: string;
-    LockoutInformation: LockoutInfo[] = $state([])
+    LockoutInformation: User.LockoutInfo[] = $state([])
     RefreshMsg: string = $state("")
     RefreshTimeout: NodeJS.Timeout | null = $state(null)
     loading: boolean = $state(false)

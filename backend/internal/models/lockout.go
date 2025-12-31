@@ -32,16 +32,15 @@ func ToLockOutStatus(server string, entry *ldap.Entry) LockOutStatus {
 func TimeConvert(input string) (output string) {
 	ts, _ := strconv.Atoi(input)
 	ticks := int64(ts)
-	seconds := ticks/10000000 - 11644473600
-	nanoseconds := (ticks % 10000000) * 100
-	t := time.Unix(seconds, nanoseconds)
-	if !t.IsDST() {
-		t = t.Add(time.Hour)
+	if ticks == 0 {
+		return ""
 	}
-	if t.Format("2006") == "1600" {
-		output = "None"
-	} else {
-		output = t.Format("01/02/2006 15:04:05")
-	}
-	return
+
+	const ticksPerSecond = 10000000
+	const epochDifference = 11644473600
+
+	unixSeconds := (ticks / ticksPerSecond) - epochDifference
+	t := time.Unix(unixSeconds, 0).Local()
+
+	return t.Format("Jan 2, 2006 3:04 PM")
 }

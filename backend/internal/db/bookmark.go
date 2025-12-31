@@ -62,7 +62,7 @@ func GetBookmark(username string) ([]models.Bookmark, error) {
 	}
 	defer db.Close()
 
-	query := "SELECT * FROM bookmarks"
+	query := "SELECT id, name, description, url, image_path FROM bookmarks WHERE deleted = 0"
 	rows, err := db.Query(query)
 
 	if err != nil {
@@ -87,7 +87,7 @@ func RemoveBookmark(username string, id string) error {
 
 	fmt.Println(id)
 
-	query := "DELETE FROM bookmarks WHERE id = (?)"
+	query := "UPDATE bookmarks SET deleted = 1 WHERE id = (?)"
 
 	_, err := db.Exec(query, id)
 
