@@ -41,19 +41,23 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        padding: 0;
+        margin: 0;
     }
 
     header {
-        top: 60px;
         width: 100%;
         display: flex;
         flex-direction: column;
         text-align: center;
         justify-content: center;
-        position: fixed;
-        padding: 0;
+        position: sticky;
+        padding: 10px;
         background: var(--color-bg);
-        z-index: 10;
+        z-index: 1;
+        top: 61px;
+        margin-bottom: 20px;
+        box-shadow: 20px 0px 10px rgba(0,0,0,0.3);
     }
 
     h1 {
@@ -66,7 +70,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        margin-top: 250px;
+
     }
 
 </style>

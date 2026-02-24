@@ -1,9 +1,11 @@
 <!-- TODO: Add message for results when someone is removed from the group -->
 
 <script lang="ts">
-	import UserCard from '@components/Cards/User.svelte';
-    import { RemoveStateClass } from './RemoveState.svelte';
-    import Remove from "@components/User/Remove.svelte";
+	import UserCard from '../cards/User.svelte';
+    import { RemoveStateClass } from './states/RemoveState.svelte';
+    import Remove from "../user/Remove.svelte"
+	import Search from '../search/Search.svelte';
+	import { fly } from 'svelte/transition';
 
     let { group } : { group: string } = $props()
 
@@ -11,6 +13,15 @@
     $inspect(RemoveState.Results)
 </script>
 
+
+{#if RemoveState.Results.length != 0}
+    {#each RemoveState.Results as Result }
+        <div id="message" class:success={Result.successful} class:error={!Result.successful} in:fly={{y: -100}} out:fly={{y: -100}}>
+            <span>{Result.group}</span>
+            <span>{Result.message}</span>
+        </div>
+    {/each}
+{/if}
 
 <section>
 {#each RemoveState.Users as user, idx }
@@ -26,10 +37,9 @@
 
 <!-- REFACTOR: Fix the way this looks -->
 {#snippet SearchForm()}
-    <form action="" onsubmit={RemoveState.Search}>
-        <input type="text" placeholder="Search for user to Remove" bind:value={RemoveState.SearchValue}>
-        <button type="submit">Search</button>
-    </form>
+<div id="search">
+    <Search bind:searchValue={RemoveState.SearchValue} bind:loading={RemoveState.Loading} search={RemoveState.Search}></Search>
+</div>
 {/snippet}
 
 
@@ -40,46 +50,36 @@
         gap: 10px;
     }
 
-    input {
-        padding: 5px 10px;
-        font-size: 12px;
-        color: var(--color-text);
-        border: 3px solid var(--color-text);
-        background: var(--color-bg);
-        border-radius: 10px;
-        height: 100%;
-        max-width: 200px;
-        box-sizing: border-box;
-
-    }
-
-    input:focus {
-        outline:none
-    }
-
-
-    form {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        height: 40px;
+    div#search {
         position: fixed;
-        bottom: 30px;
+        bottom: 50px;
         left: 50%;
-        width: 50%;
         transform: translateX(-50%);
     }
 
-    button {
-        height: 100%;
-        box-sizing: border-box;
-        color: var(--color-text);
-        border: 3px solid var(--color-text);
-        background: var(--color-bg);
-        padding: 5px 15px;
+    
+    div#message {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        left: 50%;
+        top: 30px;
+        transform: translateX(-50%);
+        padding: 20px;
+        z-index: 100;
         border-radius: 10px;
+        background: var(--color-bg-opacity-30);
+        backdrop-filter: blur(20px);
     }
+
+    div.success {
+        border: 2px solid green;
+    }
+
+    div.error {
+        border: 2px solid red;
+    }
+
+
 </style>

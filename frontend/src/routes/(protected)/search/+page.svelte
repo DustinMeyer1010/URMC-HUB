@@ -1,8 +1,8 @@
 <script lang="ts">
 
-    import Search from '$lib/components/Search.svelte'
-    import Filters from '$lib/components/Filters.svelte'
-    import Cards from '$lib/components/Cards.svelte';
+    import Search from '$lib/components/search/Search.svelte'
+    import Filters from '$lib/components/search/Filters.svelte'
+    import Cards from '$lib/components/cards/Cards.svelte';
 
 	import { onMount } from 'svelte';
 	import CardLoading from '$lib/components/loading/CardLoading.svelte';

@@ -1,7 +1,7 @@
 <script lang="ts">
 
     import urmc from '$lib/assets/URMC.png';
-	import ToggleTheme from './ToggleTheme.svelte';
+	import ToggleTheme from '../buttons/ToggleTheme.svelte';
     import menuIcon from "$lib/assets/menu-color-text-dark.png"
 	import { onMount } from 'svelte';
 	import { NavStateClass } from './NavState.svelte';

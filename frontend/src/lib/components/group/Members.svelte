@@ -11,10 +11,10 @@
 -->
 
 <script lang="ts">
-	import User from "@components/Cards/User.svelte";
-	import { MembersStateClass } from "./MembersState.svelte";
+	import User from "../cards/User.svelte";
+	import { MembersStateClass } from "./states/MembersState.svelte";
 	import { onMount } from "svelte";
-	import MembersLoading from "@components/Loading-Animations/MembersLoading.svelte";
+	import MembersLoading from "../loading/MembersLoading.svelte";
 
     let {
         group

@@ -2,9 +2,9 @@
     import type { Computer } from "$lib/types/computer";
     import goToIcon from '$lib/assets/double-left-arrow-primary.png';
     import disabledIcon from '$lib/assets/disabled-computer.png'
-	import { ComputerStateClass } from "./ComputerState.svelte";
-	import CopyButton from "../CopyButton.svelte";
-	import CopyAllButton from "../CopyAllButton.svelte";
+	import { ComputerStateClass } from "./states/ComputerState.svelte";
+	import CopyButton from "../buttons/CopyButton.svelte";
+	import CopyAllButton from "../buttons/CopyAllButton.svelte";
     
     let {
         item,
@@ -56,6 +56,7 @@
         bottom: 0.5rem;
         font-weight: bold;
         font-size: 12px;
+
     }
 
     span.disabled img {
@@ -87,6 +88,7 @@
         animation-delay: var(--delay);
         margin: 0;
         list-style: none;
+        box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.2);
     }
 
 

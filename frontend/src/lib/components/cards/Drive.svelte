@@ -3,9 +3,9 @@
     import Icon from '$lib/assets/double-left-arrow-primary.png';
 	import { Drive } from "$lib/types/drive";
 	import { blur } from 'svelte/transition';
-	import CopyAllButton from '../CopyAllButton.svelte';
-	import CopyButton from "../CopyButton.svelte";
-	import { DriveStateClass } from './DriveState.svelte';
+	import CopyAllButton from '../buttons/CopyAllButton.svelte';
+	import CopyButton from "../buttons/CopyButton.svelte";
+	import { DriveStateClass } from './states/DriveState.svelte';
 
     let {
         item,

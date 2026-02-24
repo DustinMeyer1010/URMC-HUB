@@ -5,8 +5,8 @@
 <script lang="ts">
 	import Confirm from "./Confirm.svelte";
 	import Message from "./Message.svelte";
-	import { AddStateClass } from "./AddState.svelte";
-	import Group from "@components/Cards/Group.svelte";
+	import { AddStateClass } from "./states/AddState.svelte";
+	import Group from "../cards/Group.svelte";
 
     let {
         currentUser

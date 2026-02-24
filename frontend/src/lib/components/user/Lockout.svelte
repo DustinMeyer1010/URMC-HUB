@@ -1,7 +1,7 @@
 <script lang="ts">
     import RefreshIcon from '$lib/assets/Refresh-color-text.png'
 	import { onMount } from 'svelte';
-	import  { LockoutStateClass } from "./LockoutState.svelte";
+	import  { LockoutStateClass } from "./states/LockoutState.svelte";
 
     let {
         username

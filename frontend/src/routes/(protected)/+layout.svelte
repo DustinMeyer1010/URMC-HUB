@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isLoggedIn } from "$lib/stores/login";
-	import Login from "$lib/components/Login.svelte";
-	import Nav from "$lib/components/Nav.svelte";
+	import Login from "$lib/components/form/Login.svelte";
+	import Nav from "$lib/components/navigation/Nav.svelte";
 	import { onMount } from "svelte";
 
 

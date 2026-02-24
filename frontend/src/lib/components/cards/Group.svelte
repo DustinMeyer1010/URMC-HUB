@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { Group } from "$lib/types/group";
     import Icon from '$lib/assets/double-left-arrow-primary.png';
-	import CopyButton from "../CopyButton.svelte";
-	import CopyAllButton from "../CopyAllButton.svelte";
+	import CopyButton from "../buttons/CopyButton.svelte";
+	import CopyAllButton from "../buttons/CopyAllButton.svelte";
 	import type { Snippet } from "svelte";
-	import { GroupStateClass } from "./GroupState.svelte";
+	import { GroupStateClass } from "./states/GroupState.svelte";
 
     let {
         item,

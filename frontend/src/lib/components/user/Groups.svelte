@@ -4,9 +4,9 @@
 	import Remove from "./Remove.svelte";
 
 	import Message from "./Message.svelte";
-	import { GroupStateClass } from "./GroupState.svelte";
+	import { GroupStateClass } from "./states/GroupState.svelte";
 	import { onMount } from "svelte";
-	import Group from "@components/Cards/Group.svelte";
+	import Group from "../cards/Group.svelte";
 
 
     let {

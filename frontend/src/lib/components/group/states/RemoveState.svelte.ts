@@ -5,12 +5,19 @@ export class RemoveStateClass {
     SearchValue: string = $state("")
     Users: User.CardInfo[] = $state([])
     Results: Modification.Results[] = $state([])
+    Loading: boolean = $state(false)
 
 
-    Search = async (e: SubmitEvent) => {
-        e.preventDefault()
+    Search = async () => {
         await fetch(`http://localhost:8000/api/search/users/${this.SearchValue}`)
-        .then(async (res) => this.Users = await res.json())
+        .then(async (res) => {
+            this.Users = await res.json()
+            this.Users = this.Users.filter((user) => {
+                if (user.username != "" && !user.ou.toLowerCase().includes("disabled")) {
+                    return user
+                }
+            })
+        })
     }
 
 
@@ -26,6 +33,11 @@ export class RemoveStateClass {
                 })
             })
         .then(async (res) => this.Results = await res.json()) 
+        setTimeout(() => {
+            this.Results = []
+        }, 5000);
     }
+    
+
 
 }

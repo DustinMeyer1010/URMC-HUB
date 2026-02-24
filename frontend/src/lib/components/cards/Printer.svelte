@@ -1,9 +1,9 @@
 <script lang="ts">
-    import type Printer from "$lib/types/printer";
+    import {Printer} from "$lib/types/printer";
     import Icon from '$lib/assets/double-left-arrow-primary.png';
-	import CopyAllButton from "../CopyAllButton.svelte";
-	import CopyButton from "../CopyButton.svelte";
-	import { PrinterStateClass } from "./PrinterState.svelte";
+	import CopyAllButton from "../buttons/CopyAllButton.svelte";
+	import CopyButton from "../buttons/CopyButton.svelte";
+	import { PrinterStateClass } from "./states/PrinterState.svelte";
 
 
     let {

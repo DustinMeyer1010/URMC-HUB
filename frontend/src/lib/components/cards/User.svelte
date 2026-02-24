@@ -4,8 +4,8 @@
 	import type { User } from "$lib/types/user";
     import Icon from '$lib/assets/double-left-arrow-primary.png';
     import disabledIcon from '$lib/assets/disabled-color-disabled.png'
-	import CopyButton from "../CopyButton.svelte";
-	import CopyAllButton from "../CopyAllButton.svelte";
+	import CopyButton from "../buttons/CopyButton.svelte";
+	import CopyAllButton from "../buttons/CopyAllButton.svelte";
 	import type { Snippet } from "svelte";
 
     let {

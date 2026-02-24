@@ -1,7 +1,7 @@
 <script lang="ts">
 
-	import CopyButton from "@components/CopyButton.svelte";
-    import { InfoStateClass } from "./InfoState.svelte";
+	import CopyButton from "../buttons/CopyButton.svelte";
+    import { InfoStateClass } from "./states/InfoState.svelte";
 	import { onMount } from "svelte";
 
     let {

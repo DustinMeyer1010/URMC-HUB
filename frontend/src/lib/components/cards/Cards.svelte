@@ -1,11 +1,11 @@
 <script lang="ts">
     
     // === COMPONENTS ===
-    import Group from "./cards/Group.svelte";
-    import Computer from "./cards/Computer.svelte";
-    import Printer from "./cards/Printer.svelte";
-	import User from "./cards/User.svelte";
-	import Drive from "./cards/Drive.svelte";
+    import Group from "./Group.svelte";
+    import Computer from "./Computer.svelte";
+    import Printer from "./Printer.svelte";
+	import User from "./User.svelte";
+	import Drive from "./Drive.svelte";
 	import { Search } from "$lib/types/search";
 	import type { Component } from 'svelte';
 

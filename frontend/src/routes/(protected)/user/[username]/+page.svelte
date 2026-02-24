@@ -9,7 +9,7 @@
 	import { onMount } from "svelte";
 	import { page } from "$app/state";
 
-    import {User} from "$lib/types/user"
+    import { User } from "$lib/types/user";
 
 	import { UserStateClass } from "./state.svelte";
 	import PageLoading from "$lib/components/loading/PageLoading.svelte";

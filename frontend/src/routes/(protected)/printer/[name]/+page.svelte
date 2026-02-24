@@ -4,10 +4,10 @@
     import { Copy } from '$lib/types/copy';
 	import { isLoggedIn } from '$lib/stores/login';
 	import PrinterCard from '$lib/components/cards/Printer.svelte';
-	import CopyButton from '$lib/components/CopyButton.svelte';
+	import CopyButton from '$lib/components/buttons/CopyButton.svelte';
 	import PageLoading from '$lib/components/loading/PageLoading.svelte';
 	import PrinterStatus from '$lib/components/printer/PrinterStatus.svelte';
-	import {Printer} from '$lib/types/printer';
+	import { Printer } from '$lib/types/printer';
 	import { onMount } from 'svelte';
 
     let printer: Printer.CardInfo | null = $state(null)

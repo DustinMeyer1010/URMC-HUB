@@ -1,5 +1,5 @@
 <script lang="ts">
-	import FileUpload from "$lib/components/FileUpload.svelte";
+	import FileUpload from "$lib/components/files/FileUpload.svelte";
 	import { allowedExtensions, BulkLookUpStateClass } from "./state.svelte";
 	import GenerationLoading from "$lib/components/loading/GenerationLoading.svelte";
 

@@ -3,9 +3,10 @@
 -->
 
 <script lang="ts">
-	import UserCard from "@components/Cards/User.svelte";
-	import Confirm from "@components/User/Confirm.svelte";
-	import { AddStateClass } from "./AddState.svelte";
+	import UserCard from "../cards/User.svelte";
+	import Search from "../search/Search.svelte";
+	import Confirm from "../user/Confirm.svelte";
+	import { AddStateClass } from "./states/AddState.svelte";
 	import { fly } from "svelte/transition";
 
     let { group } : { group: string } = $props()
@@ -18,7 +19,7 @@
 
 {#if AddState.Results.length != 0}
         {#each AddState.Results as Result }
-            <div class:success={Result.successful} class:error={!Result.successful} in:fly={{y: -100}} out:fly={{y: -100}}>
+            <div id="message" class:success={Result.successful} class:error={!Result.successful} in:fly={{y: -100}} out:fly={{y: -100}}>
                 <span>{Result.group}</span>
                 <span>{Result.message}</span>
             </div>
@@ -37,54 +38,28 @@
 </section>
 
 
-
-<form action="" onsubmit={AddState.Search}>
-    <input type="text" placeholder="Search for user to Add" bind:value={AddState.SearchValue}>
-    <button type="submit">Search</button>
-</form>
-
+<div id="search">
+    <Search bind:searchValue={AddState.SearchValue} bind:loading={AddState.Loading} search={AddState.Search}></Search>
+</div>
 
 <style>
     section {
         display: flex;
         flex-direction: column;
         gap: 10px;
+        width: 90%;
     }
 
-    input {
-        padding: 5px 10px;
-        font-size: 12px;
-        color: var(--color-text);
-        border: 3px solid var(--color-text);
-        background: var(--color-bg);
-        border-radius: 10px;
-        height: 100%;
-        max-width: 200px;
-        box-sizing: border-box;
-
-    }
-
-    input:focus {
-        outline:none
-    }
-
-
-    form {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        height: 40px;
+    div#search {
         position: fixed;
-        bottom: 30px;
+        bottom: 50px;
         left: 50%;
-        width: 50%;
         transform: translateX(-50%);
     }
 
-    div {
+
+
+    div#message {
         position: absolute;
         display: flex;
         flex-direction: column;
@@ -107,14 +82,5 @@
         border: 2px solid red;
     }
 
-    button {
-        height: 100%;
-        box-sizing: border-box;
-        color: var(--color-text);
-        border: 3px solid var(--color-text);
-        background: var(--color-bg);
-        padding: 5px 15px;
-        border-radius: 10px;
-    }
 </style>
 

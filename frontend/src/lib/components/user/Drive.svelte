@@ -4,8 +4,8 @@
 -->
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { DriveStateClass } from "./DriveState.svelte";
-	import CopyButton from "@components/CopyButton.svelte";
+	import { DriveStateClass } from "./states/DriveState.svelte";
+	import CopyButton from "$lib/components/buttons/CopyButton.svelte";
 
 
     let {
