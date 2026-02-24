@@ -37,3 +37,9 @@ func DriveAccess(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
 }
+
+func DriveInfo(w http.ResponseWriter, r *http.Request) {
+
+	logger.LogRequestInfo(r.Method, r.URL.Path)
+
+}

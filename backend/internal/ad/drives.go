@@ -53,7 +53,6 @@ func checkForGroupMatch(searchValue string, groups []string) bool {
 	return false
 }
 
-// Finds all share drives that match the searchValues
 func GetGroupToDrivesMapping() (map[string][]string, *customError.Error) {
 	collection := make(map[string][]string)
 
