@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Bookmark from "@components/Bookmarks/Bookmark.svelte";
+	import Bookmark from "$lib/components/bookmarks/Bookmark.svelte";
 	import { onMount } from "svelte";
     import editIcon from "$lib/assets/edit.png";
-	import AddForm from "@components/Bookmarks/AddForm.svelte";
+	import AddForm from "$lib/components/bookmarks/AddForm.svelte";
 	import {BookmarkStateClass}  from "./state.svelte";
 
     let { data } : { data: {username: string} } = $props()
@@ -47,7 +47,7 @@
 
 <section>
     {@render AddBookmarks()}
-    {#each state.FilteredBookmarks as bookmark}
+    {#each state.FilteredBookmarks as bookmark }
         <Bookmark username={state.LoggedInAgent} {bookmark} editMode={state.EditMode}/>
     {/each}
 </section>

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { isLoggedIn } from "$lib/login";
-	import Login from "@components/Login.svelte";
-	import Nav from "@components/Nav.svelte";
+	import { isLoggedIn } from "$lib/stores/login";
+	import Login from "$lib/components/Login.svelte";
+	import Nav from "$lib/components/Nav.svelte";
 	import { onMount } from "svelte";
 
 
@@ -41,9 +41,6 @@
 {@render children?.()}
 
 <style>
-    :root {
-		margin-top: 60px;
-	}
     div {
         position: absolute;
         top: 50%;

@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Creates the group routes
 func groupRoutes(mux *mux.Router) {
 	routes := routes{
 		{

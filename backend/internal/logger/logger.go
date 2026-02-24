@@ -18,6 +18,7 @@ type Logger struct {
 	err   *log.Logger
 }
 
+// Create a log file in APPDATA
 func New(appName string) *Logger {
 
 	logDir := filepath.Join(os.Getenv("LOCALAPPDATA"), appName)

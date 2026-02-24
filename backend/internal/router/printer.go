@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Creates the printer routes
 func printerRoutes(mux *mux.Router) {
 
 	routes := routes{

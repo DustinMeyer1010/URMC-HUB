@@ -4,6 +4,7 @@ import (
 	"net/http"
 )
 
+// Adds the CORS and headers to each of the responses
 func CorsHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {

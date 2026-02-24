@@ -6,10 +6,10 @@
 	import 'prismjs/themes/prism-tomorrow.css';
 
     // === COMPONENTS ===
-	import Code from "@components/Docs/Code.svelte";
-	import Object from "@components/Docs/Object.svelte";
-	import Description from "@components/Docs/Description.svelte";
-	import Response from "@components/Docs/Response.svelte";
+	import Code from "$lib/components/docs/Code.svelte";
+	import Object from "$lib/components/docs/Object.svelte";
+	import Description from "$lib/components/docs/Description.svelte";
+	import Response from "$lib/components/docs/Response.svelte";
     
     // === CONSTANTS ===
     import { endpoint, information, objects, response, request, responses } from "./details";

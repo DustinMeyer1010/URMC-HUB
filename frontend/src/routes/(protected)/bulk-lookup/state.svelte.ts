@@ -1,4 +1,4 @@
-import { isLoggedIn } from "$lib/login";
+import { isLoggedIn } from "$lib/stores/login";
 
 
 export const allowedExtensions: string[] = [".txt", ".xlsx", ".csv"];

@@ -1,5 +1,8 @@
 package customError
 
+// This allows for me to write a custom error and send it back with correct response it should have
+// I then do not need to figure out if something happened out of my control or was in my control
+
 import (
 	"fmt"
 	"net/http"
@@ -43,6 +46,7 @@ func (e Error) ToString() string {
 	return fmt.Sprintf("Error: %s\nMessage: %s", e.Type, e.Msg)
 }
 
+// refactor
 var (
 	UNAUTHORIZED = Error{
 		http.StatusUnauthorized,

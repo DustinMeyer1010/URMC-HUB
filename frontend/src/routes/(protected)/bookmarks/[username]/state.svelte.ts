@@ -1,5 +1,5 @@
 import { goto } from "$app/navigation";
-import type { BookmarkT } from "@t/bookmark";
+import type { BookmarkT } from "$lib/types/bookmark";
 
 export class BookmarkStateClass {
     Bookmarks: BookmarkT[] = $state([])

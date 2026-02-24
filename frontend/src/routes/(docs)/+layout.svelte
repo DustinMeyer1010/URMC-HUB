@@ -1,6 +1,6 @@
 
 <script lang="ts">
-	import Nav from '@components/Docs/Nav.svelte';
+	import Nav from '$lib/components/docs/Nav.svelte';
 
 
 

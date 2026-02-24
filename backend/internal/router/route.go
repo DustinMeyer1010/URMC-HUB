@@ -11,6 +11,7 @@ type methods []string
 
 type routes []route
 
+// Adds all the routes to the mux Router that is provided
 func (r routes) add(mux *mux.Router) {
 	for _, route := range r {
 		mux.Handle(

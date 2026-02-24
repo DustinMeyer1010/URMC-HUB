@@ -1,8 +1,8 @@
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
-import { isLoggedIn } from "$lib/login";
-import { type Results } from "@t/filters";
-import { Search } from "@t/search";
+import { isLoggedIn } from "$lib/stores/login";
+import { type Results } from "$lib/types/filters";
+import { Search } from "$lib/types/search";
 
 const emptyResults: Search.Results = {
     users: [],

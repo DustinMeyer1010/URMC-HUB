@@ -1,18 +1,18 @@
 <script lang="ts">
-	import Nav from "@components/User/Nav.svelte";
-    import Profile from "@components/User/Profile.svelte"
-	import Lockout from "@components/User/Lockout.svelte";
-	import Drive from "@components/User/Drive.svelte";
-	import Groups from "@components/User/Groups.svelte";
-	import Add from "@components/User/Add.svelte";
+	import Nav from "$lib/components/user/Nav.svelte";
+    import Profile from "$lib/components/user/Profile.svelte"
+	import Lockout from "$lib/components/user/Lockout.svelte";
+	import Drive from "$lib/components/user/Drive.svelte";
+	import Groups from "$lib/components/user/Groups.svelte";
+    import Add from "$lib/components/user/Add.svelte";
 
 	import { onMount } from "svelte";
 	import { page } from "$app/state";
 
-    import {User} from "@t/user"
+    import {User} from "$lib/types/user"
 
 	import { UserStateClass } from "./state.svelte";
-	import PageLoading from "@components/Loading-Animations/PageLoading.svelte";
+	import PageLoading from "$lib/components/loading/PageLoading.svelte";
 
     let { data } : { data: {username: string} } = $props();
     let UserPageState = new UserStateClass()
@@ -31,7 +31,7 @@
 {#if UserPageState.pageData != null}
     <nav>
         <h1>{UserPageState.pageData.name}</h1>
-        <Nav sections={User.Sections} swapSection={UserPageState.SwapSections} currentSection={UserPageState.currentSection}/>
+        <Nav swapSection={UserPageState.SwapSections} currentSection={UserPageState.currentSection}/>
     </nav>
 
     {#if !UserPageState.loading}

@@ -9,6 +9,7 @@ type AllResults struct {
 	Shares    []DriveSimpleInfo    `json:"drives"`
 }
 
+// Used to show Remove and Add of group results
 type GroupModifyResults struct {
 	Group      string `json:"group"`
 	Message    string `json:"message"`

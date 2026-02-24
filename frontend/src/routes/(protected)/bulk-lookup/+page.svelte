@@ -1,7 +1,7 @@
 <script lang="ts">
-	import FileUpload from "@components/FileUpload.svelte";
+	import FileUpload from "$lib/components/FileUpload.svelte";
 	import { allowedExtensions, BulkLookUpStateClass } from "./state.svelte";
-	import GenerationLoading from "@components/Loading-Animations/GenerationLoading.svelte";
+	import GenerationLoading from "$lib/components/loading/GenerationLoading.svelte";
 
     let BulkLookupState: BulkLookUpStateClass = new BulkLookUpStateClass()
 

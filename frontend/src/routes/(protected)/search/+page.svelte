@@ -1,11 +1,11 @@
 <script lang="ts">
 
-    import Search from '@components/Search.svelte'
-    import Filters from '@components/Filters.svelte'
-    import Cards from '@components/Cards.svelte';
+    import Search from '$lib/components/Search.svelte'
+    import Filters from '$lib/components/Filters.svelte'
+    import Cards from '$lib/components/Cards.svelte';
 
 	import { onMount } from 'svelte';
-	import CardLoading from '@components/Loading-Animations/CardLoading.svelte';
+	import CardLoading from '$lib/components/loading/CardLoading.svelte';
 	import { SearchStateClass } from './state.svelte';
 
 
@@ -42,7 +42,6 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
-        padding-top: 10px;
     }
 
 

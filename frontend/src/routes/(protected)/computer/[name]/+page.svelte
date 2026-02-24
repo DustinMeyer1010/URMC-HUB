@@ -1,10 +1,10 @@
 <script lang="ts">
-	import PageLoading from "@components/Loading-Animations/PageLoading.svelte";
+	import PageLoading from "$lib/components/loading/PageLoading.svelte";
     import ComputerOnlineIcon from "$lib/assets/computer-online.png"
     import ComputerOfflineIcon from "$lib/assets/computer-offline.png"
 	import { onMount } from "svelte";
     import DisabledIcon from "$lib/assets/disabled-computer.png"
-	import Ping from "@components/Computer/Ping.svelte";
+	import Ping from "$lib/components/computer/Ping.svelte";
 	import { PageStateClass } from "./state.svelte";
 
     let { data } : {data: {name: string}} = $props();

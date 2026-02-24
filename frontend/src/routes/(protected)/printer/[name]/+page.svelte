@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { copyToClip, type CopyState } from '$lib/helper/copy.svelte';
-	import { isLoggedIn } from '$lib/login';
-	import Printer from '@components/Cards/Printer.svelte';
-	import CopyButton from '@components/CopyButton.svelte';
-	import PageLoading from '@components/Loading-Animations/PageLoading.svelte';
-	import PrinterStatus from '@components/Printer/PrinterStatus.svelte';
-	import type { PrinterSimpleInfo } from '@t/printer';
+    import { Copy } from '$lib/types/copy';
+	import { isLoggedIn } from '$lib/stores/login';
+	import PrinterCard from '$lib/components/cards/Printer.svelte';
+	import CopyButton from '$lib/components/CopyButton.svelte';
+	import PageLoading from '$lib/components/loading/PageLoading.svelte';
+	import PrinterStatus from '$lib/components/printer/PrinterStatus.svelte';
+	import {Printer} from '$lib/types/printer';
 	import { onMount } from 'svelte';
 
-    let printer: PrinterSimpleInfo | null = $state(null)
+    let printer: Printer.CardInfo | null = $state(null)
     let isOnline: boolean = $state(false)
     let eRecordPrinter: boolean = $state(false)
-    let relatedPrinters: PrinterSimpleInfo[] = $state([])
+    let relatedPrinters: Printer.CardInfo[] = $state([])
     let loading: boolean = $state(true)
 
     let {
@@ -28,7 +28,7 @@
     })
 
 
-    let copyState: CopyState = $state({
+    let copyState: Copy.State = $state({
         copied: "",
         timeout: null
     })
@@ -61,7 +61,7 @@
         }
         
 
-        printer = await res.json() as PrinterSimpleInfo
+        printer = await res.json() as Printer.CardInfo
         loading = false
         res = await fetch(`http://localhost:8000/api/printer/ping/${printer.ip.replace(/_.*/, "")}`)
 
@@ -70,7 +70,7 @@
 
         res = await fetch(`http://localhost:8000/api/printer/related/${printer.ip.replace(/_.*/, "")}`)
 
-        relatedPrinters = await res.json() as PrinterSimpleInfo[]
+        relatedPrinters = await res.json() as Printer.CardInfo[]
 
     }
 
@@ -90,7 +90,7 @@
             <CopyButton label={"MODEL"} value={printer.model ? printer.model  : "NA"}/>
             {#if printer.ip}
                 {#if isOnline && !eRecordPrinter}
-                    <span><button onclick={() => copyToClip(printer ? printer.ip : "NA", copyState)}><b>IP: </b></button><a href={`http://${printer.ip.replace(/_.*/, "")}`}>{printer.ip != copyState.copied ? printer.ip : "Copied"}</a></span>
+                    <span><button onclick={() => Copy.ToClipboard(printer ? printer.ip : "NA", copyState)}><b>IP: </b></button><a href={`http://${printer.ip.replace(/_.*/, "")}`}>{printer.ip != copyState.copied ? printer.ip : "Copied"}</a></span>
                 {:else}
                     <CopyButton label={"IP"} value={printer.ip}/>
                 {/if}
@@ -106,7 +106,7 @@
                 <h1>Related Printers</h1>
                 {#each relatedPrinters as p, idx}
                     {#if printer.queue != p.queue}
-                        <Printer item={p} {idx}/>
+                        <PrinterCard item={p} {idx}/>
                     {/if}
                 {/each}
             </div>

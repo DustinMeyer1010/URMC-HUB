@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Creates the computer routes
 func computerRoutes(mux *mux.Router) {
 	routes := routes{
 		{

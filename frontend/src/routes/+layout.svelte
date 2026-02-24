@@ -2,9 +2,9 @@
 <script lang="ts">
 
 	import urmc from '$lib/assets/URMC.png';
-	import "../global.css"
+	import "$lib/styles/global.css"
 
-	import { theme } from "$lib/theme";
+	import { theme } from "$lib/stores/theme";
   	import { get } from "svelte/store";
 	get(theme);
 

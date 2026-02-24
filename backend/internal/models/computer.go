@@ -2,6 +2,7 @@ package models
 
 import "github.com/go-ldap/ldap/v3"
 
+// Simple info for the cards of computers
 type ComputerSimpleInfo struct {
 	Name            string `json:"name"`
 	OU              string `json:"ou"`
@@ -17,6 +18,7 @@ func ToComputerSimpleInfo(entry *ldap.Entry) ComputerSimpleInfo {
 	}
 }
 
+// Page information for printers
 type ComputerPageInfo struct {
 	ComputerInfo ComputerSimpleInfo `json:"computer_info"`
 	IsOnline     bool               `json:"is_online"`

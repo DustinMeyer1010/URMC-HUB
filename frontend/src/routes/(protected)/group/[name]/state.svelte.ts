@@ -1,4 +1,4 @@
-import type { Group } from "@t/group";
+import type { Group } from "$lib/types/group";
 
 export type Section = "ADD" | "REMOVE" | "MEMBERS"
 export const Sections: Section[] = [ "ADD", "REMOVE", "MEMBERS"]

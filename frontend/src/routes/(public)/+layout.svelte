@@ -8,7 +8,4 @@
 {@render children?.()}
 
 <style>
-	:root {
-		margin-top: 40px;
-	}
 </style>

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Info from '@components/Group/Info.svelte';
+	import Info from '$lib/components/group/Info.svelte';
 	import Nav from '../Nav.svelte';
 	import { GroupPageStateClass, Sections } from './state.svelte';
-	import Members from '@components/Group/Members.svelte';
-	import Add from '@components/Group/Add.svelte';
-	import Remove from '@components/Group/Remove.svelte';
+	import Members from '$lib/components/group/Members.svelte';
+	import Add from '$lib/components/group/Add.svelte';
+	import Remove from '$lib/components/group/Remove.svelte';
 
     let {
         data

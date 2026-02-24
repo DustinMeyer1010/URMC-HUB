@@ -1,7 +1,7 @@
 import { goto } from "$app/navigation";
 import { redirect } from "@sveltejs/kit";
 import type { Section } from "@t/section";
-import type { UserFullInfo } from "@t/user";
+import type { UserFullInfo } from "$lib/types/user";
 
 interface UserStateInterface {
     currentSection: Section,

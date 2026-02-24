@@ -1,4 +1,4 @@
-import type { Computer } from "@t/computer"
+import type { Computer } from "$lib/types/computer"
 
 export const EMPTY_COMPUTER_INFO: Computer.PageInfo = {
     computer_info: {

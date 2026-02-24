@@ -6,9 +6,9 @@
     import 'prismjs/components/prism-http';
 
     // === COMPONENTS ===
-    import Code from "@components/Docs/Code.svelte";
-	import Description from "@components/Docs/Description.svelte";
-	import Response from "@components/Docs/Response.svelte";
+    import Code from "$lib/components/docs/Code.svelte";
+	import Description from "$lib/components/docs/Description.svelte";
+	import Response from "$lib/components/docs/Response.svelte";
 
     // === CONSTANTS ===
     import { endpoint, information, response, responses } from "./details";
