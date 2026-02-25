@@ -10,6 +10,7 @@ import (
 func Create() *mux.Router {
 
 	mux := mux.NewRouter()
+	mux.UseEncodedPath()
 
 	// Add a function to list with the routes that need to be added
 	createRoutes(mux,

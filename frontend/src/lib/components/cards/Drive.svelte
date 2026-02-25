@@ -22,7 +22,7 @@
 <!-- * Renders the main content for the card-->
 <ul style="--delay: {Math.min(idx * 50, 2000)}ms">
     <CopyAllButton copyText={DriveState.CopyText} />
-    <a href={`/drive/${DriveState.SerializedSearch}`}> <img src={Icon} alt=""></a>
+    <a href={`/drive?name=${DriveState.SerializedSearch}`}> <img src={Icon} alt=""></a>
     <CopyButton value={DriveState.CurrentDrive.drive} fontSize={18} marginBottom={15}/>
     <CopyButton value={DriveState.CurrentDrive.local_path} label={"LOCAL_PATH"}/>
     {@render GroupsContent()}

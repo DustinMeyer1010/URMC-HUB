@@ -13,7 +13,7 @@ func driveRoutes(mux *mux.Router) {
 	routes := routes{
 		{
 			methods{"GET"},
-			"/api/group/{group}/members",
+			"/api/drive",
 			http.HandlerFunc(handlers.DriveInfo),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},

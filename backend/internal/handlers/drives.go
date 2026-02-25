@@ -2,8 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 )
@@ -41,5 +43,17 @@ func DriveAccess(w http.ResponseWriter, r *http.Request) {
 func DriveInfo(w http.ResponseWriter, r *http.Request) {
 
 	logger.LogRequestInfo(r.Method, r.URL.Path)
+	query := r.URL.Query()
 
+	drive := query.Get("drive")
+
+	fmt.Println(drive)
+
+	driveInfo := ad.GetShareDriveGroups(drive)
+
+	jsonData, _ := json.Marshal(driveInfo)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 }

@@ -4,6 +4,7 @@
 	import { Copy } from "$lib/types/copy";
 	import { onMount } from "svelte";
 	import { redirect } from "@sveltejs/kit";
+    import expired_password from "$lib/assets/expired-password.png"
     const notWantedAttributes = ["member_of", "name"]
 
 
@@ -45,10 +46,9 @@
 
 
 </script>
-        {#if passwordExpired} 
-            password is expired
-        {/if}
+
 <section >
+
     {#if user != null}
         {#if user.ou.toLocaleLowerCase().includes("disabled")}
             <h1 class="disabled"><img src={disabledIcon} alt=""/>Disabled Account</h1>
@@ -59,7 +59,13 @@
                 {#if !notWantedAttributes.includes(key[0].toLocaleLowerCase())}
                     <li>
                         <button onclick={() => Copy.ToClipboard(key[1] ? key[1] as string : "NA", copyState)}>
-                            <span><b>{key[0].toUpperCase()}: </b> </span>
+                            {#if key[0].toUpperCase() === "LAST_PASSWORD_SET" && passwordExpired}
+                                <img id="expired" src={expired_password} alt="">
+                                <span id="expired"><b>{key[0].toUpperCase()}: </b> </span>
+                            {:else}
+                                <span><b>{key[0].toUpperCase()}: </b> </span>
+                            {/if}
+                            
                             <span>
                                 {#if copyState.copied === key[1] && key[1] !== ""}
                                     Copied
@@ -92,7 +98,21 @@
         animation-delay: 50ms;
     }
 
+
+    span#expired {
+        color: var(--color-ad-disabled)
+    }
+
+
+    img#expired {
+        position: absolute;
+        top: -15px;
+        left: -15px;
+        width: 20px;
+    }
+
     button {
+        position: relative;
         background: none;
         border: none;
         color: var(--color-text);

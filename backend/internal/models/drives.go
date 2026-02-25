@@ -18,6 +18,12 @@ type DriveSimpleInfo struct {
 	LocalPath string   `json:"local_path"`
 }
 
+type DrivePageInfo struct {
+	Groups    []GroupSimpleInfo `json:"groups"`
+	Drive     string            `json:"drive"`
+	LocalPath string            `json:"local_path"`
+}
+
 type DriveAccess struct {
 	Groups []string `json:"groups"`
 	Drive  string   `json:"drive"`

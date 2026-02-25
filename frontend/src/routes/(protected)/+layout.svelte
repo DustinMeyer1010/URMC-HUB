@@ -8,8 +8,11 @@
 
     let { children } = $props();
 
+    let hasChecked = $state(false);
+
     onMount(() => {
         isLoggedIn.CheckStatus();
+        hasChecked = true;
 
         const interval = setInterval(() => {
             isLoggedIn.CheckStatus();
@@ -31,7 +34,7 @@
     
 </script>
 
-{#if !IsLoggedIn }
+{#if hasChecked && !IsLoggedIn }
     <div>
         <Login login={login} />
     </div>

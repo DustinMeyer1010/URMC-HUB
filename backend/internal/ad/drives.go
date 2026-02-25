@@ -1,6 +1,7 @@
 package ad
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
@@ -53,6 +54,7 @@ func checkForGroupMatch(searchValue string, groups []string) bool {
 	return false
 }
 
+// Returns collection of Group to the Drive that the specific group access to
 func GetGroupToDrivesMapping() (map[string][]string, *customError.Error) {
 	collection := make(map[string][]string)
 
@@ -73,6 +75,7 @@ func GetGroupToDrivesMapping() (map[string][]string, *customError.Error) {
 	return collection, nil
 }
 
+// Return collection of Drive to the Groups that give access to that drive
 func getDriveToGroupsMapping() (map[string][]string, *customError.Error) {
 	collection := make(map[string][]string)
 	scanner, file, err := openLogonServer()
@@ -106,7 +109,30 @@ func seperateGroupFromShareDrives(line string) (string, []string) {
 func seperateShareDrives(line string) []string {
 	line = strings.ReplaceAll(line, "~", "")
 	sharedrives := strings.Split(line, ",")
-
 	return sharedrives
+}
+
+func GetShareDriveGroups(drive string) models.DrivePageInfo {
+	drives, _ := SearchAllDrives(drive)
+	foundDrive := models.DriveSimpleInfo{}
+	result := models.DrivePageInfo{}
+
+	for _, cur := range drives {
+		if cur.Drive == drive {
+			foundDrive = cur
+		}
+	}
+
+	fmt.Println(foundDrive)
+
+	for _, group := range foundDrive.Groups {
+		groupInfo, _ := PullGroupInfo(group)
+		result.Groups = append(result.Groups, groupInfo)
+	}
+
+	result.Drive = foundDrive.Drive
+	result.LocalPath = foundDrive.LocalPath
+
+	return result
 
 }
