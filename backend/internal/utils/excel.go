@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	excel "github.com/xuri/excelize/v2"
 )
 
@@ -68,6 +69,34 @@ func createExcelFile(single []ad.BulkSearchResult, duplicates [][]ad.BulkSearchR
 		f.SetCellValue(sheetName, fmt.Sprintf("A%d", currentRow), "Search Value: ")
 		f.SetCellValue(sheetName, fmt.Sprintf("B%d", currentRow), n.Value)
 		currentRow += 1
+	}
+
+	return f
+
+}
+
+func CreateAllMembersExcel(members []models.UserSimpleInfo) *excel.File {
+
+	f := excel.NewFile()
+	sheetName := "Sheet1"
+
+	f.SetColWidth(sheetName, "A", "D", 50)
+
+	currentRow := 1
+
+	f.SetCellValue(sheetName, "A1", "Name")
+	f.SetCellValue(sheetName, "B1", "Username")
+	f.SetCellValue(sheetName, "C1", "NET_ID")
+	f.SetCellValue(sheetName, "D1", "EMAIL")
+	f.SetCellValue(sheetName, "D1", "OU")
+
+	for _, member := range members {
+		currentRow += 1
+		f.SetCellValue(sheetName, fmt.Sprintf("A%d", currentRow), member.Name)
+		f.SetCellValue(sheetName, fmt.Sprintf("B%d", currentRow), member.Username)
+		f.SetCellValue(sheetName, fmt.Sprintf("C%d", currentRow), member.NetID)
+		f.SetCellValue(sheetName, fmt.Sprintf("D%d", currentRow), member.Email)
+		f.SetCellValue(sheetName, fmt.Sprintf("E%d", currentRow), member.OU)
 	}
 
 	return f

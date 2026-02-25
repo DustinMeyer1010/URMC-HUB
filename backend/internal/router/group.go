@@ -35,6 +35,12 @@ func groupRoutes(mux *mux.Router) {
 			http.HandlerFunc(handlers.GetAllMembers),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
+		{
+			methods{"GET", "OPTION"},
+			"/api/group/{group}/members/excel",
+			http.HandlerFunc(handlers.GetAllMembersExcel),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
 	}
 
 	routes.add(mux)

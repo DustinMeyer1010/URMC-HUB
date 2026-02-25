@@ -12,6 +12,10 @@
     } = $props()
 
     let groupFiltered: any = $derived.by(() => {
+        if(driveInfo == undefined) {
+            return
+        }
+
         if (filterSearchValue == "") {
             return driveInfo.groups
         }

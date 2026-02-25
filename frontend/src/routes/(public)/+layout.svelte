@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Nav from '@components/Nav.svelte';
+	import Nav from '$lib/components/navigation/Nav.svelte';
 
 	let { children } = $props();
 </script>

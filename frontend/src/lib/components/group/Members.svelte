@@ -28,6 +28,22 @@
         await MembersState.GetMembers()
     })
 
+    const getExcelOfMembers = async () => {
+        await fetch(`http://localhost:8000/api/group/${group}/members/excel`)
+        .then(async (res) => {
+            const blob = await res.blob()
+            const downloadURL = window.URL.createObjectURL(blob)
+            const link = document.createElement('a');
+            link.href = downloadURL;
+            link.download = `${group}_Members.xlsx`; 
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(downloadURL);
+        })
+    }
+
 
 </script>
 
@@ -40,10 +56,12 @@
             <div class="paging-buttons">
                 <button onclick={MembersState.PrevPage}>-</button>
                 <button onclick={MembersState.NextPage}>+</button>
+                <button onclick={getExcelOfMembers}>Export to Excel</button>
                 <span>Page: {Math.ceil(MembersState.Page / 10)} / {Math.ceil(MembersState.MembersLength / 10)}</span>
                 <span>Total Members: {MembersState.MembersLength}</span>
             </div>
         </div>
+
         <div class="users">
             {#each MembersState.PagedMembers as member, idx}
                 <User item={member} idx={idx}/>
@@ -72,7 +90,7 @@
         color: var(--text-color);
         border-radius: 5px;
         align-self: center;
-        flex-grow: 1;
+        width: 50%;
     }
 
     div.users {
@@ -94,6 +112,7 @@
         justify-content: center;
         height: 100%;
         gap: 10px;
+        flex-grow: 1;
 
     }
 
@@ -116,7 +135,7 @@
 
     button {
         padding: 5px;
-        width: 200px;
+        flex-grow: 1;
         background: var(--color-surface);
         border: none;
         font-size: 20px;

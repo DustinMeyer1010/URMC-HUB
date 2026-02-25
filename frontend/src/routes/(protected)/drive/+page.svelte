@@ -6,8 +6,8 @@
 
     let driveInfo: any = $state(undefined)
     let filterSearchValue: string = $state("")
+        let drive: string = $state("")
 
-    let drive: string = page.url.searchParams.get("name") ?? ""
 
     let groupFiltered: any = $derived.by(() => {
         if (driveInfo == undefined) {
@@ -27,6 +27,7 @@
 
 
     onMount(async () => {
+        drive = page.url.searchParams.get("name") ?? ""
 
         await fetch(`http://localhost:8000/api/drive?drive=${encodeURIComponent(drive)}`)
         .then(async (res) => {

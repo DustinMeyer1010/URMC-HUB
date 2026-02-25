@@ -17,8 +17,7 @@ const config = {
 			pages: "build",
 			assets: "build",
 			fallback: '200.html',
-			precompress: false,
-			strict: true
+			precompress: false
 		}),
 		prerender: {
 			entries: [
@@ -26,6 +25,7 @@ const config = {
 				'/bookmarks/index', 
 				'/computer/index',
 				'/drive/index',
+				'/drive',
 				'/group/index',
 				'/user/index',
 				'/printer/index',
@@ -48,11 +48,7 @@ const config = {
 				'/api/user/remove-group',
 
 			]
-			},	
-			alias: {
-				'@t': './src/types',
-				'@components': './src/components',
-			},
+			}
 	}
 };
 

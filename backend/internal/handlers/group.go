@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
@@ -117,4 +119,30 @@ func PullGroupInfo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
+}
+
+func GetAllMembersExcel(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	group := vars["group"]
+
+	f := service.GetExcelOfAllMembers(group)
+
+	fmt.Println(group)
+	if f == nil {
+		http.Error(w, "EXCEL_GENERATION_FAILED", http.StatusInternalServerError)
+		return
+	}
+
+	buf := new(bytes.Buffer)
+
+	if err := f.Write(buf); err != nil {
+		http.Error(w, "EXCEL_GENERATION_FAILED", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s_Members.xlsx"`, group))
+	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(buf.Bytes())))
+	w.Write(buf.Bytes())
 }
