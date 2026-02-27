@@ -1,14 +1,51 @@
 import { Printer } from "$lib/types/printer";
 
-export class PrinterStateClass {
-    Printer: Printer.CardInfo = Printer.EMPTY_PRINTER
-    URLQuery: string = $derived(`${this.Printer.server}?queue=${this.Printer.queue}`)
-    CopyText: string =  $derived(`Name: \\\\${this.Printer.server}\\${this.Printer.queue}\nModel: ${this.Printer.model}\nIP: ${this.Printer.ip}\nPrint_Processor: ${this.Printer.print_processor}\nLocation: ${this.Printer.location}\nNotes: ${this.Printer.notes}`)
-    PrinterName: string = $derived(`\\\\${this.Printer.server}\\${this.Printer.queue}`)
-    Idx: number = $state(0)
 
-    constructor(printer: Printer.CardInfo, idx: number) {
-        this.Printer = printer
-        this.Idx = idx
+
+interface PrinterState {
+    server: string;
+    queue: string;
+    model: string;
+    ip: string;
+    print_processor: string;
+    location: string;
+    notes: string;
+    fullName: string;
+
+    pageLink: string;
+    copyTemplate: string
+}
+
+export class PrinterStateClass implements PrinterState {
+    server: string = "";
+    queue: string  = "";
+    model: string = "";
+    ip: string = "";
+    print_processor: string = "";
+    location: string = "";
+    notes: string = "";
+
+    readableNotes: string = $derived(this.notes.replace(/[,\s]+/g, ",").replace(/,$/, "").replaceAll(",", " - "))
+    fullName: string = $derived(`\\\\${this.server}\\${this.queue}`)
+
+    pageLink: string = $derived.by(() => {
+        return `/printer/${this.server}?queue=${this.queue}`
+    })
+
+    copyTemplate: string = $derived.by(() => {
+        const name = `Name = ${this.fullName}`
+        const model = `Model = ${this.model || "NA"}`
+        const ip = `Model = ${this.ip || "NA"}`
+        const print_processor = `Processor = ${this.print_processor || "NA"}`
+        const location = `Location = ${this.location || "NA"}`
+        return `${name}\n${model}\n${ip}\n${print_processor}\n${location}\n${this.readableNotes}`
+    })
+
+
+    constructor(printer: Printer.CardInfo) {
+        Object.assign(this, printer)
     }
 }   
+
+
+

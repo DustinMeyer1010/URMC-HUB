@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { Copy } from "$lib/types/copy";
     import Icon from "$lib/assets/copy-color-text.png"
-    let { copyText } : {copyText: string} = $props()
+    let { copyTemplate } : {copyTemplate: string} = $props()
 
-let copyState: Copy.State = $state(Copy.EMPTY_COPY_STATE)
+    let copyState: Copy.State = $state(Copy.EMPTY_COPY_STATE)
 
 </script>
 
-{#if copyState.copied != copyText}
-    <button class="copy-all" title="Copy All" onclick={() => Copy.ToClipboard(copyText, copyState)}><img src={Icon} alt="Copy All"></button>
+{#if copyState.copied != copyTemplate}
+    <button class="copy-all" title="Copy All" onclick={() => Copy.ToClipboard(copyTemplate, copyState)}><img src={Icon} alt="Copy All"></button>
 {:else}
     <span class="copied-all">ALL COPIED</span>
 {/if}
@@ -70,3 +70,4 @@ let copyState: Copy.State = $state(Copy.EMPTY_COPY_STATE)
         outline: none;
     }
 </style>
+

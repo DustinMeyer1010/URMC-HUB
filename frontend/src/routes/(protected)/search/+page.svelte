@@ -12,7 +12,7 @@
     let SearchState: SearchStateClass = new SearchStateClass()
 
 
-    onMount(() => {
+    onMount(async () => {
         SearchState.GetURLParams()
         SearchState.SwitchFilter(SearchState.filter)
         SearchState.Search()

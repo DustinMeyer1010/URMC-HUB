@@ -4,17 +4,16 @@
  
 
     let copyState: Copy.State = $state(Copy.EMPTY_COPY_STATE)
+    type kind = "title" | "list-item"
 
     let {
         value,
         label = "",
-        fontSize = 15,
-        marginBottom = 0
+        category = "list-item",
     } : {
         value: string
         label?: string
-        fontSize?: number
-        marginBottom?: number
+        category?: kind
     } = $props()
 
     label = label.toUpperCase()
@@ -22,40 +21,39 @@
 
 </script>
 
-
-
-<button style={`--margin-bottom: ${marginBottom}px`} onclick={() => Copy.ToClipboard(value, copyState)}>
-    {#if label != ""}
-    <b style="--font-size: {fontSize}px">{label}:</b>
+<button id={category} onclick={() => Copy.ToClipboard(value, copyState)}>
+    {#if category == "title"}
+        <b id={category}>{value == copyState.copied ? "Copied" : value}</b>
+    {:else}
+        <span>
+            <b id={category}>{label}:</b>
+            <span>{value == copyState.copied ? "Copied" : value}</span>
+        </span>
     {/if}
-    <span style="--font-size: {fontSize}px" class:header={label == ""}>{value == copyState.copied ? "Copied" : value}</span>
 </button>
 
 
 
 
 <style>
-    b {
-        font-size: var(--font-size);
+
+    button#title {
+        margin-bottom: 0.5rem;
+        font-size: 18px;
     }
 
     button {
         margin: 0;
+        padding: 0.2rem;
         margin-bottom: var(--margin-bottom);
         background: transparent;
         border: none; 
-        padding: 0;
         color: var(--color-text);
         text-align: left;
-        font-size: var(--font-size);
+        font-size: 15px;
         font-family: Roboto;
-        word-break: break-all;
+        word-break: keep-all;
         width: 100%;
-    }
-
-    span.header {
-        font-size: var(--font-size);
-        font-weight: bold;
     }
 
     @media (max-width: 350px) {

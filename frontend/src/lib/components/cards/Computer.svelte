@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Computer } from "$lib/types/computer";
+    import { Computer } from "$lib/types/computer";
     import goToIcon from '$lib/assets/double-left-arrow-primary.png';
     import disabledIcon from '$lib/assets/disabled-computer.png'
 	import { ComputerStateClass } from "./states/ComputerState.svelte";
@@ -14,35 +14,45 @@
         idx: number
     } = $props()
 
-    let ComputerState: ComputerStateClass = new ComputerStateClass(
-        item.ou.toLowerCase().includes("disabled"),
-        `Name: ${item.name}\nOU: ${item.ou}\nOS: ${item.operating_system}`
-    )
+    let ComputerState: ComputerStateClass = new ComputerStateClass(item)
 
 </script>
 
-<ul class:disabled={ComputerState.Disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
-    {@render DisabledContent()}
-    <CopyButton value={item.name} fontSize={18} marginBottom={15}/>
-    <CopyAllButton copyText={ComputerState.AllText} />
-    <a href={`/computer/${item.name}`}> <img src={goToIcon} alt=""></a>
-    {@render ObjectContent()}
-</ul>
+<div class:disabled={ComputerState.disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
+    <CopyAllButton copyTemplate={ComputerState.copyTemplate} />
+    {@render DisabledTag()}
+    {@render Link()}
+    {@render Content()}
+</div>
+
+<!-- TODO: Change over to query link rather than endpoint link-->
+{#snippet Link()}
+    <a href={ComputerState.pageLink}> 
+        <img src={goToIcon} alt="">
+    </a>
+{/snippet}
 
 
-{#snippet DisabledContent()}
-    {#if ComputerState.Disabled}
-        <span class="disabled"><img src={disabledIcon} alt="">Computer Disabled</span>
+{#snippet DisabledTag()} 
+    {#if ComputerState.disabled}
+        <span class="disabled">
+            <img src={disabledIcon} alt="">
+            Computer Disabled
+        </span>
     {/if}
 {/snippet}
 
 
-{#snippet ObjectContent()}
-    {#each Object.entries(item).slice(1) as key}
-        {#if key[1]}
-            <CopyButton value={key[1]} label={key[0]}/>
-        {/if}
-    {/each}
+{#snippet Content()}
+    {#if ComputerState.name}
+        <CopyButton value={ComputerState.name} category={"title"}/>
+    {/if}
+    {#if ComputerState.ou}
+        <CopyButton value={ComputerState.ou} label={"OU"}/>
+    {/if}
+    {#if ComputerState.operating_system}
+        <CopyButton value={ComputerState.operating_system} label={"OPERATING_SYSTEM"}/>
+    {/if}
 {/snippet}
 
 <style >
@@ -69,7 +79,7 @@
     }
 
 
-    ul {
+    div {
         display: flex;
         flex-direction: column;
         word-break: break-all;
@@ -113,7 +123,7 @@
     }
 
     @media (max-width: 800px) {
-        ul.disabled {
+        div.disabled {
             padding-bottom: 3rem;
         }
 
@@ -127,7 +137,7 @@
 
     @media (max-width: 400px) {
 
-        ul {
+        div {
             padding-right: 1rem;
 
         }

@@ -1,4 +1,11 @@
 export namespace Computer {
+
+    export const EMPTY_CARDINFO: CardInfo = {
+        name: "",
+        ou: "",
+        operating_system: ""
+    }
+
     export type CardInfo = {
         name: string,
         ou: string,

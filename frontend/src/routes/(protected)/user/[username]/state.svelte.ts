@@ -1,22 +1,21 @@
 import { goto } from "$app/navigation";
 import { redirect } from "@sveltejs/kit";
-import type { Section } from "@t/section";
-import type { UserFullInfo } from "$lib/types/user";
+import { User } from "$lib/types/user";
 
 interface UserStateInterface {
-    currentSection: Section,
+    currentSection: User.Section,
     loading: boolean,
-    SwapSections: (section: Section) => void
+    SwapSections: (section: User.Section) => void
     SetURL: () => void
 }
 
 export class UserStateClass implements UserStateInterface {
-    currentSection: Section = $state("PROFILE");
+    currentSection: User.Section = $state("PROFILE");
     loading: boolean = $state(true)
-    pageData: UserFullInfo | null = $state(null)
+    pageData: User.PageInfo | null = $state(null)
 
 
-    SwapSections = (section: Section) => {
+    SwapSections = (section: User.Section) => {
         this.currentSection = section
         this.SetURL()
     };
@@ -25,7 +24,7 @@ export class UserStateClass implements UserStateInterface {
         goto(`?section=${this.currentSection}`, { replaceState: true, keepFocus: true, noScroll: true })
     }
 
-    UserFullInfo = async (username: string): Promise<UserFullInfo> => {
+    UserFullInfo = async (username: string): Promise<User.PageInfo> => {
 
         const response: Response = await fetch(`http://localhost:8000/api/user/${username}`);
 
@@ -33,7 +32,7 @@ export class UserStateClass implements UserStateInterface {
             throw redirect(301, "/search")
         }
 
-        const data: UserFullInfo = await response.json();
+        const data: User.PageInfo = await response.json();
 
         return data
 

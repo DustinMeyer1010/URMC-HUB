@@ -1,25 +1,41 @@
-import { Copy } from "$lib/types/copy"
+
+import {Computer} from "$lib/types/computer";
+import { readableOU } from "$lib/utils/stringEditor";
+
 
 interface ComputerState {
-    CopyState: Copy.State
-    Disabled: boolean
-    AllText: string
+    name: string
+    ou: string
+    operating_system: string
+
+    disabled: boolean
+    readableOU: string
+    copyTemplate: string
+    pageLink: string
 }
 
 export class ComputerStateClass implements ComputerState {
-    CopyState: Copy.State = $state(
-        {
-            copied: "",
-            timeout: null
-        }
-    )
+    name: string = ""
+    ou: string = ""
+    operating_system: string = ""
 
-    constructor(disabled: boolean, allText: string) {
-        this.Disabled = disabled
-        this.AllText = allText
+    disabled: boolean = $derived(this.ou.toLowerCase().includes("disabled"))
+
+    readableOU: string = $derived(readableOU(this.ou))
+
+    pageLink: string = $derived.by(() => {
+        return `/computer/${this.name}`
+    })
+
+
+    copyTemplate: string = $derived.by(() => {
+        const osSuffix = this.operating_system ? ` (${this.operating_system})` : ""
+        const status = this.disabled ? "Disabled " : ""
+        return `Hostname = ${this.name}${osSuffix}\n${status}OU = ${this.readableOU}`
+    })
+
+
+    constructor(computer: Computer.CardInfo) {
+        Object.assign(this, computer)
     }
-
-
-    Disabled: boolean = $state(false)
-    AllText: string = $state("")
 }

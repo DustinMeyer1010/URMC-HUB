@@ -6,6 +6,7 @@
 	import type { Snippet } from "svelte";
 	import { GroupStateClass } from "./states/GroupState.svelte";
 
+
     let {
         item,
         idx,
@@ -16,33 +17,43 @@
         children?: Snippet
     } = $props()
 
-    let GroupState: GroupStateClass = new GroupStateClass(item, idx)
+    let GroupState: GroupStateClass = new GroupStateClass(item)
+
 
 </script>
 
 <!-- * Renders the content of the Card -->
-<ul class:disabled={GroupState.CurrentGroup.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(GroupState.Idx * 50, 2000)}ms">
-    <a href={`/group/${GroupState.CurrentGroup.name}`}> <img src={Icon} alt=""></a>
-    <CopyButton value={GroupState.CurrentGroup.name} fontSize={18} marginBottom={15}/>
-    <CopyAllButton copyText={GroupState.CopyText}/>
-    {@render ObjectContent()}
-    {#if children}
-        {@render children()}
-    {/if}
-</ul>
+<div class:disabled={GroupState.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(idx * 50, 2000)}ms">
+    <CopyAllButton copyTemplate={GroupState.copyTemplate}/>
+    {@render Link()}
+    {@render Content()}
+    {@render children?.()}
+</div>
 
-<!-- * Renders the object information in copy format -->
-{#snippet ObjectContent()}
-    {#each Object.entries(GroupState.CurrentGroup).slice(1) as key}
-        {#if key[1]}
-            <CopyButton value={key[1]} label={key[0].toUpperCase()}/>
-        {/if}
-    {/each}
+<!-- * Creates the link to the group page -->
+{#snippet Link()}
+    <a href={GroupState.pageLink}> 
+        <img src={Icon} alt="">
+    </a>
+{/snippet}
+
+<!-- * Creates the content of the card -->
+{#snippet Content()}
+    <CopyButton value={GroupState.name} category={"title"}/>
+    {#if GroupState.information}
+        <CopyButton value={GroupState.information} label={"INFORMATION"}/>
+    {/if}
+    {#if GroupState.description}
+        <CopyButton value={GroupState.description} label={"DESCRIPTION"}/>
+    {/if}
+    {#if GroupState.readableOU}
+        <CopyButton value={GroupState.readableOU} label={"OU"}/>
+    {/if}
 {/snippet}
 
 
 <style >
-    ul.disabled {
+    div.disabled {
         color: var(--color-ad-disabled)
     }
 
@@ -51,7 +62,7 @@
     }
 
 
-    ul {
+    div {
         display: flex;
         flex-direction: column;
         word-break: break-all;
@@ -96,7 +107,7 @@
 
     @media (max-width: 400px) {
 
-        ul {
+        div {
             padding-right: 1rem;
 
         }

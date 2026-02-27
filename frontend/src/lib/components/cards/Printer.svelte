@@ -14,28 +14,45 @@
         idx: number
     } = $props()
 
-    let PrinterState: PrinterStateClass = new PrinterStateClass(item, idx)
+    let PrinterState: PrinterStateClass = new PrinterStateClass(item)
 
 </script>
 
 
 <!-- * Renders main content -->
-<ul style="--delay: {Math.min(PrinterState.Idx * 50, 2000)}ms">
-    <CopyAllButton copyText={PrinterState.CopyText} />
-    <a href={`/printer/${PrinterState.URLQuery}`}> <img src={Icon} alt=""></a>
-    <CopyButton value={PrinterState.PrinterName} fontSize={15} marginBottom={15}/>
-    {@render ObjectContent()}
-</ul>
+<div style="--delay: {Math.min(idx * 50, 2000)}ms">
+    <CopyAllButton copyTemplate={PrinterState.copyTemplate} />
+    {@render Link()}
+    {@render Content()}
+</div>
+
+
+{#snippet Link()}
+    <a href={PrinterState.pageLink}> 
+        <img src={Icon} alt="">
+    </a>
+{/snippet}
 
 
 <!-- * Renders the object information in copy format -->
-<!-- NOTE: Slice starts at two to skip server & queue -->
-{#snippet ObjectContent()}
-    {#each Object.entries(PrinterState.Printer).slice(2) as key}
-        {#if key[1]}
-            <CopyButton value={key[1]} label={key[0]} />
-        {/if}
-    {/each}
+{#snippet Content()}
+    <CopyButton value={PrinterState.fullName} category={"title"}/>
+    {#if PrinterState.model} 
+        <CopyButton value={PrinterState.model} label={"MODEL"}/>
+    {/if}
+    {#if PrinterState.ip} 
+        <CopyButton value={PrinterState.ip} label={"IP"}/>
+    {/if}
+    {#if PrinterState.print_processor} 
+        <CopyButton value={PrinterState.print_processor} label={"PROCESSOR"}/>
+    {/if}
+    {#if PrinterState.location} 
+        <CopyButton value={PrinterState.location} label={"LOCATION"}/>
+    {/if}
+    {#if PrinterState.notes} 
+        <CopyButton value={PrinterState.readableNotes} label={"NOTES"}/>
+    {/if}
+    
 {/snippet}
 
 
@@ -66,7 +83,7 @@
         transform: rotate(130deg) translate(-3px, -1px);
     }
 
-    ul {
+    div {
         display: flex;
         flex-direction: column;
         word-break: break-all;
@@ -89,7 +106,7 @@
 
     @media (max-width: 400px) {
 
-        ul {
+        div {
             padding-right: 1rem;
 
         }

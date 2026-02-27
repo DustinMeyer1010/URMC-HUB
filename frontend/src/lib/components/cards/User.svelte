@@ -7,6 +7,7 @@
 	import CopyButton from "../buttons/CopyButton.svelte";
 	import CopyAllButton from "../buttons/CopyAllButton.svelte";
 	import type { Snippet } from "svelte";
+	import { UserStateClass } from "./states/User.svelte";
 
     let {
         item,
@@ -18,28 +19,23 @@
         children?: Snippet
     } = $props();
 
-    const copyText: string = `Name: ${item.name}\nUsername: ${item.username}\nNet_ID: ${item.net_id}\nURID: ${item.urid}\nEmail: ${item.email}\nOU: ${item.ou}\n`;
-    const disabled = item.ou.toLowerCase().includes("disabled") || item.ou.toLocaleLowerCase().includes("offboarded")
+    let UserState: UserStateClass = new UserStateClass(item)
+
+
 </script>
 
 <!-- * Renders the main content -->
-<ul class:disabled={disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton {copyText} />
-    {#if item.name}
-        <CopyButton value={item.name} fontSize={18} marginBottom={15}/>
-    {/if}
-    {@render DisabledContent()}
-    {@render LinkToUserPage()}
-
-    {@render ObjectContent()}
-    {#if children}
-        {@render children()}
-    {/if}
+<ul class:disabled={UserState.disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
+    <CopyAllButton copyTemplate={UserState.copyTemplate} />
+    {@render Disabled()}
+    {@render Link()}
+    {@render Content()}
+    {@render children?.()}
 </ul>
 
 <!-- * Renders the disabled contnent if object return is disabled -->
-{#snippet DisabledContent()}
-    {#if disabled}
+{#snippet Disabled()}
+    {#if UserState.disabled}
         <span class="disabled"><img src={disabledIcon} alt="">Disabled Account</span>
     {/if}
 {/snippet}
@@ -47,19 +43,33 @@
 <!-- Refactor: This should be done based on the DN rather than a person username -->
 <!-- * Renders a link to users page -->
 <!-- Note: If user does not have username user page will not working so no link is generated -->
-{#snippet LinkToUserPage()}
-    {#if item.username != ""}
-        <a href={`/user/${item.username}`}> <img src={Icon} alt=""></a>
+{#snippet Link()}
+    {#if UserState.username != ""}
+        <a href={UserState.pageLink}> <img src={Icon} alt=""></a>
     {/if}
 {/snippet}
 
 <!-- * Renders object information with each value being able to be copied -->
-{#snippet ObjectContent()}
-    {#each Object.entries(item).slice(1) as key}
-        {#if key[1]}
-            <CopyButton value={key[1]} label={key[0]}/>
-        {/if}
-    {/each}
+{#snippet Content()}
+    {#if UserState.name}
+        <CopyButton value={UserState.name} category={"title"}/>
+    {/if}
+    {#if UserState.username}
+        <CopyButton value={UserState.username} label={"USERNAME"}/>
+    {/if}
+    {#if UserState.net_id}
+        <CopyButton value={UserState.net_id} label={"NETID"}/>
+    {/if}
+    {#if UserState.urid}
+        <CopyButton value={UserState.urid} label={"URID"}/>
+    {/if}
+    {#if UserState.email}
+        <CopyButton value={UserState.email} label={"EMAIL"}/>
+    {/if}
+    {#if UserState.readableOU}
+        <CopyButton value={UserState.readableOU} label={"OU"}/>
+    {/if}
+
 {/snippet}
 
 
