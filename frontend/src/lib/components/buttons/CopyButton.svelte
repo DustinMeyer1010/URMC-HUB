@@ -4,7 +4,7 @@
  
 
     let copyState: Copy.State = $state(Copy.EMPTY_COPY_STATE)
-    type kind = "title" | "list-item"
+    type kind = "title" | "list-item" | "drive-group"
 
     let {
         value,
@@ -21,8 +21,8 @@
 
 </script>
 
-<button id={category} onclick={() => Copy.ToClipboard(value, copyState)}>
-    {#if category == "title"}
+<button id={category} onclick={() => Copy.ToClipboard(value, copyState)} title="Click to Copy">
+    {#if category == "title" || category == "drive-group"}
         <b id={category}>{value == copyState.copied ? "Copied" : value}</b>
     {:else}
         <span>
@@ -42,7 +42,18 @@
         font-size: 18px;
     }
 
+
+    b#drive-group {
+        margin-bottom: 0.5rem;
+        font-size: 15px;
+    }
+
+    button:hover {
+        color: var(--color-primary-hover)
+    }
+
     button {
+        font-size: 15px;
         margin: 0;
         padding: 0.2rem;
         margin-bottom: var(--margin-bottom);
@@ -50,10 +61,11 @@
         border: none; 
         color: var(--color-text);
         text-align: left;
-        font-size: 15px;
+
         font-family: Roboto;
         word-break: keep-all;
         width: 100%;
+        transition: 0.3s;
     }
 
     @media (max-width: 350px) {

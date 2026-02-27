@@ -1,26 +1,43 @@
 import { Drive } from "$lib/types/drive"
 import { Copy } from "$lib/types/copy"
 
-export class DriveStateClass {
-    SearchValue: string = $state("")
-    Idx: number = $state(0)
-    CurrentDrive: Drive.CardInfo = $state(Drive.EMPTY_DRIVE_CARD)
-    CopyState: Copy.State = $state(Copy.EMPTY_COPY_STATE)
+interface DriveState {
+    groups: string[];
+    drive: string;
+    local_path: string;
+    pageLink: string
+    filteredGroups: string[];
+    copyTemplate: string;
+}
 
-    Groups: string[] = $derived.by(() => {
-        if (!this.SearchValue) {
-            return this.CurrentDrive.groups
+export class DriveStateClass implements DriveState {
+    groups: string[] = []
+    drive: string = ""
+    local_path: string = ""
+    searchValue: string = $state("")
+
+    pageLink: string = $derived(`/drive?name=${encodeURIComponent(this.drive)}`)
+
+    filteredGroups: string[] = $derived.by(() => {
+        if (!this.searchValue) {
+            return this.groups
         }
-        return this.CurrentDrive.groups.filter((group) => group.toUpperCase().includes(this.SearchValue.toUpperCase()))
+
+
+        return this.groups.filter((group) => {
+            return group.toUpperCase().includes(this.searchValue.toUpperCase())
+        })
     })
 
-    SerializedSearch: string = $derived(encodeURIComponent(this.CurrentDrive.drive))
+    copyTemplate: string = $derived.by(() => {
+        const name: string = `Name = ${this.drive}`
+        const localPath: string = `Local_Path = ${this.local_path}`
+        const groups: string = `Groups: \n\n${this.filteredGroups.join("\n")}`
+        return `${name}\n${localPath}\n\n${groups}`
+    })
 
-    CopyText: string = $derived(`Name: ${this.CurrentDrive.drive}\nLocal_Path: ${this.CurrentDrive.local_path}\nGroups:\n${this.CurrentDrive.groups.join("\n")}`);
-    
-    constructor(idx: number, currentDrive: Drive.CardInfo) {
-        this.Idx = idx
-        this.CurrentDrive = currentDrive
+    constructor(drive: Drive.CardInfo) {
+        Object.assign(this, drive)
     }
 
-}
+};

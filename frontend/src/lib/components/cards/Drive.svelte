@@ -1,8 +1,6 @@
 <script lang="ts">
-    import { Copy } from '$lib/types/copy';
     import Icon from '$lib/assets/double-left-arrow-primary.png';
 	import { Drive } from "$lib/types/drive";
-	import { blur } from 'svelte/transition';
 	import CopyAllButton from '../buttons/CopyAllButton.svelte';
 	import CopyButton from "../buttons/CopyButton.svelte";
 	import { DriveStateClass } from './states/DriveState.svelte';
@@ -15,42 +13,46 @@
         idx: number
     } = $props()
 
-    let DriveState: DriveStateClass = new DriveStateClass(idx, item)
+    let DriveState: DriveStateClass = new DriveStateClass(item)
 
 </script>
 
 <!-- * Renders the main content for the card-->
-<ul style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton copyTemplate={DriveState.CopyText} />
-    <a href={`/drive?name=${DriveState.SerializedSearch}`}> <img src={Icon} alt=""></a>
-    <CopyButton value={DriveState.CurrentDrive.drive} category={"title"}/>
-    <CopyButton value={DriveState.CurrentDrive.local_path} label={"LOCAL_PATH"}/>
-    {@render GroupsContent()}
-</ul>
+<div id="card" style="--delay: {Math.min(idx * 50, 2000)}ms">
+    <CopyAllButton copyTemplate={DriveState.copyTemplate} />
+    {@render Link()}
+    {@render Content()}
+</div>
+
+
+{#snippet Link()}
+        <a href={DriveState.pageLink}> 
+            <img src={Icon} alt="">
+        </a>
+{/snippet}
+
+{#snippet Content()}
+    <CopyButton value={DriveState.drive} category={"title"}/>
+    <CopyButton value={DriveState.local_path} label={"LOCAL_PATH"}/>
+    {@render Groups()}
+{/snippet}
 
 
 <!-- * Renders the Groups for the drive-->
-{#snippet GroupsContent()}
-    <li>
+{#snippet Groups()}
+    <section id="groups">
         GROUPS: 
         <!-- Note: If more than 10 groups then you can search for specific group by name-->
-        {#if DriveState.CurrentDrive.groups.length >= 10}
-            <input placeholder="Search For Group" bind:value={DriveState.SearchValue}/> 
+        {#if DriveState.groups.length >= 10}
+            <input placeholder="Search For Group" bind:value={DriveState.searchValue}/> 
         {/if}
-        <div >
+        <div id="groups" >
             <!-- Note: Each group is transitioned in and can be copied -->
-            {#each DriveState.CurrentDrive.groups as group,i }
-                <button 
-                    class:active={DriveState.CopyState.copied === group} 
-                    onclick={() => Copy.ToClipboard(group, DriveState.CopyState)} 
-                    out:blur={{ duration: 200}} 
-                    class="group-button" 
-                    style="--delay: {Math.min(i * 20, 2000)}ms">
-                        {DriveState.CopyState.copied === group ? `Copied` : group}
-                </button>
+            {#each DriveState.filteredGroups as group,i }
+                <CopyButton value={group} category={"drive-group"}></CopyButton>
             {/each}
         </div>
-    </li>
+    </section>
 {/snippet}
 
 <style >
@@ -64,16 +66,12 @@
     }
 
 
-    button.active {
-        color: var(--color-primary-focus);
-
-    }
 
     input:focus {
         outline: none;
     }
 
-    div {
+    div#groups {
         display: flex;
         gap: 0.5rem;
         transition: 0.5s ease;
@@ -92,35 +90,7 @@
     }
 
 
-
-    button.group-button {
-        padding: 0.5rem 0.6rem;
-        background: var(--color-bg-opacity-50);
-        border-radius: 20px;
-        font-size: 12px;
-        animation: 0.3s fillin forwards;
-        animation-delay: var(--delay);
-        opacity: 0;
-    }
-
-    
-    button {
-        background: none;
-        border: none;
-        padding: 0;
-        font: inherit;
-        color: inherit;
-        cursor: pointer;
-    }
-
-    button:focus,
-    button:active{
-        outline: none;
-    }
-
-
-
-    ul {
+    div#card {
         display: flex;
         flex-direction: column;
         word-break: break-all;
@@ -164,27 +134,12 @@
     }
 
 
-    li {
+    section#groups {
         text-align: left;
     }
 
-    button {
-        background: none;
-        border: none;
-        padding: 0;
-        font: inherit;
-        color: inherit;
-        cursor: pointer;
-    }
-
-    button:active,
-    button:focus { 
-        border:none;
-        outline: none;
-    }
-
     @media (max-width: 400px) {
-        ul {
+        div {
             padding-right: 1rem;
 
         }

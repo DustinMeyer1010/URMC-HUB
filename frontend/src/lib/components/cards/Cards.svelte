@@ -30,11 +30,11 @@
 </script>
 
 <div>
-        {#each FilterMap[filter].items as item, idx}
-            <Card item={item} idx={idx} />
-        {:else}
-            {@render NotFound(filter)}
-        {/each}
+    {#each FilterMap[filter].items as item, idx}
+        <Card item={item} idx={idx} />
+    {:else}
+        {@render NotFound(filter)}
+    {/each}
 </div>
 
 

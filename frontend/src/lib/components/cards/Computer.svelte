@@ -48,7 +48,7 @@
         <CopyButton value={ComputerState.name} category={"title"}/>
     {/if}
     {#if ComputerState.ou}
-        <CopyButton value={ComputerState.ou} label={"OU"}/>
+        <CopyButton value={ComputerState.readableOU} label={"OU"}/>
     {/if}
     {#if ComputerState.operating_system}
         <CopyButton value={ComputerState.operating_system} label={"OPERATING_SYSTEM"}/>
