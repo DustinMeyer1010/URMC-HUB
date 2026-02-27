@@ -51,21 +51,43 @@ func startGoRouteSearch(search string, ch chan any) {
 
 	wg.Add(5)
 	go thread(&wg, ch, func() any {
-		result, err := SearchAllComputers(search)
+		result, err := SearchAllComputers(
+			search,
+			FULL_NAME,
+			DISTINGUISHED_NAME,
+			OPERATING_SYSTEM,
+		)
 		if err != nil {
 			return make([]models.ComputerSimpleInfo, 0)
 		}
 		return result
 	})
 	go thread(&wg, ch, func() any {
-		result, err := SearchAllUsers(search)
+		result, err := SearchAllUsers(
+			search,
+			COMMON_NAME,
+			FULL_NAME,
+			USERNAME,
+			NETID,
+			EMAIL,
+			URID,
+			DISTINGUISHED_NAME,
+		)
 		if err != nil {
 			return make([]models.UserSimpleInfo, 0)
 		}
 		return result
 	})
+
 	go thread(&wg, ch, func() any {
-		result, err := SearchAllGroups(search)
+		result, err := SearchAllGroups(
+			search,
+			COMMON_NAME,
+			DISTINGUISHED_NAME,
+			USERNAME,
+			DESCRIPTION,
+			INFORMATION,
+		)
 		if err != nil {
 			return make([]models.GroupSimpleInfo, 0)
 		}

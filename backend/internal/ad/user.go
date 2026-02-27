@@ -11,45 +11,43 @@ import (
 	"github.com/go-ldap/ldap/v3"
 )
 
-func SearchAllUsers(searchValue string) ([]models.UserSimpleInfo, *customError.Error) {
+func LookupUserByDN(userDN string, attrs ...attribute) (map[attribute]string, *customError.Error) {
 
-	matches := make([]models.UserSimpleInfo, 0)
+	config := SearchConfig(
+		"(objectClass=user)",
+		attrs...,
+	)
+	config.BaseDN = userDN
+	// ! Handle Error
+	sr, _ := config.Search()
 
-	l, cError := connectToLDAP()
+	var entry *ldap.Entry
 
-	if cError != nil {
-		return matches, cError
+	if len(sr.Entries) > 0 {
+		entry = sr.Entries[0]
+	} else {
+		fmt.Println("No user found at that DN.")
 	}
 
-	defer l.Close()
-	defer l.Unbind()
+	return createAttrToValueMapping(entry, attrs...), nil
 
+}
+
+func SearchAllUsers(searchValue string, attr ...attribute) ([]models.UserSimpleInfo, *customError.Error) {
+
+	matches := make([]models.UserSimpleInfo, 0)
 	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
-
 	filter := fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue)
 
 	ldapConfig := SearchConfig(
 		filter,
-		"cn",
-		"name",
-		"sAMAccountName",
-		"distinguishedName",
-		"uid",
-		"mail",
-		"urid",
+		attr...,
 	)
 
-	results, ldapError := ldapConfig.Search(l)
+	results, ldapError := ldapConfig.Search()
 
-	if ldapError != nil {
-		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
-		return matches, &cError
-	}
-
-	if results == nil || len(results.Entries) == 0 {
-		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO USERS FOUND FOR: %s", searchValue))
-		return matches, &cError
+	if cError := checkSearchErrors(ldapError, results); cError != nil {
+		return matches, cError
 	}
 
 	for _, entry := range results.Entries {
@@ -61,7 +59,7 @@ func SearchAllUsers(searchValue string) ([]models.UserSimpleInfo, *customError.E
 	return matches, nil
 }
 
-func PullUserInformation(searchValue string) (models.UserFullInfo, *customError.Error) {
+func PullUserInformation(searchValue string, attr ...attribute) (models.UserFullInfo, *customError.Error) {
 
 	var user models.UserFullInfo
 
@@ -70,11 +68,8 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, *customError.
 
 	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
 
-	results, ldapError := SearchAllByCategory(
-		catagory,
-		attribute,
-		searchValue,
-		"cn",
+	/*
+			"cn",
 		"name",
 		"sAMAccountName",
 		"distinguishedName",
@@ -90,6 +85,13 @@ func PullUserInformation(searchValue string) (models.UserFullInfo, *customError.
 		"givenName",
 		"URRoleStatus",
 		"sn",
+	*/
+
+	results, ldapError := SearchAllByCategory(
+		catagory,
+		attribute,
+		searchValue,
+		attr...,
 	)
 
 	if ldapError != nil {
@@ -117,7 +119,7 @@ func PullUserMembersOf(username string) ([]models.GroupSimpleInfo, *customError.
 		catagory,
 		attribute,
 		username,
-		"memberOf",
+		MEMBER_OF,
 	)
 
 	if ldapError != nil {
@@ -270,7 +272,7 @@ func GetUsersDN(users []string) (map[string]string, *customError.Error) {
 	defer l.Unbind()
 
 	for _, user := range users {
-		results, ldapError := SearchByCategory("user", "SAMaccountName", user, "dn")
+		results, ldapError := SearchByCategory("user", "SAMaccountName", user, DISTINGUISHED_NAME)
 
 		if ldapError != nil {
 			logger.Error(ldapError)
@@ -290,23 +292,27 @@ func GetUsersDN(users []string) (map[string]string, *customError.Error) {
 
 var persistConn *ldap.Conn
 
-func UserDetails(input string) ([]models.UserDetails, error) {
+func UserDetails(input string, attr ...attribute) ([]models.UserDetails, error) {
 
 	foundUser := make([]models.UserDetails, 0)
 
-	config := SearchConfig(
-		fmt.Sprintf("(&(objectClass=user)(anr=%s))", input),
+	/*
 		"name",
 		"mail",
 		"sAMAccountName",
 		"department",
+	*/
+
+	config := SearchConfig(
+		fmt.Sprintf("(&(objectClass=user)(anr=%s))", input),
+		attr...,
 	)
 
 	if persistConn == nil {
 		return []models.UserDetails{}, fmt.Errorf("connection to Ldap is nil")
 	}
 
-	results, ldapError := config.Search(persistConn)
+	results, ldapError := config.Search()
 
 	if ldapError != nil {
 		logger.Error(ldapError)

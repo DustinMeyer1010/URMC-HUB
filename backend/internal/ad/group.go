@@ -22,19 +22,23 @@ var LDAP_STRING_REPLACE = strings.NewReplacer(
 var RATE_LIMIT = 100
 
 // Pull all groups that match the search value returning CN, distinguishedName, description, info for each group
-func SearchAllGroups(searchValue string) ([]models.GroupSimpleInfo, *customError.Error) {
+func SearchAllGroups(searchValue string, attr ...attribute) ([]models.GroupSimpleInfo, *customError.Error) {
 	matches := make([]models.GroupSimpleInfo, 0)
 	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
 
-	results, ldapError := SearchAllByCategory(
-		"group",
-		"anr",
-		searchValue,
+	/*
 		"cn",
 		"distinguishedName",
 		"sAMAccountName",
 		"description",
 		"info",
+	*/
+
+	results, ldapError := SearchAllByCategory(
+		"group",
+		"anr",
+		searchValue,
+		attr...,
 	)
 
 	if ldapError != nil {
@@ -55,17 +59,21 @@ func SearchAllGroups(searchValue string) ([]models.GroupSimpleInfo, *customError
 	return matches, nil
 }
 
-func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
+func PullGroupInfo(group string, attr ...attribute) (models.GroupSimpleInfo, *customError.Error) {
 	groupInfo := models.GroupSimpleInfo{}
 	group = LDAP_STRING_REPLACE.Replace(group)
 
-	results, ldapError := SearchWithFilter(
-		fmt.Sprintf("(&(objectCategory=group)(sAMAccountName=%s))", group),
+	/*
 		"cn",
 		"distinguishedName",
 		"sAMAccountName",
 		"description",
 		"info",
+	*/
+
+	results, ldapError := SearchWithFilter(
+		fmt.Sprintf("(&(objectCategory=group)(sAMAccountName=%s))", group),
+		attr...,
 	)
 
 	if ldapError != nil {
@@ -90,17 +98,21 @@ func PullGroupInfo(group string) (models.GroupSimpleInfo, *customError.Error) {
 	return models.ToGroupSimpleInfo(entry), nil
 }
 
-func PullGroupInfoByDN(groupDN string) (models.GroupSimpleInfo, *customError.Error) {
+func PullGroupInfoByDN(groupDN string, attr ...attribute) (models.GroupSimpleInfo, *customError.Error) {
 	groupInfo := models.GroupSimpleInfo{}
 	groupDN = LDAP_STRING_REPLACE.Replace(groupDN)
 
-	results, ldapError := SearchWithFilter(
-		fmt.Sprintf("(&(objectCategory=group)(cn=%s))", groupDN),
+	/*
 		"cn",
 		"distinguishedName",
 		"sAMAccountName",
 		"description",
 		"info",
+	*/
+
+	results, ldapError := SearchWithFilter(
+		fmt.Sprintf("(&(objectCategory=group)(cn=%s))", groupDN),
+		attr...,
 	)
 
 	if ldapError != nil {
@@ -213,7 +225,7 @@ func GetGroupDN(group string) (string, *customError.Error) {
 
 	group = LDAP_STRING_REPLACE.Replace(group)
 
-	results, ldapError := SearchWithFilter(fmt.Sprintf("(&(objectCategory=group)(|(sAMAccountName=%s)(cn=%s)))", group, group), "dn")
+	results, ldapError := SearchWithFilter(fmt.Sprintf("(&(objectCategory=group)(|(sAMAccountName=%s)(cn=%s)))", group, group), DISTINGUISHED_NAME)
 
 	if ldapError != nil {
 		logger.Error(ldapError)
@@ -297,9 +309,9 @@ func GetAllMembers(group string) ([]string, *customError.Error) {
 	defer l.Unbind()
 
 	for {
-		config := SearchConfig(fmt.Sprintf("(&(objectCategory=group)(cn=%s))", group), fmt.Sprintf("member;range=%d-%d", start, end))
+		config := SearchConfig(fmt.Sprintf("(&(objectCategory=group)(cn=%s))", group), memberRangeAtrribute(start, end))
 		config.Control = nil
-		results, ldapError := config.Search(l)
+		results, ldapError := config.Search()
 
 		if ldapError != nil {
 			logger.Error(ldapError)

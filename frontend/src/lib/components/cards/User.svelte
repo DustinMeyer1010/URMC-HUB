@@ -36,7 +36,10 @@
 <!-- * Renders the disabled contnent if object return is disabled -->
 {#snippet Disabled()}
     {#if UserState.disabled}
-        <span class="disabled"><img src={disabledIcon} alt="">Disabled Account</span>
+        <span class="disabled">
+            <img src={disabledIcon} alt="">
+            Disabled Account
+        </span>
     {/if}
 {/snippet}
 

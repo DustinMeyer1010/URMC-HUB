@@ -8,16 +8,14 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func SearchAllComputers(searchValue string) ([]models.ComputerSimpleInfo, *customError.Error) {
+func SearchAllComputers(searchValue string, attrs ...attribute) ([]models.ComputerSimpleInfo, *customError.Error) {
 	matches := []models.ComputerSimpleInfo{}
 	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
 	results, ldapError := SearchAllByCategory(
 		"computer",
 		"anr",
 		searchValue,
-		"name",
-		"operatingSystem",
-		"distinguishedName",
+		attrs...,
 	)
 
 	if results == nil {
@@ -38,15 +36,13 @@ func SearchAllComputers(searchValue string) ([]models.ComputerSimpleInfo, *custo
 	return matches, nil
 }
 
-func PullComputerInformation(computer string) (models.ComputerSimpleInfo, *customError.Error) {
+func PullComputerInformation(computer string, attr ...attribute) (models.ComputerSimpleInfo, *customError.Error) {
 	computer = LDAP_STRING_REPLACE.Replace(computer)
 	results, ldapError := SearchByCategory(
 		"computer",
 		"name",
 		computer,
-		"name",
-		"operatingSystem",
-		"distinguishedName",
+		attr...,
 	)
 
 	if ldapError != nil {

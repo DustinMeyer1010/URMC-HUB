@@ -38,7 +38,7 @@ func LockoutInfoData(user string) (matches []models.LockOutStatus) {
 	return
 }
 
-func ServerLockout(server string, user string) (models.LockOutStatus, *customError.Error) {
+func ServerLockout(server string, user string, attr ...attribute) (models.LockOutStatus, *customError.Error) {
 
 	l, cError := ConnectToServer("LDAP://" + server)
 
@@ -48,13 +48,17 @@ func ServerLockout(server string, user string) (models.LockOutStatus, *customErr
 	defer l.Close()
 	defer l.Unbind()
 
-	config := SearchConfig(
-		fmt.Sprintf("(&(objectClass=user)(SAMAccountName=%s*))", user),
+	/*
 		"badPwdCount",
 		"badPasswordTime",
+	*/
+
+	config := SearchConfig(
+		fmt.Sprintf("(&(objectClass=user)(SAMAccountName=%s*))", user),
+		attr...,
 	)
 
-	results, ldapError := config.Search(l)
+	results, ldapError := config.Search()
 
 	if ldapError != nil {
 		logger.Error(ldapError)

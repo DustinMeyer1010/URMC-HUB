@@ -1,7 +1,6 @@
 package ad
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
@@ -122,8 +121,6 @@ func GetShareDriveGroups(drive string) models.DrivePageInfo {
 			foundDrive = cur
 		}
 	}
-
-	fmt.Println(foundDrive)
 
 	for _, group := range foundDrive.Groups {
 		groupInfo, _ := PullGroupInfo(group)

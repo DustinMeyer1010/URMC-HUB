@@ -14,6 +14,49 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func GetUser(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	ou := query.Get("ou")
+
+	// Note: Can be handled by the services
+	attrMapping, _ := ad.LookupUserByDN(ou,
+		ad.USERNAME,
+		ad.EMAIL,
+		ad.LAST_PASSWORD_SET,
+		ad.NETID,
+		ad.URID,
+		ad.TITLE,
+		ad.URID,
+		ad.PHONE_NUMBER,
+		ad.STATUS,
+		ad.COMMON_NAME,
+		ad.DISTINGUISHED_NAME,
+		ad.DESCRIPTION,
+	)
+
+	// Note: Can be handled by the services
+	user := models.UserFullInfo{
+		Username:           attrMapping[ad.USERNAME],
+		Email:              attrMapping[ad.EMAIL],
+		LastPasswordSet:    attrMapping[ad.LAST_PASSWORD_SET],
+		NetID:              attrMapping[ad.NETID],
+		Department:         attrMapping[ad.URID],
+		Title:              attrMapping[ad.TITLE],
+		URID:               attrMapping[ad.URID],
+		Phone:              attrMapping[ad.PHONE_NUMBER],
+		RelationshipStatus: attrMapping[ad.STATUS],
+		Name:               attrMapping[ad.COMMON_NAME],
+		OU:                 attrMapping[ad.DISTINGUISHED_NAME],
+		Description:        attrMapping[ad.DESCRIPTION],
+	}
+
+	jsonData, _ := json.Marshal(user)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
+}
+
 // Request handler for getting the information about a user
 func PullUserInformation(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)

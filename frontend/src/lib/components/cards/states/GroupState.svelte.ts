@@ -22,6 +22,7 @@ export class GroupStateClass implements GroupState {
 
     readableOU: string = $derived(readableOU(this.ou))
 
+
     pageLink: string = $derived.by(() => {
         const name = encodeURIComponent(this.name)
         const ou = encodeURIComponent(this.ou)

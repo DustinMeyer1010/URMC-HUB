@@ -20,6 +20,12 @@ func userRoutes(mux *mux.Router) {
 		},
 		{
 			methods{"GET"},
+			"/api/user",
+			http.HandlerFunc(handlers.GetUser),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+		{
+			methods{"GET"},
 			"/api/user/{username}/memberof",
 			http.HandlerFunc(handlers.GetMemberOf),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},

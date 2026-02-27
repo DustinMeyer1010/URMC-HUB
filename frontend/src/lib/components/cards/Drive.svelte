@@ -4,6 +4,7 @@
 	import CopyAllButton from '../buttons/CopyAllButton.svelte';
 	import CopyButton from "../buttons/CopyButton.svelte";
 	import { DriveStateClass } from './states/DriveState.svelte';
+	import { GroupStateClass } from './states/GroupState.svelte';
 
     let {
         item,
@@ -46,6 +47,7 @@
         {#if DriveState.groups.length >= 10}
             <input placeholder="Search For Group" bind:value={DriveState.searchValue}/> 
         {/if}
+        <span>{DriveState.groupCount}</span>
         <div id="groups" >
             <!-- Note: Each group is transitioned in and can be copied -->
             {#each DriveState.filteredGroups as group,i }

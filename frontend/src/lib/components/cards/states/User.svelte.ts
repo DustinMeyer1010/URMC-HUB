@@ -31,7 +31,7 @@ export class UserStateClass implements UserState {
 
     // TODO: Turn in query for the user and OU rather than just searching by person username
     pageLink: string = $derived.by(() => {
-      return `/user/${this.username}`  
+      return `/user?username=${encodeURIComponent(this.username)}&ou=${encodeURIComponent(this.ou)}&section=PROFILE`  
     })
 
     copyTemplate: string = $derived.by(() => {
