@@ -10,47 +10,28 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/parser"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 	"github.com/gorilla/mux"
 )
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
-	ou := query.Get("ou")
+	dn := query.Get("dn")                                    // Grabs the OU to be searched for
+	attributes := parser.QueryArray(query.Get("attributes")) // Pulls the attributes being request for the account
 
-	// Note: Can be handled by the services
-	attrMapping, _ := ad.LookupUserByDN(ou,
-		ad.USERNAME,
-		ad.EMAIL,
-		ad.LAST_PASSWORD_SET,
-		ad.NETID,
-		ad.URID,
-		ad.TITLE,
-		ad.URID,
-		ad.PHONE_NUMBER,
-		ad.STATUS,
-		ad.COMMON_NAME,
-		ad.DISTINGUISHED_NAME,
-		ad.DESCRIPTION,
-	)
+	jsonData, _ := service.GetUser(dn, attributes...)
 
-	// Note: Can be handled by the services
-	user := models.UserFullInfo{
-		Username:           attrMapping[ad.USERNAME],
-		Email:              attrMapping[ad.EMAIL],
-		LastPasswordSet:    attrMapping[ad.LAST_PASSWORD_SET],
-		NetID:              attrMapping[ad.NETID],
-		Department:         attrMapping[ad.URID],
-		Title:              attrMapping[ad.TITLE],
-		URID:               attrMapping[ad.URID],
-		Phone:              attrMapping[ad.PHONE_NUMBER],
-		RelationshipStatus: attrMapping[ad.STATUS],
-		Name:               attrMapping[ad.COMMON_NAME],
-		OU:                 attrMapping[ad.DISTINGUISHED_NAME],
-		Description:        attrMapping[ad.DESCRIPTION],
-	}
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
+}
 
-	jsonData, _ := json.Marshal(user)
+func GetUserAvaiableAttributes(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
+
+	jsonData, _ := service.GetUserAvaiableAttributes(dn)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"os/exec"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
@@ -62,4 +63,24 @@ type PingResults struct {
 	Reply      string
 	Statistics string
 	Packets    string
+}
+
+func GetComputer(dn string, attributes ...string) ([]byte, *customError.Error) {
+
+	attr, _ := ad.LookupComputer(dn, attributes...)
+
+	jsonData, _ := json.Marshal(attr)
+
+	return jsonData, nil
+
+}
+
+func GetComputerAvaiableAttributes(dn string) ([]byte, *customError.Error) {
+	attr, _ := ad.LookupComputer(dn, "*")
+
+	allAttributesNames := ""
+	for k, _ := range attr {
+		allAttributesNames += k + "\n"
+	}
+	return []byte(allAttributesNames), nil
 }

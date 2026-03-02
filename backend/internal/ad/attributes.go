@@ -2,56 +2,149 @@ package ad
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/go-ldap/ldap/v3"
 )
 
-type attribute struct {
-	LdapName string
+var attributeAliases = map[string]string{
+	"CN":         "cn",
+	"COMMONNAME": "cn",
+
+	"NAME": "name",
+
+	"USERNAME":       "sAMAccountName",
+	"SAMACCOUNTNAME": "sAMAccountName",
+
+	"DN":                "distinguishedName",
+	"DISTINGUSHIEDNAME": "distinguishedName",
+
+	"NETID": "uid",
+	"UID":   "uid",
+
+	"URID": "URID",
+
+	"EMAIL": "mail",
+	"MAIL":  "mail",
+
+	"DEPARTMENT": "department",
+	"DEPT":       "department",
+
+	"TITLE": "title",
+
+	"PHONE":           "telephoneNumber",
+	"PHONENUMBER":     "telephoneNumber",
+	"TELEPHONENUMBER": "telephoneNumber",
+
+	"PWDLASTSET":      "pwdlastset",
+	"PASSWORDLASTSET": "pwdlastset",
+
+	"DESCRIPTION": "description",
+	"DESC":        "description",
+
+	"LOCATION":                  "physicalDeliveryOfficeName",
+	"PYSICALDELIVERYOFFICENAME": "physicalDeliveryOfficeName",
+
+	"FIRST":     "givenName",
+	"FIRSTNAME": "givenName",
+
+	"LAST":     "sn",
+	"LASTNAME": "sn",
+
+	"RELATIONSHIP":       "URRoleStatus",
+	"URROLESTATUS":       "URRoleStatus",
+	"RELATIONSHIPSTATUS": "URRoleStatus",
+	"STATUS":             "URRoleStatus",
+
+	"OS":              "operatingSystem",
+	"OPERATINGSYSTEM": "operatingSystem",
+
+	"INFORMATION": "information",
+	"INFO":        "information",
+
+	"BADPASSWORDCOUNT": "badPwdCount",
+	"BADPWDCOUNT":      "badPwdCount",
+
+	"BADPASSWORDTIME": "badPasswordTime",
+	"BADPWDTIME":      "badPasswordTime",
+
+	"MEMBEROF": "memberof",
+}
+
+// Pulls ldap attributes from alias, If alias does not exist
+// return the orginal values
+func GetAttributeAlias(attribute string) string {
+	attr, ok := attributeAliases[strings.ToUpper(attribute)]
+
+	if !ok {
+		return attribute
+	}
+
+	return attr
+}
+
+// Converts alias name of ldap search to the correct
+// formated names for ldap search
+func convertAliases(attributes []string) []string {
+	attr := []string{}
+	for _, a := range attributes {
+		if a == "*" {
+			return []string{"*"}
+		}
+		attr = append(attr, GetAttributeAlias(a))
+	}
+
+	fmt.Println(attr)
+	return attr
+}
+
+func createAttributeMapping(entry *ldap.Entry, attributes []string) map[string][]string {
+	attrs := map[string][]string{}
+
+	for i, a := range convertAliases(attributes) {
+		if a == "*" {
+			return allAttributes(entry)
+		}
+		attrs[attributes[i]] = entry.GetAttributeValues(a)
+	}
+
+	return attrs
+
+}
+
+func allAttributes(entry *ldap.Entry) map[string][]string {
+	attrs := map[string][]string{}
+	for _, a := range entry.Attributes {
+		attrs[a.Name] = entry.GetAttributeValues(a.Name)
+	}
+
+	return attrs
 }
 
 var (
-	COMMON_NAME        = attribute{LdapName: "cn"}
-	FULL_NAME          = attribute{LdapName: "name"}
-	USERNAME           = attribute{LdapName: "sAMAccountName"}
-	DISTINGUISHED_NAME = attribute{LdapName: "distinguishedName"}
-	NETID              = attribute{LdapName: "uid"}
-	URID               = attribute{LdapName: "urid"}
-	EMAIL              = attribute{LdapName: "mail"}
-	DEPARMTENT         = attribute{LdapName: "department"}
-	TITLE              = attribute{LdapName: "title"}
-	PHONE_NUMBER       = attribute{LdapName: "telephoneNumber"}
-	LAST_PASSWORD_SET  = attribute{LdapName: "pwdlastset"}
-	DESCRIPTION        = attribute{LdapName: "description"}
-	LOCATION           = attribute{LdapName: "physicalDeliveryOfficeName"}
-	FIRST_NAME         = attribute{LdapName: "givenName"}
-	LAST_NAME          = attribute{LdapName: "sn"}
-	STATUS             = attribute{LdapName: "URRoleStatus"}
-	OPERATING_SYSTEM   = attribute{LdapName: "operatingSystem"}
-	INFORMATION        = attribute{LdapName: "info"}
-	BAD_PASSWORD_COUNT = attribute{LdapName: "badPwdCount"}
-	BAD_PASSWORD_TIME  = attribute{LdapName: "badPasswordTime"}
-	MEMBER_OF          = attribute{LdapName: "memberOf"}
+	COMMON_NAME        = "cn"
+	FULL_NAME          = "name"
+	USERNAME           = "sAMAccountName"
+	DISTINGUISHED_NAME = "distinguishedName"
+	NETID              = "uid"
+	URID               = "urid"
+	EMAIL              = "mail"
+	DEPARMTENT         = "department"
+	TITLE              = "title"
+	PHONE_NUMBER       = "telephoneNumber"
+	LAST_PASSWORD_SET  = "pwdlastset"
+	DESCRIPTION        = "description"
+	LOCATION           = "physicalDeliveryOfficeName"
+	FIRST_NAME         = "givenName"
+	LAST_NAME          = "sn"
+	STATUS             = "URRoleStatus"
+	OPERATING_SYSTEM   = "operatingSystem"
+	INFORMATION        = "info"
+	BAD_PASSWORD_COUNT = "badPwdCount"
+	BAD_PASSWORD_TIME  = "badPasswordTime"
+	MEMBER_OF          = "memberOf"
 )
 
-// Converts an array of attribute structs into an array of strings for ldap searching
-func attributesToStrings(attrs ...attribute) []string {
-	var stringAttributes = []string{}
-	for _, attr := range attrs {
-		stringAttributes = append(stringAttributes, attr.LdapName)
-	}
-	return stringAttributes
-
-}
-
-func createAttrToValueMapping(entry *ldap.Entry, attrs ...attribute) map[attribute]string {
-	var result map[attribute]string = map[attribute]string{}
-	for _, attr := range attrs {
-		result[attr] = entry.GetAttributeValue(attr.LdapName)
-	}
-	return result
-}
-
-func memberRangeAtrribute(start, end int) attribute {
-	return attribute{LdapName: (fmt.Sprintf("member;range=%d-%d", start, end))}
+func memberRangeAtrribute(start, end int) string {
+	return fmt.Sprintf("member;range=%d-%d", start, end)
 }

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"mime/multipart"
 	"strings"
 
@@ -44,6 +45,21 @@ func GetMemberOf(username string) ([]models.GroupSimpleInfo, *customError.Error)
 	return ad.PullUserMembersOf(username)
 }
 
-/*
+// NEW
+func GetUser(dn string, attributes ...string) ([]byte, *customError.Error) {
+	attrs, cError := ad.LookupUser(dn, attributes...)
 
- */
+	jsonData, _ := json.Marshal(attrs)
+
+	return jsonData, cError
+}
+
+func GetUserAvaiableAttributes(dn string) ([]byte, *customError.Error) {
+	attr, _ := ad.LookupUser(dn, "*")
+
+	allAttributesNames := ""
+	for k, _ := range attr {
+		allAttributesNames += k + "\n"
+	}
+	return []byte(allAttributesNames), nil
+}

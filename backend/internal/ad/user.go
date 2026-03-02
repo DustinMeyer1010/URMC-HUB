@@ -11,14 +11,18 @@ import (
 	"github.com/go-ldap/ldap/v3"
 )
 
-func LookupUserByDN(userDN string, attrs ...attribute) (map[attribute]string, *customError.Error) {
+// Looks up the user with the provided disgushiedName. Returns a map, where the key is
+// the attrubutes provided & values being what active directory returned for that attrubtue.
+// If attribute is not found it will just have an empty values with attribute being the key.
+func LookupUser(userDN string, attributes ...string) (map[string][]string, *customError.Error) {
 
-	config := SearchConfig(
-		"(objectClass=user)",
-		attrs...,
-	)
-	config.BaseDN = userDN
-	// ! Handle Error
+	attrs := map[string][]string{}
+
+	config := UserSearchConfig().
+		SetAttributes(attributes).
+		SetBaseDN(userDN)
+
+	// ! Handle Error (At some point)
 	sr, _ := config.Search()
 
 	var entry *ldap.Entry
@@ -26,23 +30,26 @@ func LookupUserByDN(userDN string, attrs ...attribute) (map[attribute]string, *c
 	if len(sr.Entries) > 0 {
 		entry = sr.Entries[0]
 	} else {
-		fmt.Println("No user found at that DN.")
+		return map[string][]string{}, nil
 	}
 
-	return createAttrToValueMapping(entry, attrs...), nil
+	attrs = createAttributeMapping(entry, attributes)
+
+	return attrs, nil
 
 }
 
-func SearchAllUsers(searchValue string, attr ...attribute) ([]models.UserSimpleInfo, *customError.Error) {
+// Looks up users that match the search values. This does a search based on the filters
+// anr & URID. Returns a map with the key being the attribute provided and the value being
+// what active directory returns. If no attribute found for active directory then the value
+// will be an empty string.
+func SearchAllUsers(searchValue string, attr ...string) ([]models.UserSimpleInfo, *customError.Error) {
 
 	matches := make([]models.UserSimpleInfo, 0)
 	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
 	filter := fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue)
 
-	ldapConfig := SearchConfig(
-		filter,
-		attr...,
-	)
+	ldapConfig := DefaultSearchConfig().SetFilter(filter).SetAttributes(attr)
 
 	results, ldapError := ldapConfig.Search()
 
@@ -59,7 +66,7 @@ func SearchAllUsers(searchValue string, attr ...attribute) ([]models.UserSimpleI
 	return matches, nil
 }
 
-func PullUserInformation(searchValue string, attr ...attribute) (models.UserFullInfo, *customError.Error) {
+func PullUserInformation(searchValue string, attr ...string) (models.UserFullInfo, *customError.Error) {
 
 	var user models.UserFullInfo
 
@@ -292,7 +299,7 @@ func GetUsersDN(users []string) (map[string]string, *customError.Error) {
 
 var persistConn *ldap.Conn
 
-func UserDetails(input string, attr ...attribute) ([]models.UserDetails, error) {
+func UserDetails(input string, attr ...string) ([]models.UserDetails, error) {
 
 	foundUser := make([]models.UserDetails, 0)
 
@@ -303,10 +310,7 @@ func UserDetails(input string, attr ...attribute) ([]models.UserDetails, error) 
 		"department",
 	*/
 
-	config := SearchConfig(
-		fmt.Sprintf("(&(objectClass=user)(anr=%s))", input),
-		attr...,
-	)
+	config := DefaultSearchConfig().SetFilter(fmt.Sprintf("(&(objectClass=user)(anr=%s))", input)).SetAttributes(attr)
 
 	if persistConn == nil {
 		return []models.UserDetails{}, fmt.Errorf("connection to Ldap is nil")

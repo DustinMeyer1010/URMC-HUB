@@ -8,41 +8,70 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func SearchAllComputers(searchValue string, attrs ...attribute) ([]models.ComputerSimpleInfo, *customError.Error) {
-	matches := []models.ComputerSimpleInfo{}
+func SearchAllComputers(searchValue string, attributes ...string) ([]models.ComputerSimpleInfo, *customError.Error) {
+	computers := []models.ComputerSimpleInfo{}
 	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
-	results, ldapError := SearchAllByCategory(
-		"computer",
-		"anr",
-		searchValue,
-		attrs...,
-	)
 
-	if results == nil {
+	searchConfig := DefaultSearchConfig().
+		SetFilter(fmt.Sprintf("(&(objectClass=computer)(anr=%s*))", searchValue)).
+		SetAttributes(attributes)
+
+	searchResults, ldapError := searchConfig.Search()
+
+	if searchResults == nil {
 		cError := &customError.NOT_FOUND
-		return matches, cError
+		return computers, cError
 	}
 
 	if ldapError != nil {
 		logger.Error(ldapError)
 		cError := customError.LDAP_ERROR.NewError(ldapError)
-		return matches, &cError
+		return computers, &cError
 	}
 
-	for _, entry := range results.Entries {
-		matches = append(matches, models.ToComputerSimpleInfo(entry))
+	for _, entry := range searchResults.Entries {
+		computers = append(computers, models.ToComputerSimpleInfo(entry))
 	}
 
-	return matches, nil
+	return computers, nil
 }
 
-func PullComputerInformation(computer string, attr ...attribute) (models.ComputerSimpleInfo, *customError.Error) {
+func LookupComputer(computerDN string, attributes ...string) (map[string][]string, *customError.Error) {
+
+	searchConfig := ComputerSearchConfig().
+		SetBaseDN(computerDN).
+		SetAttributes(attributes)
+
+	searchResults, ldapError := searchConfig.Search()
+
+	if ldapError != nil {
+		logger.Error(ldapError)
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return map[string][]string{}, &cError
+	}
+
+	if searchResults == nil || len(searchResults.Entries) == 0 {
+		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO COMPUTER FOUND FOR: %s", computerDN))
+		return map[string][]string{}, &cError
+	}
+
+	entry := searchResults.Entries[0]
+
+	attrs := createAttributeMapping(entry, attributes)
+
+	return attrs, nil
+
+}
+
+func PullComputerInformation(computer string) (models.ComputerSimpleInfo, *customError.Error) {
 	computer = LDAP_STRING_REPLACE.Replace(computer)
 	results, ldapError := SearchByCategory(
 		"computer",
 		"name",
 		computer,
-		attr...,
+		"name",
+		"operatingSystem",
+		"distinguishedName",
 	)
 
 	if ldapError != nil {
