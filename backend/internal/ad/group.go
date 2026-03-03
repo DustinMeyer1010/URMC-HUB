@@ -22,8 +22,8 @@ var LDAP_STRING_REPLACE = strings.NewReplacer(
 var RATE_LIMIT = 100
 
 // Pull all groups that match the search value returning CN, distinguishedName, description, info for each group
-func SearchAllGroups(searchValue string, attributes ...string) ([]map[string]string, *customError.Error) {
-	groups := []map[string]string{}
+func SearchAllGroups(searchValue string, attributes ...string) ([]models.GroupSimpleInfo, *customError.Error) {
+	groups := []models.GroupSimpleInfo{}
 
 	/*
 		"cn",
@@ -50,15 +50,41 @@ func SearchAllGroups(searchValue string, attributes ...string) ([]map[string]str
 		return groups, &cError
 	}
 
-	for _, e := range searchResults.Entries {
-		attrs := map[string]string{}
-		for _, a := range attributes {
-			attrs[a] = e.GetAttributeValue(a)
-		}
-		groups = append(groups, attrs)
+	for _, entry := range searchResults.Entries {
+		groups = append(groups, models.ToGroupSimpleInfo(entry))
 	}
 
 	return groups, nil
+}
+
+// Performs an LDAP search for a specific group by its Distinguished Name.
+// It returns a mapped collection of the requested attributes or a custom error if the
+// group is not found or the search fails.
+func LookupGroup(groupDN string, attributes ...string) (map[string][]string, *customError.Error) {
+
+	searchConfig := GroupSearchConfig().
+		SetBaseDN(groupDN).
+		SetAttributes(attributes)
+
+	searchResults, ldapError := searchConfig.Search()
+
+	if ldapError != nil {
+		logger.Error(ldapError)
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return map[string][]string{}, &cError
+	}
+
+	if searchResults == nil || len(searchResults.Entries) == 0 {
+		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO GROUP FOUND FOR: %s", groupDN))
+		logger.Errorf("%v", cError)
+		logger.Debug(searchResults.Entries)
+		return map[string][]string{}, &cError
+	}
+
+	entry := searchResults.Entries[0]
+
+	attrs := createAttributeMapping(entry, attributes)
+	return attrs, nil
 }
 
 func PullGroupInfo(group string, attr ...string) (models.GroupSimpleInfo, *customError.Error) {
@@ -98,45 +124,6 @@ func PullGroupInfo(group string, attr ...string) (models.GroupSimpleInfo, *custo
 	entry := results.Entries[0]
 
 	return models.ToGroupSimpleInfo(entry), nil
-}
-
-func LookupGroup(groupDN string, attributes ...string) (map[string]string, *customError.Error) {
-	attrs := map[string]string{}
-
-	/*
-		"cn",
-		"distinguishedName",
-		"sAMAccountName",
-		"description",
-		"info",
-	*/
-
-	searchConfig := ComputerSearchConfig().
-		SetBaseDN(groupDN).
-		SetAttributes(attributes)
-
-	searchResults, ldapError := searchConfig.Search()
-
-	if ldapError != nil {
-		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
-		return attrs, &cError
-	}
-
-	if searchResults == nil || len(searchResults.Entries) == 0 {
-		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO GROUP FOUND FOR: %s", groupDN))
-		logger.Errorf("%v", cError)
-		logger.Debug(searchResults.Entries)
-		return attrs, &cError
-	}
-
-	entry := searchResults.Entries[0]
-
-	for _, a := range attributes {
-		attrs[a] = entry.GetAttributeValue(a)
-	}
-
-	return attrs, nil
 }
 
 func PullGroupInfoByDN(groupDN string, attr ...string) (models.GroupSimpleInfo, *customError.Error) {

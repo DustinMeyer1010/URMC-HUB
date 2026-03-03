@@ -1,7 +1,6 @@
 
+import { readableOU } from "$lib/parsers/ou";
 import {Computer} from "$lib/types/computer";
-import { readableOU } from "$lib/utils/stringEditor";
-
 
 interface ComputerState {
     name: string

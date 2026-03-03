@@ -15,18 +15,29 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// HTTP GET requests to retrieve specific LDAP user attributes.
+// It expects a 'dn' query parameter for the target object and an optional 'attributes'
+// comma-separated list to filter the returned fields.
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
-	dn := query.Get("dn")                                    // Grabs the OU to be searched for
-	attributes := parser.QueryArray(query.Get("attributes")) // Pulls the attributes being request for the account
+	dn := query.Get("dn")
+	attributes := parser.QueryArray(query.Get("attributes"))
 
-	jsonData, _ := service.GetUser(dn, attributes...)
+	jsonData, cError := service.GetUser(dn, attributes...)
+
+	if cError != nil {
+		w.WriteHeader(cError.StatusCode)
+		w.Write([]byte(cError.Msg))
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonData)
 }
 
+// HTTP GET requests to retrieve specific LDAP user all attrubutes
+// It expects a 'dn' query parameter for the target object
 func GetUserAvaiableAttributes(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	dn := query.Get("dn")
@@ -38,7 +49,7 @@ func GetUserAvaiableAttributes(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
-// Request handler for getting the information about a user
+// Deprecated: Going to be replaced by GetUser
 func PullUserInformation(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 	vars := mux.Vars(r)

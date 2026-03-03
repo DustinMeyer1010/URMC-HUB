@@ -105,7 +105,7 @@
         flex-direction: column;
         word-break: break-all;
         position: relative;
-        gap: 0.7rem;
+        gap: 0.3rem;
         border-radius: 10px;
         padding: 1.5rem;
         padding-left: 1.5rem;

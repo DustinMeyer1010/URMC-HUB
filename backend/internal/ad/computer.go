@@ -36,6 +36,9 @@ func SearchAllComputers(searchValue string, attributes ...string) ([]models.Comp
 	return computers, nil
 }
 
+// Performs an LDAP search for a specific computer by its Distinguished Name.
+// It returns a mapped collection of the requested attributes or a custom error if the
+// computer is not found or the search fails.
 func LookupComputer(computerDN string, attributes ...string) (map[string][]string, *customError.Error) {
 
 	searchConfig := ComputerSearchConfig().
@@ -60,9 +63,9 @@ func LookupComputer(computerDN string, attributes ...string) (map[string][]strin
 	attrs := createAttributeMapping(entry, attributes)
 
 	return attrs, nil
-
 }
 
+// Deprecated: Will be moved over to lookupComputer
 func PullComputerInformation(computer string) (models.ComputerSimpleInfo, *customError.Error) {
 	computer = LDAP_STRING_REPLACE.Replace(computer)
 	results, ldapError := SearchByCategory(

@@ -25,12 +25,12 @@ func getSearchValue(r *http.Request) (string, *customError.Error) {
 
 }
 
-func SearchAllGroups(r *http.Request) ([]map[string]string, *customError.Error) {
+func SearchAllGroups(r *http.Request) ([]models.GroupSimpleInfo, *customError.Error) {
 
 	searchValue, cError := getSearchValue(r)
 
 	if cError != nil {
-		return []map[string]string{}, cError
+		return []models.GroupSimpleInfo{}, cError
 	}
 
 	return ad.SearchAllGroups(searchValue)

@@ -1,5 +1,5 @@
+import { readableOU } from "$lib/parsers/ou";
 import { Group } from "$lib/types/group";
-import { readableOU } from "$lib/utils/stringEditor";
 
 
 interface GroupState {

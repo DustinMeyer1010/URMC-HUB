@@ -10,9 +10,38 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/parser"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 	"github.com/gorilla/mux"
 )
+
+// HTTP GET requests to retrieve specific LDAP group attributes.
+// It expects a 'dn' query parameter for the target object and an optional 'attributes'
+// comma-separated list to filter the returned fields.
+func GetGroup(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
+	attributes := parser.QueryArray(query.Get("attributes"))
+
+	jsonData, _ := service.GetGroup(dn, attributes...)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
+}
+
+// HTTP GET requests to retrieve specific LDAP group all attrubutes
+// It expects a 'dn' query parameter for the target object
+func GetGroupAvaiableAttributes(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
+
+	jsonData, _ := service.GetGroupAvaiableAttributes(dn)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
+}
 
 func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)

@@ -30,7 +30,7 @@ func LookupUser(userDN string, attributes ...string) (map[string][]string, *cust
 	if len(sr.Entries) > 0 {
 		entry = sr.Entries[0]
 	} else {
-		return map[string][]string{}, nil
+		return map[string][]string{}, &customError.NOT_FOUND
 	}
 
 	attrs = createAttributeMapping(entry, attributes)
@@ -66,6 +66,7 @@ func SearchAllUsers(searchValue string, attr ...string) ([]models.UserSimpleInfo
 	return matches, nil
 }
 
+// Deprecated: To be replace with LookupUser
 func PullUserInformation(searchValue string, attr ...string) (models.UserFullInfo, *customError.Error) {
 
 	var user models.UserFullInfo

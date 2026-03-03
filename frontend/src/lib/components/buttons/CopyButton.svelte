@@ -17,17 +17,25 @@
     } = $props()
 
     label = label.toUpperCase()
+
+    let updatedValue: string = $state(value)
     
 
 </script>
 
-<button id={category} onclick={() => Copy.ToClipboard(value, copyState)} title="Click to Copy">
+<button id={category} onclick={() => Copy.ToClipboard(updatedValue, copyState)} title="Click to Copy">
     {#if category == "title" || category == "drive-group"}
-        <b id={category}>{value == copyState.copied ? "Copied" : value}</b>
+        <b id={category}>
+            {updatedValue}
+            <sub class="copied">{updatedValue == copyState.copied ? "(COPIED)" : ""}</sub>
+        </b>
     {:else}
         <span>
-            <b id={category}>{label}:</b>
-            <span>{value == copyState.copied ? "Copied" : value}</span>
+            <b id={category}>
+                {label}:
+            </b>
+            <span>{updatedValue}</span>
+            <sub class="copied">{updatedValue == copyState.copied ? "(COPIED)" : ""}</sub>
         </span>
     {/if}
 </button>
@@ -48,6 +56,10 @@
         font-size: 15px;
     }
 
+    sub.copied {
+        font-size: 10px;
+    }
+
     button:hover {
         color: var(--color-primary-hover)
     }
@@ -56,17 +68,18 @@
         font-size: 15px;
         margin: 0;
         padding: 0.2rem;
-        margin-bottom: var(--margin-bottom);
+        text-align: left;
         background: transparent;
+        position: relative;
         border: none; 
         color: var(--color-text);
-        text-align: left;
-
         font-family: Roboto;
         word-break: keep-all;
         width: 100%;
         transition: 0.3s;
     }
+
+    
 
     @media (max-width: 350px) {
         button {

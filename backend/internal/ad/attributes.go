@@ -36,8 +36,8 @@ var attributeAliases = map[string]string{
 	"PHONENUMBER":     "telephoneNumber",
 	"TELEPHONENUMBER": "telephoneNumber",
 
-	"PWDLASTSET":      "pwdlastset",
-	"PASSWORDLASTSET": "pwdlastset",
+	"PWDLASTSET":      "pwdLastSet",
+	"PASSWORDLASTSET": "pwdLastSet",
 
 	"DESCRIPTION": "description",
 	"DESC":        "description",
@@ -68,7 +68,38 @@ var attributeAliases = map[string]string{
 	"BADPASSWORDTIME": "badPasswordTime",
 	"BADPWDTIME":      "badPasswordTime",
 
-	"MEMBEROF": "memberof",
+	"MEMBEROF": "memberOf",
+
+	"DISPLAYNAME": "displayName",
+
+	"MAILNICKNAME":  "mailNickname",
+	"EMAILNICKNAME": "mailNickname",
+
+	"MANAGEDBY": "managedBy",
+
+	"CREATIONDATE": "whenCreated",
+	"WHENCREATED":  "whenCreated",
+
+	"CHANGEDATE":  "whenChanged",
+	"WHENCHANGED": "whenChanged",
+
+	"SHOWINADDRESSBOOK": "showInAddressBook",
+
+	"EXPIRES":        "accountExpires",
+	"ACCOUNTEXPIRES": "accountExpires",
+
+	"HOMEDIRECTORY": "homeDirectory",
+	"HOMEDIR":       "homeDirectory",
+
+	"HOMEDRIVELETTER": "homeDrive",
+	"HOMEDRIVE":       "homeDrive",
+
+	"LOGONCOUNT": "logonCount",
+
+	"LOGONSCRIPT": "scriptPath",
+	"SCRIPTPATH":  "scriptPath",
+
+	"USERPRINCIPALNAME": "userPrincipalName",
 }
 
 // Pulls ldap attributes from alias, If alias does not exist
@@ -98,6 +129,9 @@ func convertAliases(attributes []string) []string {
 	return attr
 }
 
+// Converts attrubutes into the mapping where key is the attrubte and the value will be
+// an array of all the values for that specific attrubte. If * is provided then it will
+// create an mapping of all possible attrubtes
 func createAttributeMapping(entry *ldap.Entry, attributes []string) map[string][]string {
 	attrs := map[string][]string{}
 
@@ -112,6 +146,8 @@ func createAttributeMapping(entry *ldap.Entry, attributes []string) map[string][
 
 }
 
+// Create a mapping of all the attrubutes possible for the entry
+// mapping them their values
 func allAttributes(entry *ldap.Entry) map[string][]string {
 	attrs := map[string][]string{}
 	for _, a := range entry.Attributes {
@@ -121,6 +157,7 @@ func allAttributes(entry *ldap.Entry) map[string][]string {
 	return attrs
 }
 
+// Deprecated: No longer used
 var (
 	COMMON_NAME        = "cn"
 	FULL_NAME          = "name"

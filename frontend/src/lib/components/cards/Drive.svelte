@@ -75,7 +75,7 @@
 
     div#groups {
         display: flex;
-        gap: 0.5rem;
+        gap: 0.3rem;
         transition: 0.5s ease;
         margin-top: 0.5rem;
         padding: 0.5rem;

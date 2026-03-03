@@ -45,7 +45,8 @@ func GetMemberOf(username string) ([]models.GroupSimpleInfo, *customError.Error)
 	return ad.PullUserMembersOf(username)
 }
 
-// NEW
+// Find user based on the dn given and return attributes mapped to their values.
+// If no user is found then it will return a NOT_FOUND error
 func GetUser(dn string, attributes ...string) ([]byte, *customError.Error) {
 	attrs, cError := ad.LookupUser(dn, attributes...)
 
@@ -54,12 +55,14 @@ func GetUser(dn string, attributes ...string) ([]byte, *customError.Error) {
 	return jsonData, cError
 }
 
+// Find user based on DN provided and will return all avaiable attrubtes for
+// that specific user. If no user is found than it will return a NOT_FOUND error
 func GetUserAvaiableAttributes(dn string) ([]byte, *customError.Error) {
 	attr, _ := ad.LookupUser(dn, "*")
 
-	allAttributesNames := ""
-	for k, _ := range attr {
-		allAttributesNames += k + "\n"
+	var allAttributesNames strings.Builder
+	for k := range attr {
+		allAttributesNames.WriteString(k + "\n")
 	}
-	return []byte(allAttributesNames), nil
+	return []byte(allAttributesNames.String()), nil
 }

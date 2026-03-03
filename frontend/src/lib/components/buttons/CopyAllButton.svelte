@@ -30,12 +30,11 @@
     }
 
     span.copied-all {
-        font-size: 10px;
+        font-size: 15px;
         position: absolute;
         top: 0.4rem;
         left: 0.4rem;
         opacity: 0.3;
-        z-index: -1;
         color: var(--color-text)
     }
 
@@ -44,25 +43,16 @@
         top: 0.2rem;
         left: 0.2rem;
         opacity: 0.3;
-        z-index: -1;
     }
 
     button.copy-all img {
-        width: 20px;
+        width: 25px;
     }
 
     button.copy-all:hover img {
         transform: scale(1.1);
     }
 
-    button {
-        background: none;
-        border: none;
-        padding: 0;
-        font: inherit;
-        color: inherit;
-        cursor: pointer;
-    }
 
     button:active,
     button:focus { 
