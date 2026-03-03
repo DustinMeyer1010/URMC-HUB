@@ -76,13 +76,18 @@
     }
 
     button.filter-options {
-        padding: 0.5rem 1rem;
+
+        box-shadow: 
+        inset -5px -5px 10px 2px rgba(255,255,255,0.1),
+        inset 5px 5px 10px 2px rgba(0,0,0,0.4);
+        transition: 0.3s ease-in-out;
+        padding: 0.7rem 1rem;
         width: 150px;
-        border: 2px solid var(--color-accent);
         border-radius: 20px;
-        background: var(--color-bg-opacity-80);
+        border: 0.5px solid var(--color-accent-hover-opacity-40);
+        background: var(--color-bg-opacity-30);
         transform-origin: center;
-        color: var(--color-accent);
+        color: var(--text);
         transition: 0.3s ease;
         font-weight: bold;
         backdrop-filter: blur(10px);
@@ -90,8 +95,11 @@
     }
 
     button.active {
-        background: var(--color-accent-focus);
-        color: var(--color-bg)
+        background-color: var(--color-surface);
+        box-shadow: 
+        inset 5px 5px 10px 2px rgba(255,255,255,0.05),
+        inset -5px -5px 10px 2px rgba(0,0,0,0.05),
+        5px 5px 10px 2px rgba(0,0,0,0.3);
     }
 
     button.active:hover {
