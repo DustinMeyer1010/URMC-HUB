@@ -4,15 +4,15 @@
 	import CopyButton from "$lib/components/buttons/CopyButton.svelte";
 	import PageLoading from "$lib/components/loading/PageLoading.svelte";
 	import { convertToReadableTime }  from "$lib/parsers/time";
-	import { seperateMemberOfGroups } from "$lib/parsers/members";
 	import { readableOU } from "$lib/parsers/ou";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
     import { browser } from "$app/environment";
+	import Groups from "./pages/Groups.svelte";
 
     let ou: string = $state("")
     let section: "PROFILE" | "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE" = $state("PROFILE")
-    const attributes = ["cn","username","phone","department","dn","urid","netid","relationship","pwdlastset","email","description","title", "memberof"]
+    const attributes = ["cn","username","phone","department","dn","urid","netid","relationship","pwdlastset","email","description","title"]
     let userPromise: Promise<any> = $state(new Promise(() => {}));
     let timer: number = $state(3)
 
@@ -69,6 +69,7 @@
             <h1>{error.message} Redirecting in {timer}s</h1>
         {/await}
     {:else if section == "GROUPS"}
+    <Groups dn={ou}></Groups>
     {/if}
 </main>
 
@@ -85,10 +86,6 @@
             <CopyButton label="RELATIONSHIP" value={u.relationship[0] ?? "NA"} category="list-item"/>
             <CopyButton label="LASTPASSWORDSET" value={convertToReadableTime(u.pwdlastset[0] ?? "0")} category="list-item"/>    
             <CopyButton label="OU" value={readableOU(u.dn[0]) ?? "NA"} category="list-item"/>
-            <li>Memberships</li>
-                {#each seperateMemberOfGroups(u.memberof) as group }
-                    <li>{group}</li>
-                {/each}
         </div>
     </section>
 {/snippet}
@@ -96,9 +93,10 @@
 <style>
 
     nav {
-
         display: flex;
         flex-direction: row;
+        position: sticky;
+        top: 75px;
         gap: 1rem;
         width: 90%;
         background: var(--color-surface);

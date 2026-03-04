@@ -12,18 +12,25 @@ import (
 func groupRoutes(mux *mux.Router) {
 	routes := routes{
 		{
+			// * NEW
 			methods{"GET"},
 			"/api/group",
 			http.HandlerFunc(handlers.GetGroup),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
+			// * NEW
 			methods{"GET"},
 			"/api/group/attributes",
 			http.HandlerFunc(handlers.GetGroupAvaiableAttributes),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
-
+		{
+			methods{"GET"},
+			"/api/group/members",
+			http.HandlerFunc(handlers.GetGroupMembers),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
 		{
 			methods{"POST", "OPTION"},
 			"/api/group/{group}/members",

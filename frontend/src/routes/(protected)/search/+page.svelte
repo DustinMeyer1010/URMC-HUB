@@ -47,13 +47,13 @@
 
     section {
         position: fixed;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 2rem;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
         padding-bottom: 20px;
-        width: 100%;
+        width: fit-content;
+        place-items: center;
+        gap: 1rem; 
         bottom: 0px;
         left: 50%;
         transform: translateX(-50%);
@@ -61,7 +61,7 @@
     
     @media (max-width: 800px) {
         section {
-            gap: 10px
+            width: 100%;
         }
 
     }

@@ -55,7 +55,7 @@
         padding: 0.5rem;
         border-radius: 5px;
         font-size: 18px;
-        width: 300px;
+        width: 500px;
         color: var(--color-text);
         transition: 0.3s ease;
     }
@@ -67,16 +67,22 @@
     button {
         background: var(--color-bg-opacity-80);
         backdrop-filter: blur(5px);
-        border: 2px solid var(--color-primary);
-        border-radius: 5px;
-        padding: 0 1rem;
+        border: none;
+                box-shadow: 
+        inset 5px 10px 10px 2px rgba(255,255,255,0.15),
+        inset -5px -5px 10px 2px rgba(0,0,0,0.3),
+        5px 5px 10px 2px rgba(0,0,0,0.1);
+        border-radius: 20px;
+        padding: 0 2rem;
         font-weight: bold;
-        color: var(--color-primary);
+        color: var(--color-text);
         transition: 0.3s ease;
     }
 
     button:hover {
-        background: var(--color-primary-hover-opacity-10);
+        box-shadow: 
+        inset -5px -5px 20px 2px rgba(255,255,255,0.1),
+        inset 5px 5px 10px 2px rgba(0,0,0,0.5);
     }
 
     @media (max-width: 601px) {

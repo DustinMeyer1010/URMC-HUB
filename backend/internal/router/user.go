@@ -26,6 +26,24 @@ func userRoutes(mux *mux.Router) {
 		},
 		{
 			methods{"GET"},
+			"/api/user/drives",
+			http.HandlerFunc(handlers.GetUserAvaiableAttributes),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+		{
+			methods{"GET"},
+			"/api/user/groups",
+			http.HandlerFunc(handlers.GetUserAvaiableAttributes),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+		{
+			methods{"GET"},
+			"/api/user/lockout",
+			http.HandlerFunc(handlers.GetUserAvaiableAttributes),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+		{
+			methods{"GET"},
 			"/api/user/{username}",
 			http.HandlerFunc(handlers.PullUserInformation),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
