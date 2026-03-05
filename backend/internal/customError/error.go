@@ -46,7 +46,6 @@ func (e Error) ToString() string {
 	return fmt.Sprintf("Error: %s\nMessage: %s", e.Type, e.Msg)
 }
 
-// refactor
 var (
 	UNAUTHORIZED = Error{
 		http.StatusUnauthorized,

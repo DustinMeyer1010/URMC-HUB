@@ -133,3 +133,32 @@ func GetShareDriveGroups(drive string) models.DrivePageInfo {
 	return result
 
 }
+
+// Given a list of groups will return the drives those groups give access to if any and the drives will be the key and the groups will be the values which means those groups give access to that drive
+func DriveAccess(groups []string) ([]models.DriveAccess, *customError.Error) {
+	var result []models.DriveAccess
+	var driveAccess map[string][]string = make(map[string][]string)
+	groupToDrive, cError := GetGroupToDrivesMapping()
+
+	if cError != nil {
+		return result, cError
+	}
+
+	for _, group := range groups {
+		if drives, ok := groupToDrive[group]; ok {
+			for _, drive := range drives {
+				if _, ok := driveAccess[drive]; ok {
+					driveAccess[drive] = append(driveAccess[drive], group)
+					continue
+				}
+				driveAccess[drive] = []string{group}
+			}
+		}
+	}
+
+	for drive, groups := range driveAccess {
+		result = append(result, models.DriveAccess{Drive: drive, Groups: groups})
+	}
+
+	return result, nil
+}

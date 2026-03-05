@@ -13,52 +13,59 @@ func userRoutes(mux *mux.Router) {
 
 	routes := routes{
 		{
+			// * NEW
 			methods{"GET"},
 			"/api/user",
 			http.HandlerFunc(handlers.GetUser),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
+			// * NEW
 			methods{"GET"},
 			"/api/user/attributes",
 			http.HandlerFunc(handlers.GetUserAvaiableAttributes),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
+			// * NEW
 			methods{"GET"},
 			"/api/user/drives",
-			http.HandlerFunc(handlers.GetUserAvaiableAttributes),
+			http.HandlerFunc(handlers.GetUserDrives),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
+			// * NEW
 			methods{"GET"},
 			"/api/user/groups",
-			http.HandlerFunc(handlers.GetUserAvaiableAttributes),
+			http.HandlerFunc(handlers.GetUserGroups),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
+			// * NEW
 			methods{"GET"},
 			"/api/user/lockout",
-			http.HandlerFunc(handlers.GetUserAvaiableAttributes),
+			http.HandlerFunc(handlers.GetUserLockoutStatus),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
-			methods{"GET"},
-			"/api/user/{username}",
-			http.HandlerFunc(handlers.PullUserInformation),
+			// * NEW
+			methods{"POST", "OPTIONS"},
+			"/api/user",
+			http.HandlerFunc(handlers.UserAddToGroup),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
-			methods{"GET"},
-			"/api/user/{username}/memberof",
-			http.HandlerFunc(handlers.GetMemberOf),
+			// * NEW
+			methods{"DELETE", "OPTIONS"},
+			"/api/user",
+			http.HandlerFunc(handlers.UserRemoveFromGroup),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
-
 		{
+			// * NEW
 			methods{"GET"},
-			"/api/user/{username}/lockout",
-			http.HandlerFunc(handlers.LockOutStatus),
+			"/api/user/lockout",
+			http.HandlerFunc(handlers.GetUserLockoutStatus),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
@@ -66,24 +73,6 @@ func userRoutes(mux *mux.Router) {
 			"/api/user/login",
 			http.HandlerFunc(handlers.Login),
 			middleware.Middleware{middleware.CorsHandler},
-		},
-		{
-			methods{"POST", "OPTIONS"},
-			"/api/drive/access",
-			http.HandlerFunc(handlers.DriveAccess),
-			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
-		},
-		{
-			methods{"POST", "OPTIONS"},
-			"/api/user/{username}/memberof",
-			http.HandlerFunc(handlers.AddGroup),
-			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
-		},
-		{
-			methods{"DELETE", "OPTIONS"},
-			"/api/user/{username}/memberof",
-			http.HandlerFunc(handlers.RemoveGroup),
-			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"POST", "OPTION"},
@@ -95,6 +84,51 @@ func userRoutes(mux *mux.Router) {
 			methods{"POST", "OPTION"},
 			"/api/users/bulk-lookup",
 			http.HandlerFunc(handlers.BulkUserSearch),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+		{
+			// Deprecated: To be Replace with GET /api/user
+			methods{"GET"},
+			"/api/user/{username}",
+			http.HandlerFunc(handlers.PullUserInformation),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+		{
+			// Deprecated: To be Replace with GET /api/user/groups
+			methods{"GET"},
+			"/api/user/{username}/memberof",
+			http.HandlerFunc(handlers.GetMemberOf),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+
+		{
+			// Deprecated: To be Replace with GET /api/user/lockout
+			methods{"GET"},
+			"/api/user/{username}/lockout",
+			http.HandlerFunc(handlers.LockOutStatus),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+
+		{
+			// Deprecated: To be Replace with GET /api/user/drives
+			methods{"POST", "OPTIONS"},
+			"/api/drive/access",
+			http.HandlerFunc(handlers.DriveAccess),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+
+		{
+			// Deprecated: To be Replace with POST /api/user
+			methods{"POST", "OPTIONS"},
+			"/api/user/{username}/memberof",
+			http.HandlerFunc(handlers.AddGroup),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+		{
+			// Deprecated: To be Replace with DELETE /api/user
+			methods{"DELETE", "OPTIONS"},
+			"/api/user/{username}/memberof",
+			http.HandlerFunc(handlers.RemoveGroup),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 	}

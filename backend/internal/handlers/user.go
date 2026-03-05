@@ -15,6 +15,7 @@ import (
 )
 
 // Request handler for getting the lockout information for a user
+// Deprecated: Going to be replaced by GetUserLockoutStatus
 func LockOutStatus(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 
@@ -24,6 +25,26 @@ func LockOutStatus(w http.ResponseWriter, r *http.Request) {
 	matches := ad.LockoutInfoData(username)
 
 	jsonData, _ := json.Marshal(matches)
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
+}
+
+// Deprecated: Going to be replaced by GetUser
+func PullUserInformation(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
+	vars := mux.Vars(r)
+	username := vars["username"]
+
+	user, cError := ad.PullUserInformation(username)
+
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
+		return
+	}
+
+	jsonData, _ := json.Marshal(user)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
@@ -162,6 +183,7 @@ func BulkUserSearch(w http.ResponseWriter, r *http.Request) {
 	w.Write(buf.Bytes())
 }
 
+// Deprecated: Getting replaced with GetUserGroups
 func GetMemberOf(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 	vars := mux.Vars(r)

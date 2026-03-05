@@ -22,8 +22,12 @@ func LookupUser(userDN string, attributes ...string) (map[string][]string, *cust
 		SetAttributes(attributes).
 		SetBaseDN(userDN)
 
-	// ! Handle Error (At some point)
-	sr, _ := config.Search()
+	sr, ldapError := config.Search()
+
+	if ldapError != nil {
+		cError := customError.LDAP_ERROR.NewMessage(ldapError.Error())
+		return map[string][]string{}, &cError
+	}
 
 	var entry *ldap.Entry
 

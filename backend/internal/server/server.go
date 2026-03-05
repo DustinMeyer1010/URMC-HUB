@@ -16,6 +16,7 @@ func Start() {
 	address := fmt.Sprintf("0.0.0.0:%d", 8000)
 	Server = &http.Server{Addr: address, Handler: router}
 	go Server.ListenAndServe()
+	fmt.Println("Server Running")
 	logger.Info("Server Started Successfull on http://localhost:8000")
 
 }

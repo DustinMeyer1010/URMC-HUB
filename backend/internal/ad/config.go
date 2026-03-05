@@ -148,6 +148,31 @@ func (c LDAPSearchConfig) Search() (*ldap.SearchResult, error) {
 	return conn.Search(searchRequest)
 }
 
+// Searches ldap on specific server that is provided
+func (c LDAPSearchConfig) SearchOnServer(server string) (*ldap.SearchResult, error) {
+	conn, cError := ConnectToServer(server)
+	if cError != nil {
+		return nil, cError.GetErrorValue()
+	}
+
+	defer conn.Close()
+	defer conn.Unbind()
+
+	searchRequest := ldap.NewSearchRequest(
+		c.baseDN,
+		c.scope,
+		c.deref,
+		c.sizeLimit,
+		c.timeLimit,
+		c.typesOnly,
+		c.filter,
+		c.attributes,
+		c.control,
+	)
+
+	return conn.Search(searchRequest)
+}
+
 func SearchAllByCategory(category, attribute, value string, attrs ...string) (*ldap.SearchResult, error) {
 
 	filter := fmt.Sprintf("(&(objectCategory=%s)(%s=%s*))", category, attribute, value)
