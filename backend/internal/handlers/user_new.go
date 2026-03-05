@@ -3,6 +3,7 @@ package handlers
 // NOTE: This file will replace user.go just contains all the new functions
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
@@ -81,7 +82,6 @@ func GetUserGroups(w http.ResponseWriter, r *http.Request) {
 	var cError *customError.Error = nil
 
 	if len(attributes) == 0 {
-
 		data, cError = service.GetUserGroups(dn, "samaccountname", "information", "dn", "description", "cn")
 	} else {
 		data, cError = service.GetUserGroups(dn, attributes...)
@@ -102,23 +102,37 @@ func GetUserGroups(w http.ResponseWriter, r *http.Request) {
 // HTTP GET request to retrive specifc ldap user password attempt history.
 // expects a 'dn'
 func GetUserLockoutStatus(w http.ResponseWriter, r *http.Request) {
-	// TODO: Get Lockout Info for user account
+
 	query := r.URL.Query()
 	dn := query.Get("dn")
 
-	data := make([]byte, 0)
-
-	data, _ = service.GetUserLockoutStatus(dn)
+	data := service.GetUserLockoutStatus(dn)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(data)
 }
 
-func UserAddToGroup(w http.ResponseWriter, r *http.Request) {
+// HTTP POST request to add specific ldap user from a group
+func GroupAddToUser(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
 
+	fmt.Println(dn)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("Still Being Implemented"))
 }
 
-func UserRemoveFromGroup(w http.ResponseWriter, r *http.Request) {
+// HTTP DELETE request to remove specific ldap user from a group
+func GroupRemoveFromUser(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
 
+	fmt.Println(dn)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("Still Being Implemented"))
 }

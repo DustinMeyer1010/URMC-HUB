@@ -51,14 +51,14 @@ func userRoutes(mux *mux.Router) {
 			// * NEW
 			methods{"POST", "OPTIONS"},
 			"/api/user",
-			http.HandlerFunc(handlers.UserAddToGroup),
+			http.HandlerFunc(handlers.GroupAddToUser),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			// * NEW
 			methods{"DELETE", "OPTIONS"},
 			"/api/user",
-			http.HandlerFunc(handlers.UserRemoveFromGroup),
+			http.HandlerFunc(handlers.GroupRemoveFromUser),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{

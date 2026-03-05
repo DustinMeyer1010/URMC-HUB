@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/go-ldap/ldap/v3"
@@ -171,6 +172,80 @@ func (c LDAPSearchConfig) SearchOnServer(server string) (*ldap.SearchResult, err
 	)
 
 	return conn.Search(searchRequest)
+}
+
+type LDAPModifyConfig struct {
+	DistinguishedName string
+	Control           []ldap.Control
+}
+
+// NewDefaultModifyConfig creates a new LDAPModifyConfig with the target DN
+// and no additional LDAP controls.
+func NewDefaultModifyConfig(dn string) LDAPModifyConfig {
+	return LDAPModifyConfig{
+		DistinguishedName: dn,
+		Control:           nil,
+	}
+}
+
+// Set the control of a modify config
+func (c LDAPModifyConfig) SetControl(control []ldap.Control) LDAPModifyConfig {
+	c.Control = control
+	return c
+}
+
+// Add appends the specified Distinguished Name (DN) to the "member" attribute
+// of the LDAP object defined in the LDAPModifyConfig. It handles the full
+// connection lifecycle, including connecting, binding, and unbinding.
+func (c LDAPModifyConfig) Add(dn string) *customError.Error {
+
+	conn, cError := connectToLDAP()
+
+	if cError != nil {
+		logger.Error(cError.ToString())
+		return cError
+	}
+	defer conn.Close()
+	defer conn.Unbind()
+
+	addRequest := ldap.NewModifyRequest(c.DistinguishedName, c.Control)
+	addRequest.Add("member", []string{dn})
+	ldapError := conn.Modify(addRequest)
+
+	if ldapError != nil {
+		logger.Error(ldapError)
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return &cError
+	}
+
+	return nil
+
+}
+
+// Removes the specified Distinguished Name (DN) from the "member" attribute
+// of the LDAP object defined in the LDAPModifyConfig. It handles the full
+// connection lifecycle, including connecting, binding, and unbinding.
+func (c LDAPModifyConfig) Remove(dn string) *customError.Error {
+	conn, cError := connectToLDAP()
+
+	if cError != nil {
+		logger.Error(cError.ToString())
+		return cError
+	}
+	defer conn.Close()
+	defer conn.Unbind()
+
+	removeRequest := ldap.NewModifyRequest(c.DistinguishedName, c.Control)
+	removeRequest.Delete("member", []string{dn})
+	ldapError := conn.Modify(removeRequest)
+
+	if ldapError != nil {
+		logger.Error(ldapError)
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return &cError
+	}
+
+	return nil
 }
 
 func SearchAllByCategory(category, attribute, value string, attrs ...string) (*ldap.SearchResult, error) {

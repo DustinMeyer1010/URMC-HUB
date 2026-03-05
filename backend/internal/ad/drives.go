@@ -8,7 +8,7 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-// Will have to be redone
+// REFACTOR: This will be refactored into smaller functions and make it easier to read
 func SearchAllDrives(searchValue string) ([]models.DriveSimpleInfo, *customError.Error) {
 	allDrives := make([]models.DriveSimpleInfo, 0)
 	mapping, err := getDriveToGroupsMapping()

@@ -82,11 +82,11 @@ func GetUserGroups(dn string, attributes ...string) ([]byte, *customError.Error)
 // GetUserLockoutStatus retrieves account lockout and password metadata for a user
 // across all configured URMC domain controllers. It returns the results as a
 // JSON-encoded byte slice.
-func GetUserLockoutStatus(dn string, attributes ...string) ([]byte, *customError.Error) {
+func GetUserLockoutStatus(dn string, attributes ...string) []byte {
 
 	lockout := ad.LookupLockoutStatus(dn)
 
 	jsonData, _ := json.Marshal(lockout)
 
-	return jsonData, nil
+	return jsonData
 }
