@@ -149,7 +149,9 @@ func (c LDAPSearchConfig) Search() (*ldap.SearchResult, error) {
 	return conn.Search(searchRequest)
 }
 
-// Searches ldap on specific server that is provided
+// SearchOnServer executes a defined LDAP search against a specific domain controller.
+// It handles the connection lifecycle to the target server and returns the raw
+// ldap.SearchResult or an error if the connection or query fails.
 func (c LDAPSearchConfig) SearchOnServer(server string) (*ldap.SearchResult, error) {
 	conn, cError := ConnectToServer(server)
 	if cError != nil {
@@ -248,6 +250,7 @@ func (c LDAPModifyConfig) Remove(dn string) *customError.Error {
 	return nil
 }
 
+// Deprecated: This is being replace with LDAPSearchConfig
 func SearchAllByCategory(category, attribute, value string, attrs ...string) (*ldap.SearchResult, error) {
 
 	filter := fmt.Sprintf("(&(objectCategory=%s)(%s=%s*))", category, attribute, value)
@@ -257,6 +260,7 @@ func SearchAllByCategory(category, attribute, value string, attrs ...string) (*l
 	return ldapConfig.Search()
 }
 
+// Deprecated: This is being replace with LDAPSearchConfig
 func SearchByCategory(category, attribute, value string, attrs ...string) (*ldap.SearchResult, error) {
 
 	filter := fmt.Sprintf("(&(objectCategory=%s)(%s=%s))", category, attribute, value)
@@ -266,6 +270,7 @@ func SearchByCategory(category, attribute, value string, attrs ...string) (*ldap
 	return ldapConfig.Search()
 }
 
+// Deprecated: This is being replace with LDAPSearchConfig
 func SearchWithFilter(filter string, attrs ...string) (*ldap.SearchResult, error) {
 
 	ldapConfig := DefaultSearchConfig().SetFilter(filter).SetAttributes(attrs)
@@ -273,6 +278,7 @@ func SearchWithFilter(filter string, attrs ...string) (*ldap.SearchResult, error
 	return ldapConfig.Search()
 }
 
+// Deprecated: This is being replace with LDAPSearchConfig
 func SearchByUserDN(UserDN string, attrs ...string) (*ldap.SearchResult, error) {
 
 	ldapConfig := DefaultSearchConfig().SetFilter("(|(&(objectCategory=person)(objectClass=user)))").SetAttributes(attrs).SetBaseDN(UserDN)
@@ -280,6 +286,7 @@ func SearchByUserDN(UserDN string, attrs ...string) (*ldap.SearchResult, error) 
 	return ldapConfig.Search()
 }
 
+// Deprecated: This is being replace with LDAPSearchConfig
 func SearchGroupByDN(groupDN string, attrs ...string) (*ldap.SearchResult, error) {
 
 	ldapConfig := DefaultSearchConfig().SetFilter("(objectClass=group)").SetAttributes(attrs).SetBaseDN(groupDN)
