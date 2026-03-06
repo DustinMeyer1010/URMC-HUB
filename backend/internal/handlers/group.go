@@ -101,6 +101,7 @@ func GetAllMembers(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Deprecated: Replace with GetGroups
 func PullGroupInfo(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 	vars := mux.Vars(r)

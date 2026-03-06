@@ -25,6 +25,7 @@ func getSearchValue(r *http.Request) (string, *customError.Error) {
 
 }
 
+// Deprecated: Replace with SearchAllGroupsNew
 func SearchAllGroups(r *http.Request) ([]models.GroupSimpleInfo, *customError.Error) {
 
 	searchValue, cError := getSearchValue(r)
@@ -36,6 +37,7 @@ func SearchAllGroups(r *http.Request) ([]models.GroupSimpleInfo, *customError.Er
 	return ad.SearchAllGroups(searchValue)
 }
 
+// Deprecated: Replaces with SearchAll
 func AllSearch(r *http.Request) (models.AllResults, *customError.Error) {
 	searchValue, err := getSearchValue(r)
 
@@ -44,8 +46,4 @@ func AllSearch(r *http.Request) (models.AllResults, *customError.Error) {
 	}
 
 	return ad.AllSearch(searchValue)
-}
-
-func SearchAll(searchValue string) {
-	ad.AllSearchNew(searchValue)
 }

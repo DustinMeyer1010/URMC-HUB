@@ -4,44 +4,30 @@ import (
 	"fmt"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-// Pull all groups that match the search value returning CN, distinguishedName, description, info for each group
-func SearchAllGroups(searchValue string, attributes ...string) ([]models.GroupSimpleInfo, *customError.Error) {
-	groups := []models.GroupSimpleInfo{}
-
-	/*
-		"cn",
-		"distinguishedName",
-		"sAMAccountName",
-		"description",
-		"info",
-	*/
+// Sanitizes a search string and executes a broad group query.
+// It matches the input against standard identity attributes and populates the
+// provided 'groups' pointer with a collection of attribute maps defined by
+// the 'attributes' parameter.
+func SearchAllGroupsNew(groups *[]map[string][]string, searchValue string, attributes ...string) *customError.Error {
+	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
+	filter := fmt.Sprintf("(&(objectCategory=group)(anr=%s))", searchValue)
 
 	searchConfig := DefaultSearchConfig().
-		SetFilter(fmt.Sprintf("(&(objectCategory=group)(anr=%s*))", searchValue)).
+		SetFilter(filter).
 		SetAttributes(attributes)
 
 	searchResults, ldapError := searchConfig.Search()
 
-	if ldapError != nil {
-		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
-		return groups, &cError
+	if cError := checkSearchErrors(ldapError, searchResults); cError != nil {
+		return cError
 	}
 
-	if searchResults == nil {
-		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO RESULTS FOUND FOR: %s", searchValue))
-		return groups, &cError
-	}
+	*groups = ExtractMultipleEntriesAtrributes(searchResults.Entries, attributes)
 
-	for _, entry := range searchResults.Entries {
-		groups = append(groups, models.ToGroupSimpleInfo(entry))
-	}
+	return nil
 
-	return groups, nil
 }
 
 // Performs an LDAP search for a specific group by its Distinguished Name.
@@ -55,21 +41,12 @@ func LookupGroup(groupDN string, attributes ...string) (map[string][]string, *cu
 
 	searchResults, ldapError := searchConfig.Search()
 
-	if ldapError != nil {
-		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
-		return map[string][]string{}, &cError
-	}
-
-	if searchResults == nil || len(searchResults.Entries) == 0 {
-		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO GROUP FOUND FOR: %s", groupDN))
-		logger.Errorf("%v", cError)
-		logger.Debug(searchResults.Entries)
-		return map[string][]string{}, &cError
+	if cError := checkSearchErrors(ldapError, searchResults); cError != nil {
+		return map[string][]string{}, cError
 	}
 
 	entry := searchResults.Entries[0]
 
-	attrs := createAttributeMapping(entry, attributes)
+	attrs := ExtractAttributes(entry, attributes)
 	return attrs, nil
 }

@@ -21,6 +21,43 @@ var LDAP_STRING_REPLACE = strings.NewReplacer(
 
 var RATE_LIMIT = 100
 
+// Pull all groups that match the search value returning CN, distinguishedName, description, info for each group
+// Deprecated: Being replaced by SearchAllGroupsNew
+func SearchAllGroups(searchValue string, attributes ...string) ([]models.GroupSimpleInfo, *customError.Error) {
+	groups := []models.GroupSimpleInfo{}
+
+	/*
+		"cn",
+		"distinguishedName",
+		"sAMAccountName",
+		"description",
+		"info",
+	*/
+
+	searchConfig := DefaultSearchConfig().
+		SetFilter(fmt.Sprintf("(&(objectCategory=group)(anr=%s*))", searchValue)).
+		SetAttributes(attributes)
+
+	searchResults, ldapError := searchConfig.Search()
+
+	if ldapError != nil {
+		logger.Error(ldapError)
+		cError := customError.LDAP_ERROR.NewError(ldapError)
+		return groups, &cError
+	}
+
+	if searchResults == nil {
+		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO RESULTS FOUND FOR: %s", searchValue))
+		return groups, &cError
+	}
+
+	for _, entry := range searchResults.Entries {
+		groups = append(groups, models.ToGroupSimpleInfo(entry))
+	}
+
+	return groups, nil
+}
+
 // Deprecated: Going to be replace by LookupGroup
 func PullGroupInfo(group string, attr ...string) (models.GroupSimpleInfo, *customError.Error) {
 	groupInfo := models.GroupSimpleInfo{}

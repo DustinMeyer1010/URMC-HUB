@@ -164,6 +164,33 @@ func AddGroup(username string, groups []string) ([]models.GroupModifyResults, *c
 	return response, nil
 }
 
+// Looks up users that match the search values. This does a search based on the filters
+// anr & URID. Returns a map with the key being the attribute provided and the value being
+// what active directory returns. If no attribute found for active directory then the value
+// will be an empty string.
+func SearchAllUsers(searchValue string, attr ...string) ([]models.UserSimpleInfo, *customError.Error) {
+
+	matches := make([]models.UserSimpleInfo, 0)
+	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
+	filter := fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue)
+
+	ldapConfig := DefaultSearchConfig().SetFilter(filter).SetAttributes(attr)
+
+	results, ldapError := ldapConfig.Search()
+
+	if cError := checkSearchErrors(ldapError, results); cError != nil {
+		return matches, cError
+	}
+
+	for _, entry := range results.Entries {
+		var user models.UserSimpleInfo
+		user.FillAttributes(entry)
+		matches = append(matches, user)
+	}
+
+	return matches, nil
+}
+
 func RemoveGroup(username string, groups []string) ([]models.GroupModifyResults, *customError.Error) {
 
 	l, cError := connectToLDAP()

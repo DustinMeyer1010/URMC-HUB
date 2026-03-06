@@ -36,6 +36,25 @@ func SearchAllComputers(searchValue string, attributes ...string) ([]models.Comp
 	return computers, nil
 }
 
+func SearchAllComputersNew(computers *[]map[string][]string, searchValue string, attributes ...string) *customError.Error {
+	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
+	filter := fmt.Sprintf("(&(objectCategory=computer)(anr=%s))", searchValue)
+
+	searchConfig := DefaultSearchConfig().
+		SetFilter(filter).
+		SetAttributes(attributes)
+
+	searchResults, ldapError := searchConfig.Search()
+
+	if cError := checkSearchErrors(ldapError, searchResults); cError != nil {
+		return cError
+	}
+
+	*computers = ExtractMultipleEntriesAtrributes(searchResults.Entries, attributes)
+
+	return nil
+}
+
 // Performs an LDAP search for a specific computer by its Distinguished Name.
 // It returns a mapped collection of the requested attributes or a custom error if the
 // computer is not found or the search fails.
@@ -60,7 +79,7 @@ func LookupComputer(computerDN string, attributes ...string) (map[string][]strin
 
 	entry := searchResults.Entries[0]
 
-	attrs := createAttributeMapping(entry, attributes)
+	attrs := ExtractAttributes(entry, attributes)
 
 	return attrs, nil
 }

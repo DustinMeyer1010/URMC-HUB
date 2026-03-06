@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/go-ldap/ldap/v3"
 )
 
@@ -34,39 +33,16 @@ func LookupUser(userDN string, attributes ...string) (map[string][]string, *cust
 		return map[string][]string{}, &customError.NOT_FOUND
 	}
 
-	attrs = createAttributeMapping(entry, attributes)
+	attrs = ExtractAttributes(entry, attributes)
 
 	return attrs, nil
 
 }
 
-// Looks up users that match the search values. This does a search based on the filters
-// anr & URID. Returns a map with the key being the attribute provided and the value being
-// what active directory returns. If no attribute found for active directory then the value
-// will be an empty string.
-func SearchAllUsers(searchValue string, attr ...string) ([]models.UserSimpleInfo, *customError.Error) {
-
-	matches := make([]models.UserSimpleInfo, 0)
-	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
-	filter := fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue)
-
-	ldapConfig := DefaultSearchConfig().SetFilter(filter).SetAttributes(attr)
-
-	results, ldapError := ldapConfig.Search()
-
-	if cError := checkSearchErrors(ldapError, results); cError != nil {
-		return matches, cError
-	}
-
-	for _, entry := range results.Entries {
-		var user models.UserSimpleInfo
-		user.FillAttributes(entry)
-		matches = append(matches, user)
-	}
-
-	return matches, nil
-}
-
+// Sanitizes a search string and executes a broad user query.
+// It matches the input against standard identity attributes and populates the
+// provided 'users' pointer with a collection of attribute maps defined by
+// the 'attributes' parameter.
 func SearchAllUserNew(users *[]map[string][]string, searchValue string, attributes ...string) *customError.Error {
 
 	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
@@ -82,19 +58,15 @@ func SearchAllUserNew(users *[]map[string][]string, searchValue string, attribut
 		return cError
 	}
 
-	// REFACTOR: Create all the mapping for each attribute
-	for _, e := range searchResults.Entries {
-		attr := make(map[string][]string)
-		for i, a := range convertAliases(attributes) {
-			attr[attributes[i]] = e.GetAttributeValues(a)
-		}
-		*users = append(*users, attr)
-	}
+	*users = ExtractMultipleEntriesAtrributes(searchResults.Entries, attributes)
 
 	return nil
 
 }
 
+// Creates a moadify request on the group and then adds the ldap account
+// to that groups. Returns an error based on the results of the ldap
+// modify request
 func GroupAddToUser(userDN, groupDN string) *customError.Error {
 
 	modifyConfig := NewDefaultModifyConfig(groupDN)
@@ -103,6 +75,9 @@ func GroupAddToUser(userDN, groupDN string) *customError.Error {
 
 }
 
+// Creates a modify request on the group and then adds the ldap account
+// to that groups. Returns an error based on the results of the ldap
+// modify request
 func GroupRemoveFromUser(userDN, groupDN string) *customError.Error {
 	modifyConfig := NewDefaultModifyConfig(groupDN)
 

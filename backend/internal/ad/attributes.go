@@ -124,15 +124,13 @@ func convertAliases(attributes []string) []string {
 		}
 		attr = append(attr, GetAttributeAlias(a))
 	}
-
-	fmt.Println(attr)
 	return attr
 }
 
 // Converts attrubutes into the mapping where key is the attrubte and the value will be
 // an array of all the values for that specific attrubte. If * is provided then it will
 // create an mapping of all possible attrubtes
-func createAttributeMapping(entry *ldap.Entry, attributes []string) map[string][]string {
+func ExtractAttributes(entry *ldap.Entry, attributes []string) map[string][]string {
 	attrs := map[string][]string{}
 
 	for i, a := range convertAliases(attributes) {
@@ -144,6 +142,19 @@ func createAttributeMapping(entry *ldap.Entry, attributes []string) map[string][
 
 	return attrs
 
+}
+
+// ExtractMultipleEntriesAttributes iterates through a slice of LDAP entries and
+// transforms each into a mapped representation of its attributes. It returns
+// a slice of maps, where each map corresponds to a single entry's data.
+func ExtractMultipleEntriesAtrributes(entries []*ldap.Entry, attributes []string) []map[string][]string {
+	results := make([]map[string][]string, 1)
+	for _, e := range entries {
+		attr := ExtractAttributes(e, attributes)
+		results = append(results, attr)
+	}
+
+	return results
 }
 
 // Create a mapping of all the attrubutes possible for the entry

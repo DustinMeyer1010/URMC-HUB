@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Deprecated: Replaced with SearchAll
 func AllSearch(w http.ResponseWriter, r *http.Request) {
 
 	logger.LogRequestInfo(r.Method, r.URL.Path)
@@ -31,6 +32,7 @@ func AllSearch(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Deprecated: Replaced with SearchUsers
 func UserSearch(w http.ResponseWriter, r *http.Request) {
 
 	logger.LogRequestInfo(r.Method, r.URL.Path)
@@ -57,6 +59,7 @@ func UserSearch(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
+// Deprecated: Replaced with SearchGroups
 func GroupSearch(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 
@@ -76,6 +79,7 @@ func GroupSearch(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Deprecated: Replaced with SearchPrinters
 func PrinterSearch(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 
@@ -98,6 +102,7 @@ func PrinterSearch(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Deprecated: Replaced with SearchComputer
 func ComputerSearch(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 
@@ -122,6 +127,7 @@ func ComputerSearch(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Deprecated: Replaced with SearchDrives
 func ShareDriveSearch(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 
@@ -136,13 +142,4 @@ func ShareDriveSearch(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
 
-}
-
-func SearchAll(w http.ResponseWriter, r *http.Request) {
-
-	query := r.URL.Query()
-
-	searchValue := query.Get("value")
-
-	service.SearchAll(searchValue)
 }
