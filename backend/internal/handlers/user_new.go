@@ -7,8 +7,10 @@ import (
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/parser"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/utils"
 )
 
 // HTTP GET requests to retrieve specific LDAP user attributes.
@@ -118,11 +120,20 @@ func GroupAddToUser(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	dn := query.Get("dn")
 
-	fmt.Println(dn)
+	var userModify models.UserModifyRequest
+
+	// TODO: Handle this error
+	err := utils.GatherBodyDetails(r.Body, &userModify)
+
+	fmt.Println(err)
+
+	// NOTE: This should not return and error because all modify request will
+	// have the reason on why or why not it was added
+	data := service.GroupAddToUser(dn, userModify.GroupDN)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("Still Being Implemented"))
+	w.Write(data)
 }
 
 // HTTP DELETE request to remove specific ldap user from a group

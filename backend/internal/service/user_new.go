@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
@@ -89,4 +90,23 @@ func GetUserLockoutStatus(dn string, attributes ...string) []byte {
 	jsonData, _ := json.Marshal(lockout)
 
 	return jsonData
+}
+
+func GroupAddToUser(userDN, groupDN string) []byte {
+
+	customError := ad.GroupAddToUser(userDN, groupDN)
+
+	if customError != nil {
+		fmt.Println(customError)
+		return []byte("group was not added")
+	}
+
+	return []byte("group was added")
+
+}
+
+func GroupRemoveFromUser(userDN, groupDN string) ([]byte, *customError.Error) {
+	customError := ad.GroupRemoveFromUser(userDN, groupDN)
+
+	return []byte(""), customError
 }

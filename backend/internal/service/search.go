@@ -45,3 +45,7 @@ func AllSearch(r *http.Request) (models.AllResults, *customError.Error) {
 
 	return ad.AllSearch(searchValue)
 }
+
+func SearchAll(searchValue string) {
+	ad.AllSearchNew(searchValue)
+}

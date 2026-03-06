@@ -75,3 +75,7 @@ func (u *UserDetails) FillAttributes(user *ldap.Entry) {
 	u.Email = user.GetAttributeValue("mail")
 	u.Department = user.GetAttributeValue("department")
 }
+
+type UserModifyRequest struct {
+	GroupDN string `json:"group"`
+}

@@ -20,6 +20,12 @@ func searchRoutes(mux *mux.Router) {
 		},
 		{
 			methods{"GET"},
+			"/api/search",
+			http.HandlerFunc(handlers.SearchAll),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+		{
+			methods{"GET"},
 			"/api/search/groups/{searchValue}",
 			http.HandlerFunc(handlers.GroupSearch),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},

@@ -15,7 +15,7 @@ func checkSearchErrors(ldapErr error, results *ldap.SearchResult) *customError.E
 	}
 
 	if results == nil || len(results.Entries) == 0 {
-		cError := customError.NOT_FOUND.NewMessage("NO USERS FOUND")
+		cError := customError.NOT_FOUND.NewMessage("NOT FOUND")
 		return &cError
 	}
 

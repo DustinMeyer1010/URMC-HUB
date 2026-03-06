@@ -67,6 +67,34 @@ func SearchAllUsers(searchValue string, attr ...string) ([]models.UserSimpleInfo
 	return matches, nil
 }
 
+func SearchAllUserNew(users *[]map[string][]string, searchValue string, attributes ...string) *customError.Error {
+
+	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
+	filter := fmt.Sprintf("(&(objectCategory=user)(|(anr=%s)(URID=%s)))", searchValue, searchValue)
+
+	searchConfig := DefaultSearchConfig().
+		SetFilter(filter).
+		SetAttributes(attributes)
+
+	searchResults, ldapError := searchConfig.Search()
+
+	if cError := checkSearchErrors(ldapError, searchResults); cError != nil {
+		return cError
+	}
+
+	// REFACTOR: Create all the mapping for each attribute
+	for _, e := range searchResults.Entries {
+		attr := make(map[string][]string)
+		for i, a := range convertAliases(attributes) {
+			attr[attributes[i]] = e.GetAttributeValues(a)
+		}
+		*users = append(*users, attr)
+	}
+
+	return nil
+
+}
+
 func GroupAddToUser(userDN, groupDN string) *customError.Error {
 
 	modifyConfig := NewDefaultModifyConfig(groupDN)

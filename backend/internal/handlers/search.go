@@ -137,3 +137,12 @@ func ShareDriveSearch(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 
 }
+
+func SearchAll(w http.ResponseWriter, r *http.Request) {
+
+	query := r.URL.Query()
+
+	searchValue := query.Get("value")
+
+	service.SearchAll(searchValue)
+}
