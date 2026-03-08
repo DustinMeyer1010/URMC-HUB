@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Deprecated: These will fall under edit a person account. Using GroupAddToUser
 func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 	vars := mux.Vars(r)
@@ -46,6 +47,7 @@ func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
+// Deprecated: These will fall under edit a person account. Using GroupRemoveFromUser
 func RemoveUsersFromGroup(w http.ResponseWriter, r *http.Request) {
 	logger.Infof("%s %s", r.Method, r.URL)
 	vars := mux.Vars(r)
@@ -79,6 +81,28 @@ func RemoveUsersFromGroup(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Deprecated: Replace with GetGroups
+func PullGroupInfo(w http.ResponseWriter, r *http.Request) {
+	logger.LogRequestInfo(r.Method, r.URL.Path)
+	vars := mux.Vars(r)
+	group := vars["group"]
+
+	result, cError := ad.PullGroupInfo(group)
+
+	if cError != nil {
+		http.Error(w, cError.Type, cError.StatusCode)
+		w.Write([]byte(cError.Msg))
+		return
+	}
+
+	jsonData, _ := json.Marshal(result)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
+}
+
+// Deprecated: Replaced with GetGroupMemebers
 func GetAllMembers(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 	vars := mux.Vars(r)
@@ -101,27 +125,7 @@ func GetAllMembers(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// Deprecated: Replace with GetGroups
-func PullGroupInfo(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
-	vars := mux.Vars(r)
-	group := vars["group"]
-
-	result, cError := ad.PullGroupInfo(group)
-
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
-		return
-	}
-
-	jsonData, _ := json.Marshal(result)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
-}
-
+// Refactor: This will have to have a new function create to get all the members of a group.
 func GetAllMembersExcel(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)

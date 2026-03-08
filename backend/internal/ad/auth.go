@@ -2,6 +2,7 @@ package ad
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
@@ -9,6 +10,43 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/go-ldap/ldap/v3"
 )
+
+var LDAP_CONNECTION LDAPConnection
+
+type LDAPConnection struct {
+	Conn *ldap.Conn
+}
+
+// Maintains the connection with application and the ldap server
+func (c *LDAPConnection) StartHeartBeat() {
+	ticker := time.NewTicker(1 * time.Minute)
+	go func() {
+		for range ticker.C {
+			fmt.Println("Checking Connection ...")
+			_, err := c.Conn.Search(ldap.NewSearchRequest("", ldap.ScopeBaseObject, ldap.NeverDerefAliases, 0, 0, false, "(objectClass=*)", []string{}, nil))
+			if err != nil {
+				fmt.Println("Restoring Connection")
+				c.Restore()
+			}
+		}
+	}()
+}
+
+// Restores the connection to the ldap server if it is lost
+func (c *LDAPConnection) Restore() error {
+	if c.Conn != nil {
+		c.Conn.Close()
+	}
+
+	newConn, err := connectToLDAP()
+	if err != nil {
+		return err.GetErrorValue()
+	}
+
+	c.Conn = newConn
+
+	return nil
+}
 
 func connectToLDAP() (*ldap.Conn, *customError.Error) {
 
@@ -56,8 +94,23 @@ func Login(user models.UserLogin) *customError.Error {
 	global.Username = user.Username
 	global.Password = user.Password
 
+	CreatePresistantLdapConnection()
+	LDAP_CONNECTION.StartHeartBeat()
+
 	return nil
 
+}
+
+func CreatePresistantLdapConnection() error {
+	conn, err := connectToLDAP()
+
+	if err != nil {
+		return err.GetErrorValue()
+	}
+
+	LDAP_CONNECTION.Conn = conn
+
+	return nil
 }
 
 func ConnectToServer(URL string) (*ldap.Conn, *customError.Error) {

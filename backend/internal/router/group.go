@@ -26,18 +26,21 @@ func groupRoutes(mux *mux.Router) {
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
+			// * NEW
 			methods{"GET"},
 			"/api/group/members",
 			http.HandlerFunc(handlers.GetGroupMembers),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
+			// Deprecated: Route falls under POST api/users
 			methods{"POST", "OPTION"},
 			"/api/group/{group}/members",
 			http.HandlerFunc(handlers.AddUsersToGroup),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
+			// Deprecated: Route falls under DELETE api/users
 			methods{"DELETE", "OPTION"},
 			"/api/group/{group}/members",
 			http.HandlerFunc(handlers.RemoveUsersFromGroup),

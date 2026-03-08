@@ -10,6 +10,7 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 )
 
+// Deprecated: Replace with GetUserDrives
 func DriveAccess(w http.ResponseWriter, r *http.Request) {
 
 	logger.LogRequestInfo(r.Method, r.URL.Path)

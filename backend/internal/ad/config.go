@@ -126,14 +126,6 @@ func (c LDAPSearchConfig) SetBaseDN(baseDN string) LDAPSearchConfig {
 // Searches ldap based on the config struct that is provided
 func (c LDAPSearchConfig) Search() (*ldap.SearchResult, error) {
 
-	conn, cError := connectToLDAP()
-	if cError != nil {
-		return nil, cError.GetErrorValue()
-	}
-
-	defer conn.Close()
-	defer conn.Unbind()
-
 	searchRequest := ldap.NewSearchRequest(
 		c.baseDN,
 		c.scope,
@@ -146,7 +138,7 @@ func (c LDAPSearchConfig) Search() (*ldap.SearchResult, error) {
 		c.control,
 	)
 
-	return conn.Search(searchRequest)
+	return LDAP_CONNECTION.Conn.Search(searchRequest)
 }
 
 // SearchOnServer executes a defined LDAP search against a specific domain controller.

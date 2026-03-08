@@ -7,6 +7,7 @@ import (
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/parser"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/utils"
 )
 
 // HTTP GET requests to retrieve specific LDAP group attributes.
@@ -17,11 +18,11 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 	dn := query.Get("dn")
 	attributes := parser.QueryArray(query.Get("attributes"))
 
-	jsonData, _ := service.GetGroup(dn, attributes...)
+	data, _ := service.GetGroup(dn, attributes...)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonData)
+	w.Write(data)
 }
 
 // HTTP GET requests to retrieve specific LDAP group all attrubutes
@@ -30,15 +31,32 @@ func GetGroupAvaiableAttributes(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	dn := query.Get("dn")
 
-	jsonData, _ := service.GetGroupAvaiableAttributes(dn)
+	data, _ := service.GetGroupAvaiableAttributes(dn)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonData)
+	w.Write(data)
 }
 
-// TODO: Create descrtipiion of the function
+// HTTP GET request to retrieve specific members of ldap group.
+// It will expect a dn, start, end query. This will return the members
+// within the range of start and end up to 1500.
 func GetGroupMembers(w http.ResponseWriter, r *http.Request) {
-	// TODO: This endpoint should get all members the group based
-	// on the search parameter
+	query := r.URL.Query()
+	dn := query.Get("dn")
+	startParm := query.Get("start")
+	endParm := query.Get("end")
+
+	start, end := utils.ExtractStartEndRange(startParm, endParm)
+
+	data, cError := service.GetGroupMembers(dn, start, end)
+
+	if cError != nil {
+		http.Error(w, cError.Msg, cError.StatusCode)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
 }

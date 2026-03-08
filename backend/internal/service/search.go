@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Deprecated: No longer needed as search are query based
 func getSearchValue(r *http.Request) (string, *customError.Error) {
 	vars := mux.Vars(r)
 	searchValue := vars["searchValue"]

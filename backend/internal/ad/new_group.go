@@ -50,3 +50,25 @@ func LookupGroup(groupDN string, attributes ...string) (map[string][]string, *cu
 	attrs := ExtractAttributes(entry, attributes)
 	return attrs, nil
 }
+
+func GetGroupMembers(groupDN string, start, end int) (map[string][]string, *customError.Error) {
+	attr := make(map[string][]string, 0)
+	memberAttr := []string{fmt.Sprintf("member;range=%d-%d", start, end)}
+
+	searchConfig := DefaultSearchConfig().SetBaseDN(groupDN).SetAttributes(memberAttr)
+
+	searchResults, ldapError := searchConfig.Search()
+
+	if cError := checkSearchErrors(ldapError, searchResults); cError != nil {
+		return map[string][]string{}, cError
+	}
+
+	entry := searchResults.Entries[0]
+
+	for _, a := range entry.Attributes {
+		attr["members"] = a.Values
+	}
+
+	return attr, nil
+
+}

@@ -141,7 +141,6 @@ func ExtractAttributes(entry *ldap.Entry, attributes []string) map[string][]stri
 	}
 
 	return attrs
-
 }
 
 // ExtractMultipleEntriesAttributes iterates through a slice of LDAP entries and

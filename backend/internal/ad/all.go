@@ -12,6 +12,7 @@ import (
 // REFACTOR: I think that I am going to refactor this to search based on the lookup functions.
 // Then later on convert them into the their primary models. Might require creating go routes
 // then return those values in their own channels or something
+// Deprecated: Replaced with SearchAll
 func AllSearch(search string) (models.AllResults, *customError.Error) {
 	result := models.AllResults{}
 	result.Users = make([]models.UserSimpleInfo, 0)

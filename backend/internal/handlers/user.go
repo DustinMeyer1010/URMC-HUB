@@ -15,6 +15,7 @@ import (
 )
 
 // Request handler for getting the lockout information for a user
+//
 // Deprecated: Going to be replaced by GetUserLockoutStatus
 func LockOutStatus(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)

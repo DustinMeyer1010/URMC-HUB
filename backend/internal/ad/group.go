@@ -296,6 +296,7 @@ func ModifyGroupRemoveMember(groupDN, user string) *customError.Error {
 // * Retrives all the members of a specific group
 // REFACTOR: This has to be refactor to be easier to read
 // NOTE: Total Retrive per request 1500
+// Deprecated: Replaced with GetGroupMembers
 func GetAllMembers(group string) ([]string, *customError.Error) {
 	start := 0
 	end := 1499
