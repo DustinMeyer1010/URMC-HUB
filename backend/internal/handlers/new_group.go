@@ -62,3 +62,13 @@ func GetGroupMembers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(data)
 }
+
+// TODO: Add a user to group
+func UserAddtOGroup(w http.ResponseWriter, r *http.Request) {
+
+}
+
+// TODO: Remove user from group
+func UserRemoveFromGroup(w http.ResponseWriter, r *http.Request) {
+
+}

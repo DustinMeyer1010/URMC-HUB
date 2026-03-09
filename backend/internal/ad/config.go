@@ -126,6 +126,8 @@ func (c LDAPSearchConfig) SetBaseDN(baseDN string) LDAPSearchConfig {
 // Searches ldap based on the config struct that is provided
 func (c LDAPSearchConfig) Search() (*ldap.SearchResult, error) {
 
+	LDAP_CONNECTION.CheckConnection()
+
 	searchRequest := ldap.NewSearchRequest(
 		c.baseDN,
 		c.scope,
@@ -193,18 +195,14 @@ func (c LDAPModifyConfig) SetControl(control []ldap.Control) LDAPModifyConfig {
 // connection lifecycle, including connecting, binding, and unbinding.
 func (c LDAPModifyConfig) Add(dn string) error {
 
-	conn, cError := connectToLDAP()
+	LDAP_CONNECTION.mutex.Lock()
+	defer LDAP_CONNECTION.mutex.Unlock()
 
-	if cError != nil {
-		logger.Error(cError.Error())
-		return cError
-	}
-	defer conn.Close()
-	defer conn.Unbind()
+	LDAP_CONNECTION.CheckConnection()
 
 	addRequest := ldap.NewModifyRequest(c.DistinguishedName, c.Control)
 	addRequest.Add("member", []string{dn})
-	ldapError := conn.Modify(addRequest)
+	ldapError := LDAP_CONNECTION.Conn.Modify(addRequest)
 
 	if ldapError != nil {
 		logger.Error(ldapError)
@@ -220,18 +218,12 @@ func (c LDAPModifyConfig) Add(dn string) error {
 // of the LDAP object defined in the LDAPModifyConfig. It handles the full
 // connection lifecycle, including connecting, binding, and unbinding.
 func (c LDAPModifyConfig) Remove(dn string) error {
-	conn, cError := connectToLDAP()
-
-	if cError != nil {
-		logger.Error(cError.Error())
-		return cError
-	}
-	defer conn.Close()
-	defer conn.Unbind()
+	LDAP_CONNECTION.mutex.Lock()
+	defer LDAP_CONNECTION.mutex.Unlock()
 
 	removeRequest := ldap.NewModifyRequest(c.DistinguishedName, c.Control)
 	removeRequest.Delete("member", []string{dn})
-	ldapError := conn.Modify(removeRequest)
+	ldapError := LDAP_CONNECTION.Conn.Modify(removeRequest)
 
 	if ldapError != nil {
 		logger.Error(ldapError)

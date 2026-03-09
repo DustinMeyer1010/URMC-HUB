@@ -26,3 +26,7 @@ func ToGroupSimpleInfo(entry *ldap.Entry) GroupSimpleInfo {
 type ModifyMembers struct {
 	Members []string `json:"members"`
 }
+
+type GroupModifyRequest struct {
+	UserDN string `json:"user"`
+}

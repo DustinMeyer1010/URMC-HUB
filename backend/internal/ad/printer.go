@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
@@ -21,41 +22,63 @@ func SearchAllPrinters(searchValue string) ([]models.PrinterSimpleInfo, error) {
 	}
 
 	for _, printer := range printersList {
-		compare := fmt.Sprintf("\\\\%s\\%s %s %s %s %s %s", printer.Server, printer.Queue, printer.Model, printer.IP, printer.PrintProcessor, printer.Location, printer.Notes)
-		if strings.Contains(strings.ToLower(compare), strings.ToLower(searchValue)) {
+		if checkForMatchingPrinter(printer, searchValue) {
 			printers = append(printers, printer)
 		}
-	}
-	// Only returning the top 100 results
-	if len(printers) > 100 {
-		printers = printers[0:100]
+
+		// Only want 100 matching printers
+		if len(printers) > 100 {
+			break
+		}
+
 	}
 
 	return printers, nil
 }
 
+func checkForMatchingPrinter(printer models.PrinterSimpleInfo, searchValue string) bool {
+	compare := fmt.Sprintf("\\\\%s\\%s %s %s %s %s %s", printer.Server, printer.Queue, printer.Model, printer.IP, printer.PrintProcessor, printer.Location, printer.Notes)
+
+	if strings.Contains(strings.ToLower(compare), strings.ToLower(searchValue)) {
+		return true
+	}
+
+	return false
+}
+
 // Retrieves the printer queue from the server
 func fetchPrinters() ([]models.PrinterSimpleInfo, error) {
-	printers := make([]models.PrinterSimpleInfo, 0)
+
 	// Make a GET request
-	resp, requestError := http.Get("https://apps.mc.rochester.edu/ISD/SIG/PrintQueues/PrintQReport.csv")
+	resp, requestError := http.Get(global.PRINTQUEUEREPORT)
 
 	if requestError != nil {
 		logger.Error(requestError)
 		cError := errs.REQUEST_ERROR.NewError(requestError)
-		return printers, &cError
+		return nil, &cError
 	}
 	defer resp.Body.Close()
 
-	file := csv.NewReader(resp.Body)
+	printers, csvError := readPrinterFromExcel(csv.NewReader(resp.Body))
+
+	if csvError != nil {
+		return nil, csvError
+	}
+
+	return printers, nil
+}
+
+func readPrinterFromExcel(file *csv.Reader) ([]models.PrinterSimpleInfo, error) {
 
 	records, fileReadError := file.ReadAll()
 
 	if fileReadError != nil {
 		logger.Error(fileReadError)
 		cError := errs.READ_FILE_ERROR.NewError(fileReadError)
-		return printers, &cError
+		return nil, &cError
 	}
+
+	var printers []models.PrinterSimpleInfo
 
 	for _, record := range records {
 		printers = append(printers, models.PrinterSimpleInfo{

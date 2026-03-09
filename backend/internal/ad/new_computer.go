@@ -69,12 +69,12 @@ func LookupComputer(computerDN string, attributes ...string) (map[string][]strin
 	if ldapError != nil {
 		logger.Error(ldapError)
 		cError := errs.LDAP_ERROR.NewError(ldapError)
-		return map[string][]string{}, &cError
+		return nil, &cError
 	}
 
 	if searchResults == nil || len(searchResults.Entries) == 0 {
 		cError := errs.NOT_FOUND.NewMessage(fmt.Sprintf("NO COMPUTER FOUND FOR: %s", computerDN))
-		return map[string][]string{}, &cError
+		return nil, &cError
 	}
 
 	entry := searchResults.Entries[0]
