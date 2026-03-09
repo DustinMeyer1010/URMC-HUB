@@ -3,7 +3,6 @@ package ad
 import (
 	"sync"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/go-ldap/ldap/v3"
@@ -13,7 +12,7 @@ import (
 // Then later on convert them into the their primary models. Might require creating go routes
 // then return those values in their own channels or something
 // Deprecated: Replaced with SearchAll
-func AllSearch(search string) (models.AllResults, *customError.Error) {
+func AllSearch(search string) (models.AllResults, error) {
 	result := models.AllResults{}
 	result.Users = make([]models.UserSimpleInfo, 0)
 	result.Computers = make([]models.ComputerSimpleInfo, 0)

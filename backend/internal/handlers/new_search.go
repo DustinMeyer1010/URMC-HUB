@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/parser"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 )
@@ -34,8 +35,9 @@ func SearchUsers(w http.ResponseWriter, r *http.Request) {
 
 	data, cError := service.SearchAllUsers(searchValue, attributes...)
 
-	if cError != nil {
-		http.Error(w, cError.Msg, cError.StatusCode)
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -56,8 +58,9 @@ func SearchGroups(w http.ResponseWriter, r *http.Request) {
 
 	data, cError := service.SearchAllGroupsNew(searchValue, attributes...)
 
-	if cError != nil {
-		http.Error(w, cError.Msg, cError.StatusCode)
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -77,8 +80,9 @@ func SearchComputer(w http.ResponseWriter, r *http.Request) {
 
 	data, cError := service.SearchAllComputers(searchValue, attributes...)
 
-	if cError != nil {
-		http.Error(w, cError.Msg, cError.StatusCode)
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -93,8 +97,9 @@ func SearchDrives(w http.ResponseWriter, r *http.Request) {
 
 	data, cError := service.SearchAllDrives(searchValue)
 
-	if cError != nil {
-		http.Error(w, cError.Msg, cError.StatusCode)
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -109,8 +114,9 @@ func SearchPrinters(w http.ResponseWriter, r *http.Request) {
 
 	data, cError := service.SearchAllPrinters(searchValue)
 
-	if cError != nil {
-		http.Error(w, cError.Msg, cError.StatusCode)
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 

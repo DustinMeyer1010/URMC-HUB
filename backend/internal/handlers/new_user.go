@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/parser"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
@@ -23,9 +23,9 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	data, cError := service.GetUser(dn, attributes...)
 
-	if cError != nil {
-		w.WriteHeader(cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -42,9 +42,9 @@ func GetUserAvaiableAttributes(w http.ResponseWriter, r *http.Request) {
 
 	data, cError := service.GetUserAvaiableAttributes(dn)
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -60,9 +60,9 @@ func GetUserDrives(w http.ResponseWriter, r *http.Request) {
 	dn := query.Get("dn")
 	data, cError := service.GetUserDrives(dn)
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -81,7 +81,7 @@ func GetUserGroups(w http.ResponseWriter, r *http.Request) {
 	attributes := parser.QueryArray(query.Get("attributes"))
 
 	data := make([]byte, 0)
-	var cError *customError.Error = nil
+	var cError error = nil
 
 	if len(attributes) == 0 {
 		data, cError = service.GetUserGroups(dn, "samaccountname", "information", "dn", "description", "cn")
@@ -89,9 +89,9 @@ func GetUserGroups(w http.ResponseWriter, r *http.Request) {
 		data, cError = service.GetUserGroups(dn, attributes...)
 	}
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/go-ldap/ldap/v3"
@@ -147,7 +147,7 @@ func (c LDAPSearchConfig) Search() (*ldap.SearchResult, error) {
 func (c LDAPSearchConfig) SearchOnServer(server string) (*ldap.SearchResult, error) {
 	conn, cError := ConnectToServer(server)
 	if cError != nil {
-		return nil, cError.GetErrorValue()
+		return nil, cError
 	}
 
 	defer conn.Close()
@@ -191,12 +191,12 @@ func (c LDAPModifyConfig) SetControl(control []ldap.Control) LDAPModifyConfig {
 // Add appends the specified Distinguished Name (DN) to the "member" attribute
 // of the LDAP object defined in the LDAPModifyConfig. It handles the full
 // connection lifecycle, including connecting, binding, and unbinding.
-func (c LDAPModifyConfig) Add(dn string) *customError.Error {
+func (c LDAPModifyConfig) Add(dn string) error {
 
 	conn, cError := connectToLDAP()
 
 	if cError != nil {
-		logger.Error(cError.ToString())
+		logger.Error(cError.Error())
 		return cError
 	}
 	defer conn.Close()
@@ -208,7 +208,7 @@ func (c LDAPModifyConfig) Add(dn string) *customError.Error {
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return &cError
 	}
 
@@ -219,11 +219,11 @@ func (c LDAPModifyConfig) Add(dn string) *customError.Error {
 // Removes the specified Distinguished Name (DN) from the "member" attribute
 // of the LDAP object defined in the LDAPModifyConfig. It handles the full
 // connection lifecycle, including connecting, binding, and unbinding.
-func (c LDAPModifyConfig) Remove(dn string) *customError.Error {
+func (c LDAPModifyConfig) Remove(dn string) error {
 	conn, cError := connectToLDAP()
 
 	if cError != nil {
-		logger.Error(cError.ToString())
+		logger.Error(cError.Error())
 		return cError
 	}
 	defer conn.Close()
@@ -235,7 +235,7 @@ func (c LDAPModifyConfig) Remove(dn string) *customError.Error {
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return &cError
 	}
 

@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 )
@@ -27,10 +28,9 @@ func DriveAccess(w http.ResponseWriter, r *http.Request) {
 
 	drives, cError := service.GetDriveAccess(groups)
 
-	if cError != nil {
-		logger.Errorf("%s %s", cError.Type, cError.Msg)
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 

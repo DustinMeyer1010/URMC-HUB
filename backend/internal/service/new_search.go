@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 )
 
 func SearchAll(searchValue string) []byte {
@@ -15,7 +14,7 @@ func SearchAll(searchValue string) []byte {
 	return jsonData
 }
 
-func SearchAllUsers(searchValue string, attributes ...string) ([]byte, *customError.Error) {
+func SearchAllUsers(searchValue string, attributes ...string) ([]byte, error) {
 	users := new([]map[string][]string)
 	cError := ad.SearchAllUserNew(users, searchValue, attributes...)
 
@@ -28,7 +27,7 @@ func SearchAllUsers(searchValue string, attributes ...string) ([]byte, *customEr
 	return jsonData, nil
 }
 
-func SearchAllGroupsNew(searchValue string, attributes ...string) ([]byte, *customError.Error) {
+func SearchAllGroupsNew(searchValue string, attributes ...string) ([]byte, error) {
 	groups := new([]map[string][]string)
 	cError := ad.SearchAllGroupsNew(groups, searchValue, attributes...)
 
@@ -41,7 +40,7 @@ func SearchAllGroupsNew(searchValue string, attributes ...string) ([]byte, *cust
 	return jsonData, nil
 }
 
-func SearchAllComputers(searchValue string, attributes ...string) ([]byte, *customError.Error) {
+func SearchAllComputers(searchValue string, attributes ...string) ([]byte, error) {
 	computers := new([]map[string][]string)
 	cError := ad.SearchAllComputersNew(computers, searchValue, attributes...)
 
@@ -54,7 +53,7 @@ func SearchAllComputers(searchValue string, attributes ...string) ([]byte, *cust
 	return jsonData, nil
 }
 
-func SearchAllDrives(searchValue string) ([]byte, *customError.Error) {
+func SearchAllDrives(searchValue string) ([]byte, error) {
 	drives, cError := ad.SearchAllDrives(searchValue)
 
 	if cError != nil {
@@ -66,7 +65,7 @@ func SearchAllDrives(searchValue string) ([]byte, *customError.Error) {
 	return jsonData, nil
 }
 
-func SearchAllPrinters(searchValue string) ([]byte, *customError.Error) {
+func SearchAllPrinters(searchValue string) ([]byte, error) {
 	printers, cError := ad.SearchAllPrinters(searchValue)
 
 	if cError != nil {

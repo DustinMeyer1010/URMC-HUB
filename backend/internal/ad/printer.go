@@ -6,13 +6,13 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
 // Matches printer to the search
-func SearchAllPrinters(searchValue string) ([]models.PrinterSimpleInfo, *customError.Error) {
+func SearchAllPrinters(searchValue string) ([]models.PrinterSimpleInfo, error) {
 	printers := make([]models.PrinterSimpleInfo, 0)
 	printersList, cError := fetchPrinters()
 
@@ -35,14 +35,14 @@ func SearchAllPrinters(searchValue string) ([]models.PrinterSimpleInfo, *customE
 }
 
 // Retrieves the printer queue from the server
-func fetchPrinters() ([]models.PrinterSimpleInfo, *customError.Error) {
+func fetchPrinters() ([]models.PrinterSimpleInfo, error) {
 	printers := make([]models.PrinterSimpleInfo, 0)
 	// Make a GET request
 	resp, requestError := http.Get("https://apps.mc.rochester.edu/ISD/SIG/PrintQueues/PrintQReport.csv")
 
 	if requestError != nil {
 		logger.Error(requestError)
-		cError := customError.REQUEST_ERROR.NewError(requestError)
+		cError := errs.REQUEST_ERROR.NewError(requestError)
 		return printers, &cError
 	}
 	defer resp.Body.Close()
@@ -53,7 +53,7 @@ func fetchPrinters() ([]models.PrinterSimpleInfo, *customError.Error) {
 
 	if fileReadError != nil {
 		logger.Error(fileReadError)
-		cError := customError.READ_FILE_ERROR.NewError(fileReadError)
+		cError := errs.READ_FILE_ERROR.NewError(fileReadError)
 		return printers, &cError
 	}
 
@@ -72,7 +72,7 @@ func fetchPrinters() ([]models.PrinterSimpleInfo, *customError.Error) {
 	return printers, nil
 }
 
-func PullSinglePrinterInformation(printer string) (models.PrinterSimpleInfo, *customError.Error) {
+func PullSinglePrinterInformation(printer string) (models.PrinterSimpleInfo, error) {
 	printersList, cError := fetchPrinters()
 
 	if cError != nil {
@@ -85,13 +85,13 @@ func PullSinglePrinterInformation(printer string) (models.PrinterSimpleInfo, *cu
 		}
 	}
 
-	cError1 := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO PRINTER FOUND FOR: %s", printer))
+	cError1 := errs.NOT_FOUND.NewMessage(fmt.Sprintf("NO PRINTER FOUND FOR: %s", printer))
 
 	return models.PrinterSimpleInfo{}, &cError1
 
 }
 
-func RelatedPrinters(ip string) ([]models.PrinterSimpleInfo, *customError.Error) {
+func RelatedPrinters(ip string) ([]models.PrinterSimpleInfo, error) {
 	printerList, cError := fetchPrinters()
 	var relatedPrinters []models.PrinterSimpleInfo
 

@@ -4,11 +4,10 @@ import (
 	"os/exec"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func ComputerInfo(computer string) (models.ComputerPageInfo, *customError.Error) {
+func ComputerInfo(computer string) (models.ComputerPageInfo, error) {
 	var isOnline bool = true
 
 	computerInfo, cError := ad.PullComputerInformation(computer)

@@ -5,6 +5,7 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/parser"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/utils"
@@ -51,8 +52,9 @@ func GetGroupMembers(w http.ResponseWriter, r *http.Request) {
 
 	data, cError := service.GetGroupMembers(dn, start, end)
 
-	if cError != nil {
-		http.Error(w, cError.Msg, cError.StatusCode)
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 

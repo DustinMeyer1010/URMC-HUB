@@ -5,7 +5,7 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
@@ -40,7 +40,7 @@ func LockoutInfoData(user string) (matches []models.LockOutStatus) {
 }
 
 // Deprecated: This is being replace with gatherLockoutStatusAttributes
-func ServerLockout(server string, user string, attr ...string) (models.LockOutStatus, *customError.Error) {
+func ServerLockout(server string, user string, attr ...string) (models.LockOutStatus, error) {
 
 	l, cError := ConnectToServer("LDAP://" + server)
 
@@ -61,12 +61,12 @@ func ServerLockout(server string, user string, attr ...string) (models.LockOutSt
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return models.LockOutStatus{}, &cError
 	}
 
 	if results == nil {
-		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO USER FOUND FOR: %s", user))
+		cError := errs.NOT_FOUND.NewMessage(fmt.Sprintf("NO USER FOUND FOR: %s", user))
 		return models.LockOutStatus{}, &cError
 	}
 

@@ -6,13 +6,12 @@ import (
 	"sync"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 )
 
 // Retrieves a group's attributes by DistinguishedName and returns them as JSON.
 // If attributes is empty, it returns the DistinguishedName. Returns a NOT_FOUND error, if
 // the group is not found
-func GetGroup(dn string, attributes ...string) ([]byte, *customError.Error) {
+func GetGroup(dn string, attributes ...string) ([]byte, error) {
 
 	attr, _ := ad.LookupGroup(dn, attributes...)
 
@@ -24,7 +23,7 @@ func GetGroup(dn string, attributes ...string) ([]byte, *customError.Error) {
 
 // Retrieves a group's attributes by DistinguishedName and returns them as []byte.
 // Returns a NOT_FOUND error if group is not found
-func GetGroupAvaiableAttributes(dn string) ([]byte, *customError.Error) {
+func GetGroupAvaiableAttributes(dn string) ([]byte, error) {
 	attr, _ := ad.LookupGroup(dn, "*")
 
 	var allAttributesNames strings.Builder
@@ -34,7 +33,7 @@ func GetGroupAvaiableAttributes(dn string) ([]byte, *customError.Error) {
 	return []byte(allAttributesNames.String()), nil
 }
 
-func GetGroupMembers(dn string, start, end int) ([]byte, *customError.Error) {
+func GetGroupMembers(dn string, start, end int) ([]byte, error) {
 
 	membersDN, cError := ad.GetGroupMembers(dn, start, end)
 

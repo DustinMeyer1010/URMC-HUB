@@ -2,9 +2,10 @@ package ad
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
@@ -14,7 +15,8 @@ import (
 var LDAP_CONNECTION LDAPConnection
 
 type LDAPConnection struct {
-	Conn *ldap.Conn
+	Conn  *ldap.Conn
+	mutex sync.Mutex
 }
 
 // Maintains the connection with application and the ldap server
@@ -22,12 +24,18 @@ func (c *LDAPConnection) StartHeartBeat() {
 	ticker := time.NewTicker(1 * time.Minute)
 	go func() {
 		for range ticker.C {
+			c.mutex.Lock()
 			fmt.Println("Checking Connection ...")
 			_, err := c.Conn.Search(ldap.NewSearchRequest("", ldap.ScopeBaseObject, ldap.NeverDerefAliases, 0, 0, false, "(objectClass=*)", []string{}, nil))
 			if err != nil {
 				fmt.Println("Restoring Connection")
-				c.Restore()
+				err := c.Restore()
+
+				if err != nil {
+					panic("something wrong with ldap")
+				}
 			}
+			c.mutex.Unlock()
 		}
 	}()
 }
@@ -38,9 +46,14 @@ func (c *LDAPConnection) Restore() error {
 		c.Conn.Close()
 	}
 
-	newConn, err := connectToLDAP()
-	if err != nil {
-		return err.GetErrorValue()
+	var newConn *ldap.Conn
+	var err error
+
+	for range 5 {
+		newConn, err = connectToLDAP()
+		if err == nil {
+			break
+		}
 	}
 
 	c.Conn = newConn
@@ -48,10 +61,10 @@ func (c *LDAPConnection) Restore() error {
 	return nil
 }
 
-func connectToLDAP() (*ldap.Conn, *customError.Error) {
+func connectToLDAP() (*ldap.Conn, error) {
 
 	if global.Username == "" || global.Password == "" {
-		cError := customError.UNAUTHORIZED
+		cError := errs.UNAUTHORIZED
 		return nil, &cError
 	}
 
@@ -59,27 +72,27 @@ func connectToLDAP() (*ldap.Conn, *customError.Error) {
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return nil, &cError
 	}
 
 	ldapError = l.Bind(formatUsername(global.Username), global.Password)
 
 	if ldapError != nil {
-		cError := customError.UNAUTHORIZED
+		cError := errs.UNAUTHORIZED
 		return nil, &cError
 	}
 
 	return l, nil
 }
 
-func Login(user models.UserLogin) *customError.Error {
+func Login(user models.UserLogin) error {
 
 	l, ldapError := ldap.DialURL(global.URMC_LDAP)
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return &cError
 	}
 
@@ -87,7 +100,7 @@ func Login(user models.UserLogin) *customError.Error {
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return &cError
 	}
 
@@ -105,7 +118,7 @@ func CreatePresistantLdapConnection() error {
 	conn, err := connectToLDAP()
 
 	if err != nil {
-		return err.GetErrorValue()
+		return err
 	}
 
 	LDAP_CONNECTION.Conn = conn
@@ -113,9 +126,9 @@ func CreatePresistantLdapConnection() error {
 	return nil
 }
 
-func ConnectToServer(URL string) (*ldap.Conn, *customError.Error) {
+func ConnectToServer(URL string) (*ldap.Conn, error) {
 	if global.Username == "" || global.Password == "" {
-		cError := customError.NOT_LOGGED_IN
+		cError := errs.NOT_LOGGED_IN
 		return nil, &cError
 	}
 
@@ -123,7 +136,7 @@ func ConnectToServer(URL string) (*ldap.Conn, *customError.Error) {
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return nil, &cError
 	}
 
@@ -131,14 +144,14 @@ func ConnectToServer(URL string) (*ldap.Conn, *customError.Error) {
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return nil, &cError
 	}
 
 	return l, nil
 }
 
-func Verify() *customError.Error {
+func Verify() error {
 	_, cError := connectToLDAP()
 	return cError
 }

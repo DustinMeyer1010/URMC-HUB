@@ -6,13 +6,12 @@ import (
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/utils"
 )
 
 // Find user based on the dn given and return attributes mapped to their values.
 // If no user is found then it will return a NOT_FOUND error
-func GetUser(dn string, attributes ...string) ([]byte, *customError.Error) {
+func GetUser(dn string, attributes ...string) ([]byte, error) {
 	attrs, cError := ad.LookupUser(dn, attributes...)
 
 	jsonData, _ := json.Marshal(attrs)
@@ -22,7 +21,7 @@ func GetUser(dn string, attributes ...string) ([]byte, *customError.Error) {
 
 // Find user based on DN provided and will return all avaiable attrubtes for
 // that specific user. If no user is found than it will return a NOT_FOUND error
-func GetUserAvaiableAttributes(dn string) ([]byte, *customError.Error) {
+func GetUserAvaiableAttributes(dn string) ([]byte, error) {
 	attr, _ := ad.LookupUser(dn, "*")
 
 	var allAttributesNames strings.Builder
@@ -35,7 +34,7 @@ func GetUserAvaiableAttributes(dn string) ([]byte, *customError.Error) {
 // Find user based on DN. Finds all drives they have access to based
 // on the groups they have. This will return an empty byte if no groups are
 // found. Returns error if any problems are ran into
-func GetUserDrives(dn string) ([]byte, *customError.Error) {
+func GetUserDrives(dn string) ([]byte, error) {
 
 	attr, cError := ad.LookupUser(dn, "memberof")
 
@@ -59,7 +58,7 @@ func GetUserDrives(dn string) ([]byte, *customError.Error) {
 // Finds user based on DN. Pulls all the groups for that user and will return
 // all the groups they are appart off with attributes provided. If no attributes
 // provided it will search with samaccountname, cn, dn, information, description.
-func GetUserGroups(dn string, attributes ...string) ([]byte, *customError.Error) {
+func GetUserGroups(dn string, attributes ...string) ([]byte, error) {
 	user, cError := ad.LookupUser(dn, "memberof")
 
 	groups := []map[string][]string{}
@@ -94,10 +93,10 @@ func GetUserLockoutStatus(dn string, attributes ...string) []byte {
 
 func GroupAddToUser(userDN, groupDN string) []byte {
 
-	customError := ad.GroupAddToUser(userDN, groupDN)
+	errs := ad.GroupAddToUser(userDN, groupDN)
 
-	if customError != nil {
-		fmt.Println(customError)
+	if errs != nil {
+		fmt.Println(errs)
 		return []byte("group was not added")
 	}
 
@@ -105,8 +104,8 @@ func GroupAddToUser(userDN, groupDN string) []byte {
 
 }
 
-func GroupRemoveFromUser(userDN, groupDN string) ([]byte, *customError.Error) {
-	customError := ad.GroupRemoveFromUser(userDN, groupDN)
+func GroupRemoveFromUser(userDN, groupDN string) ([]byte, error) {
+	errs := ad.GroupRemoveFromUser(userDN, groupDN)
 
-	return []byte(""), customError
+	return []byte(""), errs
 }

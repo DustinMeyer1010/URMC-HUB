@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
@@ -39,9 +39,9 @@ func PullUserInformation(w http.ResponseWriter, r *http.Request) {
 
 	user, cError := ad.PullUserInformation(username)
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -64,7 +64,7 @@ func RemoveGroup(w http.ResponseWriter, r *http.Request) {
 	decoder.DisallowUnknownFields()
 
 	if jsonError := decoder.Decode(&userModify); jsonError != nil {
-		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS IN BODY")
+		cError := errs.INVALID_BODY.NewMessage("INVALID GROUPS IN BODY")
 		http.Error(w, cError.Type, cError.StatusCode)
 		w.Write([]byte(cError.Msg))
 		return
@@ -72,9 +72,9 @@ func RemoveGroup(w http.ResponseWriter, r *http.Request) {
 
 	modifyResults, cError := ad.RemoveGroup(username, userModify.Groups)
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -98,7 +98,7 @@ func AddGroup(w http.ResponseWriter, r *http.Request) {
 	decoder.DisallowUnknownFields()
 
 	if jsonError := decoder.Decode(&userModify); jsonError != nil {
-		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS IN BODY")
+		cError := errs.INVALID_BODY.NewMessage("INVALID GROUPS IN BODY")
 		http.Error(w, cError.Type, cError.StatusCode)
 		w.Write([]byte(cError.Msg))
 		return
@@ -106,9 +106,9 @@ func AddGroup(w http.ResponseWriter, r *http.Request) {
 
 	modifyResults, cError := ad.AddGroup(username, userModify.Groups)
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -192,9 +192,9 @@ func GetMemberOf(w http.ResponseWriter, r *http.Request) {
 
 	groups, cError := service.GetMemberOf(username)
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 

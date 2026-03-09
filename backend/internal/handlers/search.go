@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
 	"github.com/gorilla/mux"
@@ -18,9 +19,9 @@ func AllSearch(w http.ResponseWriter, r *http.Request) {
 
 	matches, cError := service.AllSearch(r)
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -44,9 +45,9 @@ func UserSearch(w http.ResponseWriter, r *http.Request) {
 
 	userMatches, cError := ad.SearchAllUsers(searchValue)
 
-	if cError != nil {
-		w.WriteHeader(cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		w.WriteHeader(e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -65,9 +66,9 @@ func GroupSearch(w http.ResponseWriter, r *http.Request) {
 
 	groupMatches, cError := service.SearchAllGroups(r)
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -88,9 +89,9 @@ func PrinterSearch(w http.ResponseWriter, r *http.Request) {
 
 	printerMatches, cError := ad.SearchAllPrinters(searchValue)
 
-	if cError != nil {
-		w.WriteHeader(cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -113,9 +114,9 @@ func ComputerSearch(w http.ResponseWriter, r *http.Request) {
 
 	computerMatches, cError := ad.SearchAllComputers(searchValue)
 
-	if cError != nil {
-		w.WriteHeader(cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 

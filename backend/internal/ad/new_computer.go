@@ -3,12 +3,12 @@ package ad
 import (
 	"fmt"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func SearchAllComputers(searchValue string, attributes ...string) ([]models.ComputerSimpleInfo, *customError.Error) {
+func SearchAllComputers(searchValue string, attributes ...string) ([]models.ComputerSimpleInfo, error) {
 	computers := []models.ComputerSimpleInfo{}
 	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
 
@@ -19,13 +19,13 @@ func SearchAllComputers(searchValue string, attributes ...string) ([]models.Comp
 	searchResults, ldapError := searchConfig.Search()
 
 	if searchResults == nil {
-		cError := &customError.NOT_FOUND
+		cError := &errs.NOT_FOUND
 		return computers, cError
 	}
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return computers, &cError
 	}
 
@@ -36,7 +36,7 @@ func SearchAllComputers(searchValue string, attributes ...string) ([]models.Comp
 	return computers, nil
 }
 
-func SearchAllComputersNew(computers *[]map[string][]string, searchValue string, attributes ...string) *customError.Error {
+func SearchAllComputersNew(computers *[]map[string][]string, searchValue string, attributes ...string) error {
 	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
 	filter := fmt.Sprintf("(&(objectCategory=computer)(anr=%s))", searchValue)
 
@@ -58,7 +58,7 @@ func SearchAllComputersNew(computers *[]map[string][]string, searchValue string,
 // Performs an LDAP search for a specific computer by its Distinguished Name.
 // It returns a mapped collection of the requested attributes or a custom error if the
 // computer is not found or the search fails.
-func LookupComputer(computerDN string, attributes ...string) (map[string][]string, *customError.Error) {
+func LookupComputer(computerDN string, attributes ...string) (map[string][]string, error) {
 
 	searchConfig := ComputerSearchConfig().
 		SetBaseDN(computerDN).
@@ -68,12 +68,12 @@ func LookupComputer(computerDN string, attributes ...string) (map[string][]strin
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return map[string][]string{}, &cError
 	}
 
 	if searchResults == nil || len(searchResults.Entries) == 0 {
-		cError := customError.NOT_FOUND.NewMessage(fmt.Sprintf("NO COMPUTER FOUND FOR: %s", computerDN))
+		cError := errs.NOT_FOUND.NewMessage(fmt.Sprintf("NO COMPUTER FOUND FOR: %s", computerDN))
 		return map[string][]string{}, &cError
 	}
 

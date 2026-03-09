@@ -3,19 +3,19 @@ package ad
 import (
 	"strings"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
 // REFACTOR: This will be refactored into smaller functions and make it easier to read
-func SearchAllDrives(searchValue string) ([]models.DriveSimpleInfo, *customError.Error) {
+func SearchAllDrives(searchValue string) ([]models.DriveSimpleInfo, error) {
 	allDrives := make([]models.DriveSimpleInfo, 0)
 	mapping, err := getDriveToGroupsMapping()
 
 	if err != nil {
 		logger.Error(err)
-		return allDrives, &customError.FILE_UNREACHABLE
+		return allDrives, &errs.FILE_UNREACHABLE
 	}
 
 	for drive, groups := range mapping {
@@ -54,7 +54,7 @@ func checkForGroupMatch(searchValue string, groups []string) bool {
 }
 
 // Returns collection of Group to the Drive that the specific group access to
-func GetGroupToDrivesMapping() (map[string][]string, *customError.Error) {
+func GetGroupToDrivesMapping() (map[string][]string, error) {
 	collection := make(map[string][]string)
 
 	scanner, file, err := openLogonServer()
@@ -62,7 +62,7 @@ func GetGroupToDrivesMapping() (map[string][]string, *customError.Error) {
 
 	if err != nil {
 		logger.Error(err)
-		return make(map[string][]string), &customError.FILE_UNREACHABLE
+		return make(map[string][]string), &errs.FILE_UNREACHABLE
 	}
 
 	for scanner.Scan() {
@@ -75,14 +75,14 @@ func GetGroupToDrivesMapping() (map[string][]string, *customError.Error) {
 }
 
 // Return collection of Drive to the Groups that give access to that drive
-func getDriveToGroupsMapping() (map[string][]string, *customError.Error) {
+func getDriveToGroupsMapping() (map[string][]string, error) {
 	collection := make(map[string][]string)
 	scanner, file, err := openLogonServer()
 	defer file.Close()
 
 	if err != nil {
 		logger.Error(err)
-		return make(map[string][]string), &customError.FILE_UNREACHABLE
+		return make(map[string][]string), &errs.FILE_UNREACHABLE
 	}
 
 	for scanner.Scan() {
@@ -135,7 +135,7 @@ func GetShareDriveGroups(drive string) models.DrivePageInfo {
 }
 
 // Given a list of groups will return the drives those groups give access to if any and the drives will be the key and the groups will be the values which means those groups give access to that drive
-func DriveAccess(groups []string) ([]models.DriveAccess, *customError.Error) {
+func DriveAccess(groups []string) ([]models.DriveAccess, error) {
 	var result []models.DriveAccess
 	var driveAccess map[string][]string = make(map[string][]string)
 	groupToDrive, cError := GetGroupToDrivesMapping()

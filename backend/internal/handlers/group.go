@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
@@ -26,7 +26,7 @@ func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
 	decoder.DisallowUnknownFields()
 
 	if jsonError := decoder.Decode(&modify); jsonError != nil {
-		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS ARRAY")
+		cError := errs.INVALID_BODY.NewMessage("INVALID GROUPS ARRAY")
 		http.Error(w, cError.Type, cError.StatusCode)
 		w.Write([]byte(cError.Msg))
 		return
@@ -34,9 +34,9 @@ func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
 
 	results, cError := ad.AddUsersToGroup(group, modify.Members)
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -59,7 +59,7 @@ func RemoveUsersFromGroup(w http.ResponseWriter, r *http.Request) {
 	decoder.DisallowUnknownFields()
 
 	if jsonError := decoder.Decode(&modify); jsonError != nil {
-		cError := customError.INVALID_BODY.NewMessage("INVALID GROUPS ARRAY")
+		cError := errs.INVALID_BODY.NewMessage("INVALID GROUPS ARRAY")
 		http.Error(w, cError.Type, cError.StatusCode)
 		w.Write([]byte(cError.Msg))
 		return
@@ -67,9 +67,9 @@ func RemoveUsersFromGroup(w http.ResponseWriter, r *http.Request) {
 
 	results, cError := ad.RemoveUsersFromGroup(group, modify.Members)
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -89,9 +89,9 @@ func PullGroupInfo(w http.ResponseWriter, r *http.Request) {
 
 	result, cError := ad.PullGroupInfo(group)
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
@@ -111,9 +111,9 @@ func GetAllMembers(w http.ResponseWriter, r *http.Request) {
 	membersDNs, cError := service.GetAllMembers(group)
 	members := ad.PullMembersInformation(membersDNs)
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
