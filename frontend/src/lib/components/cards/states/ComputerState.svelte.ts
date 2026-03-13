@@ -1,5 +1,5 @@
 
-import { readableOU } from "$lib/parsers/ou";
+import { readableDN } from "$lib/parsers/ou";
 import {Computer} from "$lib/types/computer";
 
 interface ComputerState {
@@ -20,7 +20,7 @@ export class ComputerStateClass implements ComputerState {
 
     disabled: boolean = $derived(this.ou.toLowerCase().includes("disabled"))
 
-    readableOU: string = $derived(readableOU(this.ou))
+    readableOU: string = $derived(readableDN(this.ou))
 
     pageLink: string = $derived.by(() => {
         return `/computer/${this.name}`

@@ -13,13 +13,15 @@ func Create() *mux.Router {
 	mux.UseEncodedPath()
 
 	// Add a function to list with the routes that need to be added
-	createRoutes(mux,
+	createRoutes(
+		mux,
 		searchRoutes,
 		printerRoutes,
 		userRoutes,
 		authRoutes,
 		computerRoutes,
 		groupRoutes,
+		cmdRoutes,
 		bookmarksRoutes,
 		imageRoutes,
 		driveRoutes,

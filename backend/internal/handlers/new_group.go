@@ -64,11 +64,11 @@ func GetGroupMembers(w http.ResponseWriter, r *http.Request) {
 }
 
 // TODO: Add a user to group
-func UserAddtOGroup(w http.ResponseWriter, r *http.Request) {
+func UsersAddTOGroup(w http.ResponseWriter, r *http.Request) {
 
 }
 
 // TODO: Remove user from group
-func UserRemoveFromGroup(w http.ResponseWriter, r *http.Request) {
+func UsersRemoveFromGroup(w http.ResponseWriter, r *http.Request) {
 
 }

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/utils"
 )
 
 // GetComputer retrieves a computer's attributes by DistinguishedName and returns them as JSON.
@@ -30,4 +31,14 @@ func GetComputerAvaiableAttributes(dn string) ([]byte, error) {
 		allAttributesNames.WriteString(k + "\n")
 	}
 	return []byte(allAttributesNames.String()), nil
+}
+
+func PingComputer(computerName string) ([]byte, error) {
+	output, err := utils.Ping(computerName)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return []byte(output), nil
 }

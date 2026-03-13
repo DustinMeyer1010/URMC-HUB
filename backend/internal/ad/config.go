@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/go-ldap/ldap/v3"
@@ -66,6 +65,16 @@ func ComputerSearchConfig() LDAPSearchConfig {
 // groups
 func GroupSearchConfig() LDAPSearchConfig {
 	return DefaultSearchConfig().SetFilter("(objectClass=group)")
+}
+
+func (c LDAPSearchConfig) EntryExist() (*ldap.Entry, error) {
+	searchResult, err := c.Search()
+
+	if searchResult == nil || len(searchResult.Entries) == 0 || err != nil {
+		return nil, fmt.Errorf("Entry do not exists")
+	}
+
+	return searchResult.Entries[0], nil
 }
 
 // Set the Filter values for a ldap search config
@@ -205,9 +214,7 @@ func (c LDAPModifyConfig) Add(dn string) error {
 	ldapError := LDAP_CONNECTION.Conn.Modify(addRequest)
 
 	if ldapError != nil {
-		logger.Error(ldapError)
-		cError := errs.LDAP_ERROR.NewError(ldapError)
-		return &cError
+		return ldapError
 	}
 
 	return nil
@@ -226,9 +233,7 @@ func (c LDAPModifyConfig) Remove(dn string) error {
 	ldapError := LDAP_CONNECTION.Conn.Modify(removeRequest)
 
 	if ldapError != nil {
-		logger.Error(ldapError)
-		cError := errs.LDAP_ERROR.NewError(ldapError)
-		return &cError
+		return ldapError
 	}
 
 	return nil

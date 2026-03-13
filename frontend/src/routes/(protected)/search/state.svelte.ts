@@ -12,21 +12,10 @@ const emptyResults: Search.Results = {
     drives: [],
 }
 
-interface SearchStateInterface {
-    data: Search.Results 
-    currentFilterItems: Results
-    filter: Search.Filter
-    loading: boolean
-    searchValue: string
-    santizedSearch: string
-    Search: () => Promise<void>
-    SwitchFilter: (newFilter: Search.Filter) => void
-
-}
 
 
 
-export class SearchStateClass implements SearchStateInterface {
+export class SearchStateClass {
     data: Search.Results = $state(emptyResults)
 
 
@@ -44,21 +33,16 @@ export class SearchStateClass implements SearchStateInterface {
 
     Search = async () => {
 
-        this.loading = true
+        
         if (this.searchValue.length == 0) {
             return
         }
+        this.loading = true
 
-
-        await fetch(`http://localhost:8000/api/search/all/${this.santizedSearch}`)
+        await fetch(`http://localhost:8000/api/search?value=${this.santizedSearch}`)
         .then(async (res) => {
-            if (res.status != 200) {
-                this.data = emptyResults
-                return
-            }
             this.data = await res.json()
         }).catch(() => isLoggedIn.Logout());
-
         this.SwitchFilter(this.filter)
         this.loading = false
     }

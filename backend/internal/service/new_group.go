@@ -100,11 +100,11 @@ func startLookupUsersWorkers(wg *sync.WaitGroup, jobs chan string, results chan 
 }
 
 // TODO: Handle the adding user to group
-func UserAddtOGroup() ([]byte, error) {
+func UserAddtOGroup(userDN []string, groupDN string) ([]byte, error) {
 	return []byte(""), nil
 }
 
 // TODO: Handle removing user from group
-func UserRemoveFromGroup() ([]byte, error) {
+func UserRemoveFromGroup(userDN []string, groupDN string) ([]byte, error) {
 	return []byte(""), nil
 }

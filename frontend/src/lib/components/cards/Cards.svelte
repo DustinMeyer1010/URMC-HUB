@@ -18,6 +18,7 @@
         data: Search.Results
     } = $props()
 
+    
     const FilterMap: Record<string, { items: any[], Component: Component<{item: any, idx: number}> }> = {
         COMPUTERS: { items: data.computers, Component: Computer },
         PRINTERS:  { items: data.printers, Component: Printer },
@@ -30,6 +31,7 @@
 </script>
 
 <div>
+    
     {#each FilterMap[filter].items as item, idx}
         <Card item={item} idx={idx} />
     {:else}

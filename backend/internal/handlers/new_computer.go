@@ -34,3 +34,22 @@ func GetComputerAvaiableAttributes(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonData)
 }
+
+func PingComputer(w http.ResponseWriter, r *http.Request) {
+
+	query := r.URL.Query()
+	computerName := query.Get("name")
+
+	data, err := service.PingComputer(computerName)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusConflict)
+		w.Write(data)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+
+}

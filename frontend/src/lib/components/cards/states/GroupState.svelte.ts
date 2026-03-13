@@ -1,4 +1,4 @@
-import { readableOU } from "$lib/parsers/ou";
+import { readableDN } from "$lib/parsers/ou";
 import { Group } from "$lib/types/group";
 
 
@@ -20,7 +20,7 @@ export class GroupStateClass implements GroupState {
     description: string = ""
     ou: string = ""
 
-    readableOU: string = $derived(readableOU(this.ou))
+    readableOU: string = $derived(readableDN(this.ou))
 
 
     pageLink: string = $derived.by(() => {

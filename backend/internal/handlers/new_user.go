@@ -129,7 +129,7 @@ func GroupAddToUser(w http.ResponseWriter, r *http.Request) {
 
 	// NOTE: This should not return and error because all modify request will
 	// have the reason on why or why not it was added
-	data := service.GroupAddToUser(dn, userModify.GroupDN)
+	data, _ := service.GroupAddToUser(dn, userModify.GroupDN)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")

@@ -1,8 +1,8 @@
-export const readableOU = (ou: string): string => {
+export const readableDN = (dn: string): string => {
 
-    if (ou.length == 0) {
+    if (dn.length == 0) {
         return ""
     }
 
-    return ou.replaceAll("CN=", "").replaceAll("OU=", "").replaceAll(",DC=", ".").replaceAll(",", "*").split("*").reverse().join(" | ").replace(/\\+$/, "")
+    return dn.replaceAll("CN=", "").replaceAll("OU=", "").replaceAll(",DC=", ".").replaceAll(",", "*").split("*").reverse().join(" | ").replace(/\\+$/, "")
 }

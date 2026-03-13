@@ -28,5 +28,13 @@ type ModifyMembers struct {
 }
 
 type GroupModifyRequest struct {
-	UserDN string `json:"user"`
+	UserDN []string `json:"user"`
+}
+
+// Used to show Remove and Add of group results
+type GroupModifyResults struct {
+	Group      string `json:"group"`
+	User       string `json:"user"`
+	Message    string `json:"message"`
+	Successful bool   `json:"successful"`
 }

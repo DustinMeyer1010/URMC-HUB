@@ -1,20 +1,39 @@
 <script lang="ts">
 	import { Copy } from "$lib/types/copy";
-    import Icon from "$lib/assets/copy-color-text.png"
-    let { copyTemplate } : {copyTemplate: string} = $props()
+	import { fade } from "svelte/transition";
 
     let copyState: Copy.State = $state(Copy.EMPTY_COPY_STATE)
 
+    let {
+        icon,
+        copiedIcon = icon,
+        copyTemplate
+    } : {
+        icon: string,
+        copiedIcon?: string
+        copyTemplate: string
+    } = $props()
+
 </script>
 
-{#if copyState.copied != copyTemplate}
-    <button class="copy-all" title="Copy All" onclick={() => Copy.ToClipboard(copyTemplate, copyState)}><img src={Icon} alt="Copy All"></button>
-{:else}
-    <span class="copied-all">ALL COPIED</span>
-{/if}
-
-
+<button 
+    class:copied={copyState.copied != copyTemplate} 
+    class="copy-all" 
+    title="Copy All" 
+    onclick={() => Copy.ToClipboard(copyTemplate, copyState)}
+>
+        {#key copyState.copied}
+            <img 
+                in:fade={{ duration: 50}}
+                out:fade={{duration: 50}}
+                src={copyState.copied != copyTemplate ? icon : copiedIcon} 
+                alt="Copy All"
+            >
+        {/key}
+</button>
 <style>
+
+
     button {
         background: none;
         border: none;
@@ -29,23 +48,20 @@
         outline: none;
     }
 
-    span.copied-all {
-        font-size: 15px;
-        position: absolute;
-        top: 0.4rem;
-        left: 0.4rem;
-        opacity: 0.3;
-        color: var(--color-text)
+    button.copied {
+        color: var(--color-success);
     }
 
     button.copy-all {
-        position: absolute;
+        display: inline-grid;
+        place-items: center;
         top: 0.2rem;
         left: 0.2rem;
         opacity: 0.3;
     }
 
     button.copy-all img {
+        grid-area: 1/1;
         width: 25px;
     }
 

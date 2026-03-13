@@ -11,12 +11,12 @@ export namespace User {
     }
 
     export type CardInfo = {
-        name: string,
-        username: string, 
-        net_id: string,
-        urid: string,
-        email: string,
-        ou: string,
+        cn: string[],
+        username: string[], 
+        netid: string[],
+        urid: string[],
+        email: string[],
+        dn: string[],
     }
 
     

@@ -147,7 +147,7 @@ func ExtractAttributes(entry *ldap.Entry, attributes []string) map[string][]stri
 // transforms each into a mapped representation of its attributes. It returns
 // a slice of maps, where each map corresponds to a single entry's data.
 func ExtractMultipleEntriesAtrributes(entries []*ldap.Entry, attributes []string) []map[string][]string {
-	results := make([]map[string][]string, 1)
+	results := make([]map[string][]string, 0)
 	for _, e := range entries {
 		attr := ExtractAttributes(e, attributes)
 		results = append(results, attr)

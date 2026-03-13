@@ -25,7 +25,7 @@ func SearchAll(searchValue string) models.AllResultsNew {
 
 func SearchUsers(searchValue string, users *[]map[string][]string, wg *sync.WaitGroup) {
 	defer wg.Done()
-	attributes := []string{"username", "netid", "dn", "cn"}
+	attributes := []string{"username", "netid", "dn", "cn", "email", "urid"}
 	SearchAllUserNew(users, searchValue, attributes...)
 }
 

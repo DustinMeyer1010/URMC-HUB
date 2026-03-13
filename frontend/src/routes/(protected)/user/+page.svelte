@@ -8,7 +8,7 @@
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
     import { browser } from "$app/environment";
-	import Groups from "./pages/Groups.svelte";
+	import Groups from "./views/Groups.svelte";
 
     let ou: string = $state("")
     let section: "PROFILE" | "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE" = $state("PROFILE")

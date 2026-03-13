@@ -2,7 +2,11 @@
 
 <script lang="ts">
 	import type { User } from "$lib/types/user";
-    import Icon from '$lib/assets/double-left-arrow-primary.png';
+    import Icon from '$lib/assets/profile.png';
+    import CopyIcon from "$lib/assets/copy-color-text.png"
+    import CopySuccessIcon from "$lib/assets/copy-success.png"
+    import SimpleCopyIcon from "$lib/assets/simple-copy.png"
+    import SimpleCopySuccessIcon from "$lib/assets/simple-copy-success.png"
     import disabledIcon from '$lib/assets/disabled-color-disabled.png'
 	import CopyButton from "../buttons/CopyButton.svelte";
 	import CopyAllButton from "../buttons/CopyAllButton.svelte";
@@ -19,19 +23,25 @@
         children?: Snippet
     } = $props();
 
+
     let UserState: UserStateClass = new UserStateClass(item)
 
 
 </script>
 
 <!-- * Renders the main content -->
-<ul class:disabled={UserState.disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton copyTemplate={UserState.copyTemplate} />
+<div id="container" class:disabled={UserState.disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
+    <div id="header">
+        {@render Link()}
+        <CopyAllButton icon={CopyIcon} copiedIcon={CopySuccessIcon} copyTemplate={UserState.copyTemplate} />
+        <CopyAllButton icon={SimpleCopyIcon} copiedIcon={SimpleCopySuccessIcon} copyTemplate={UserState.simpleCopyTemplate} />
+    </div>
+    
     {@render Disabled()}
-    {@render Link()}
+    
     {@render Content()}
     {@render children?.()}
-</ul>
+</div>
 
 <!-- * Renders the disabled contnent if object return is disabled -->
 {#snippet Disabled()}
@@ -54,29 +64,32 @@
 
 <!-- * Renders object information with each value being able to be copied -->
 {#snippet Content()}
-    {#if UserState.name}
-        <CopyButton value={UserState.name} category={"title"}/>
-    {/if}
-    {#if UserState.username}
-        <CopyButton value={UserState.username} label={"USERNAME"}/>
-    {/if}
-    {#if UserState.net_id}
-        <CopyButton value={UserState.net_id} label={"NETID"}/>
-    {/if}
-    {#if UserState.urid}
-        <CopyButton value={UserState.urid} label={"URID"}/>
-    {/if}
-    {#if UserState.email}
-        <CopyButton value={UserState.email} label={"EMAIL"}/>
-    {/if}
-    {#if UserState.readableOU}
-        <CopyButton value={UserState.readableOU} label={"OU"}/>
-    {/if}
+    <div id="content">
+        {#if UserState.cn}
+            <CopyButton value={UserState.cn} category={"title"}/>
+        {/if}
+        {#if UserState.username}
+            <CopyButton value={UserState.username} label={"USERNAME"}/>
+        {/if}
+        {#if UserState.netid}
+            <CopyButton value={UserState.netid} label={"NETID"}/>
+        {/if}
+        {#if UserState.urid}
+            <CopyButton value={UserState.urid} label={"URID"}/>
+        {/if}
+        {#if UserState.email}
+            <CopyButton value={UserState.email} label={"EMAIL"}/>
+        {/if}
+        {#if UserState.readableDN}
+            <CopyButton value={UserState.readableDN} label={"DN"}/>
+        {/if}
+    </div>
 
 {/snippet}
 
 
 <style >
+
 
     span.disabled {
         display: flex;
@@ -97,19 +110,29 @@
 
 
     img {
-        width: 25px;
+        width: 20px;
+        opacity: 0.3;
     }
 
-    ul {
+    div#header {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        width: 100%;
+        background: var(--color-surface-hover);
+        padding: 5px;
+        padding-left: 10px;
+        min-height: 40px;
+    }
+
+    div#container {
         display: flex;
         flex-direction: column;
         word-break: break-all;
         position: relative;
         gap: 0.3rem;
+        overflow: hidden;
         border-radius: 10px;
-        padding: 1.5rem;
-        padding-left: 1.5rem;
-        padding-right: 3rem;
         box-sizing: border-box;
         background: var(--color-surface);
         color: var(--color-text);
@@ -121,31 +144,25 @@
         list-style: none;
     }
 
+    div#content {
+        padding-left: 1.5rem;
+        padding-top: 0.5rem;
+        padding-bottom: 1.5rem;
+    }
+
     a {
         opacity: 0.8;
-        position: absolute;
         display: flex;
         justify-content: center;
         align-items: center;
-        top: 0.3rem;
-        right: -0.5rem;
-        width: 50px;
     }
 
-    a img {
-        transition: var(--transition-fast);
-        transform: rotate(130deg);
-    }
-
-    a:hover img {
-        transform: rotate(130deg) translate(-3px, -1px);
-    }
 
 
 
 
     @media (max-width: 1000px) {
-        ul.disabled {
+        div.disabled {
             padding-bottom: 3rem;
         }
 
@@ -159,7 +176,7 @@
 
     @media (max-width: 400px) {
 
-        ul {
+        div#container {
             padding-right: 1rem;
         }
 

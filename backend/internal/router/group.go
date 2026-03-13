@@ -35,15 +35,15 @@ func groupRoutes(mux *mux.Router) {
 		{
 			// * NEW
 			methods{"POST", "OPTION"},
-			"/api/group/member",
-			http.HandlerFunc(handlers.UserAddtOGroup),
+			"/api/group/members",
+			http.HandlerFunc(handlers.UsersAddTOGroup),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			// * NEW
 			methods{"DELETE", "OPTION"},
-			"/api/group/member",
-			http.HandlerFunc(handlers.UserRemoveFromGroup),
+			"/api/group/members",
+			http.HandlerFunc(handlers.UsersRemoveFromGroup),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{

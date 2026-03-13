@@ -91,21 +91,26 @@ func GetUserLockoutStatus(dn string, attributes ...string) []byte {
 	return jsonData
 }
 
-func GroupAddToUser(userDN, groupDN string) []byte {
+func GroupAddToUser(userDN, groupDN string) ([]byte, error) {
 
-	errs := ad.GroupAddToUser(userDN, groupDN)
+	err := ad.GroupAddToUser(userDN, groupDN)
 
-	if errs != nil {
-		fmt.Println(errs)
-		return []byte("group was not added")
+	if err != nil {
+		fmt.Println(err)
+		return []byte("group was not added"), err
 	}
 
-	return []byte("group was added")
+	return []byte("group was added"), nil
 
 }
 
 func GroupRemoveFromUser(userDN, groupDN string) ([]byte, error) {
-	errs := ad.GroupRemoveFromUser(userDN, groupDN)
+	err := ad.GroupRemoveFromUser(userDN, groupDN)
 
-	return []byte(""), errs
+	if err != nil {
+		fmt.Println(err)
+		return []byte(""), err
+	}
+
+	return []byte("group was added"), nil
 }

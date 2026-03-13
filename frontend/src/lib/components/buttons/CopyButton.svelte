@@ -1,5 +1,6 @@
 <script lang="ts">
     import { Copy } from "$lib/types/copy"
+	import { fade } from "svelte/transition";
 
  
 
@@ -26,16 +27,14 @@
 <button id={category} onclick={() => Copy.ToClipboard(updatedValue, copyState)} title="Click to Copy">
     {#if category == "title" || category == "drive-group"}
         <b id={category}>
-            {updatedValue}
-            <sub class="copied">{updatedValue == copyState.copied ? "(COPIED)" : ""}</sub>
+            <span>{updatedValue == copyState.copied ? "COPIED" : updatedValue}</span>
         </b>
     {:else}
         <span>
             <b id={category}>
                 {label}:
             </b>
-            <span>{updatedValue}</span>
-            <sub class="copied">{updatedValue == copyState.copied ? "(COPIED)" : ""}</sub>
+            <span>{updatedValue == copyState.copied ? "COPIED" : updatedValue}</span>
         </span>
     {/if}
 </button>
@@ -56,12 +55,9 @@
         font-size: 15px;
     }
 
-    sub.copied {
-        font-size: 10px;
-    }
 
     button:hover {
-        color: var(--color-primary-hover)
+        color: var(--color-text)
     }
 
     button {

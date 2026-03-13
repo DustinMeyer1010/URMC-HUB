@@ -1,51 +1,63 @@
-import { readableOU } from "$lib/parsers/ou";
+import { readableDN } from "$lib/parsers/ou";
 import type { User } from "$lib/types/user";
 
 interface UserState {
-    name: string
+    cn: string
     username: string
-    net_id: string
+    netid: string
     urid: string
     email: string
-    ou: string
+    dn: string
     pageLink: string
-    readableOU: string
+    readableDN: string
     disabled: boolean
     copyTemplate: string
 }
 
 export class UserStateClass implements UserState {
-    name = "";
+    cn = "";
     username = "";
-    net_id = "";
+    netid = "";
     urid = "";
     email = "";
-    ou = "";
+    dn = "";
 
-    readableOU: string = $derived(readableOU(this.ou))
+    readableDN: string = $derived(readableDN(this.dn))
     
     disabled: boolean = $derived.by(() => {
-        const ou = this.ou.toLowerCase()
-        return ou.includes("disabled") || ou.includes("offboarded")
+        const dn = this.dn.toLowerCase()
+        return dn.includes("disabled") || dn.includes("offboarded")
     })
 
     // TODO: Turn in query for the user and OU rather than just searching by person username
     pageLink: string = $derived.by(() => {
-      return `/user?dn=${encodeURIComponent(this.ou)}&section=PROFILE`  
+      return `/user?dn=${encodeURIComponent(this.dn)}&section=PROFILE`  
     })
 
     copyTemplate: string = $derived.by(() => {
-        const name: string = `Name = ${this.name || "NA"}`
+        const name: string = `Name = ${this.cn || "NA"}`
         const username: string = `Username = ${this.username || "NA"}`
-        const netID: string = `NetID = ${this.net_id || "NA"}`
+        const netID: string = `NetID = ${this.netid || "NA"}`
         const urid: string = `URID = ${this.urid || "NA"}`
         const email: string = `Email = ${this.email || "NA"}`
 
-        return `${name}\n${username}\n${netID}\n${urid}\n${email}\n${this.readableOU}\n`
+        return `${name}\n${username}\n${netID}\n${urid}\n${email}\n${this.readableDN}\n`
+    })
+
+    simpleCopyTemplate: string = $derived.by(() => {
+
+        return `${this.cn} (${this.username})`
     })
 
 
     constructor(user: User.CardInfo) {
-        Object.assign(this, user)
+
+        console.log(user)
+        this.cn = user.cn.join()
+        this.username = user.username.join()
+        this.netid = user.netid.join()
+        this.urid = user.urid.join()
+        this.email = user.email.join()
+        this.dn = user.dn.join()
     }
 }

@@ -2,6 +2,8 @@ package ad
 
 import (
 	"fmt"
+
+	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
 // Sanitizes a search string and executes a broad group query.
@@ -68,5 +70,52 @@ func GetGroupMembers(groupDN string, start, end int) (map[string][]string, error
 	}
 
 	return attr, nil
+
+}
+
+func UsersRemoveFromGroup(usersDN []string, groupDN string) {
+	modifyConfig := NewDefaultModifyConfig(groupDN)
+
+	for _, u := range usersDN {
+		modifyConfig.Add(u)
+	}
+}
+
+func UsersAddToGroup(usersDN []string, groupDN string) []models.GroupModifyResults {
+
+	results := make([]models.GroupModifyResults, len(usersDN))
+
+	modifyConfig := NewDefaultModifyConfig(groupDN)
+
+	for _, u := range usersDN {
+		searchConfig := UserSearchConfig().SetBaseDN(u).SetAttributes([]string{"samAccountName"})
+		searchResult, ldapError := searchConfig.EntryExist()
+
+		if ldapError != nil {
+			results = append(results, models.GroupModifyResults{
+				Group:      groupDN,
+				User:       "NOT_FOUND",
+				Message:    fmt.Sprintf("Failed to find user with DN: %s", u),
+				Successful: false},
+			)
+			continue
+		}
+
+		ldapError = modifyConfig.Remove(u)
+
+		if ldapError != nil {
+			results = append(results, models.GroupModifyResults{
+				Group:      groupDN,
+				User:       u,
+				Message:    fmt.Sprintf("Failed to find user with DN: %s", u),
+				Successful: false},
+			)
+			continue
+		}
+
+		results = append(results, models.GroupModifyResults{Group: groupDN, User: searchResult.GetAttributeValue("samAccountName"), Message: "Successful Add", Successful: false})
+	}
+
+	return results
 
 }
