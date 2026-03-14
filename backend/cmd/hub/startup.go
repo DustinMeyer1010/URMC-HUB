@@ -11,7 +11,9 @@ import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/server"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/utils"
 	"github.com/getlantern/systray"
+	"github.com/go-toast/toast"
 )
 
 func onExit() {
@@ -22,7 +24,7 @@ func onExit() {
 // the ability to quit the application when something is broken.
 func setupTrayIcon() {
 
-	systray.SetIcon(APPICON)
+	systray.SetIcon(utils.APPICON)
 	systray.SetTitle("URMC-HUB Server")
 	systray.SetTooltip("URMC-HUB Server")
 	openApp := systray.AddMenuItem("Open App", "Opens the application at localhost:8000")
@@ -58,7 +60,7 @@ func setupTrayIcon() {
 		update := false
 		for {
 			if !update {
-				if global.Username != "" || global.Password != "" {
+				if global.Username != "" && global.Password != "" {
 					loginStatus.SetTitle("Login Status: True")
 					update = true
 				}
@@ -72,14 +74,22 @@ func setupTrayIcon() {
 // Verifies that the server is not already running.
 // If the server is already running then it close the current
 // instances
-func checkRunning(port int) bool {
+func checkRunning(port int) {
 	address := fmt.Sprintf("0.0.0.0:%d", port)
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
-		return true
+		notification := toast.Notification{
+			AppID:    "URMC-HUB",
+			Icon:     utils.GetIconPath(),
+			Title:    "Warning",
+			Message:  "Unable to run application. Port 8000 already in use. URMC-HUB might be already running.",
+			Duration: toast.Long,
+		}
+
+		notification.Push()
+		os.Exit(1)
 	}
 	defer listener.Close()
-	return false
 }
 
 // Opens the application in the broswer automatically rather than
@@ -91,7 +101,7 @@ func openInBroswer() {
 	switch runtime.GOOS {
 	case "windows":
 		cmd = "rundll32"
-		args = []string{"url.dll,FileProtocolHandler", "http://localhost:8000/search"}
+		args = []string{"url.dll,FileProtocolHandler", "http://localhost:8000/"}
 	}
 	fmt.Println(exec.Command(cmd, args...).Start())
 }

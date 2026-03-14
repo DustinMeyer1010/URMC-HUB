@@ -11,7 +11,6 @@ func CorsHandler(next http.Handler) http.Handler {
 			// Set CORS headers
 			w.Header().Set("Access-Control-Allow-Origin", "*") // or specific domain
 			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-			w.Header().Set("Access-Control-Allow-Credentials", "true")
 			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
 			// Handle preflight OPTIONS request

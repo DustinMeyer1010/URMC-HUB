@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gen2brain/dlgs"
 	"github.com/go-ldap/ldap/v3"
 )
 
@@ -60,7 +61,7 @@ func (c *LDAPConnection) Restore() error {
 	}
 
 	if !connectionEstablished {
-		panic("Unable to reach LDAP servers")
+		dlgs.Error("Server Connection Failed", "Unable to reach URMC.rochester.edu ldap servers. Please make sure you are connected to URMC network or GlobalProtect.")
 	}
 
 	c.Conn = newConn
