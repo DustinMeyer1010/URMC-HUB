@@ -19,7 +19,7 @@
 </script>
 
 <div class:disabled={ComputerState.disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton copyTemplate={ComputerState.copyTemplate} />
+    <CopyAllButton icon={""} copyTemplate={ComputerState.copyTemplate} />
     {@render DisabledTag()}
     {@render Link()}
     {@render Content()}

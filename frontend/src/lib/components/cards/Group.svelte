@@ -24,7 +24,7 @@
 
 <!-- * Renders the content of the Card -->
 <div class:disabled={GroupState.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton copyTemplate={GroupState.copyTemplate}/>
+    <CopyAllButton icon={""} copyTemplate={GroupState.copyTemplate}/>
     {@render Link()}
     {@render Content()}
     {@render children?.()}

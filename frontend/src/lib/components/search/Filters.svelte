@@ -1,7 +1,7 @@
 <script lang="ts">
 
 
-    import { Search } from '$lib/types/search'
+    import { Search } from '$lib/types/search';
     import { fly } from 'svelte/transition'
     import { get } from 'svelte/store';
     import { theme } from '$lib/stores/theme';

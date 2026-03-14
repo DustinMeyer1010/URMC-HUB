@@ -3,6 +3,7 @@
 <script lang="ts">
 	import type { User } from "$lib/types/user";
     import Icon from '$lib/assets/profile.png';
+    import ProfileDisabledIcon from "$lib/assets/profile-disabled.png"
     import CopyIcon from "$lib/assets/copy-color-text.png"
     import CopySuccessIcon from "$lib/assets/copy-success.png"
     import SimpleCopyIcon from "$lib/assets/simple-copy.png"
@@ -12,6 +13,7 @@
 	import CopyAllButton from "../buttons/CopyAllButton.svelte";
 	import type { Snippet } from "svelte";
 	import { UserStateClass } from "./states/User.svelte";
+	import Card from "./Card.svelte";
 
     let {
         item,
@@ -30,18 +32,22 @@
 </script>
 
 <!-- * Renders the main content -->
-<div id="container" class:disabled={UserState.disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <div id="header">
+
+<Card {idx}>
+    {#snippet header()}
         {@render Link()}
         <CopyAllButton icon={CopyIcon} copiedIcon={CopySuccessIcon} copyTemplate={UserState.copyTemplate} />
         <CopyAllButton icon={SimpleCopyIcon} copiedIcon={SimpleCopySuccessIcon} copyTemplate={UserState.simpleCopyTemplate} />
-    </div>
-    
-    {@render Disabled()}
-    
-    {@render Content()}
-    {@render children?.()}
-</div>
+    {/snippet}
+
+    {#snippet body()}
+        {@render Disabled()}
+        {@render Content()}
+        {@render children?.()}
+    {/snippet}
+</Card>
+
+
 
 <!-- * Renders the disabled contnent if object return is disabled -->
 {#snippet Disabled()}
@@ -53,13 +59,13 @@
     {/if}
 {/snippet}
 
+
+
 <!-- Refactor: This should be done based on the DN rather than a person username -->
 <!-- * Renders a link to users page -->
 <!-- Note: If user does not have username user page will not working so no link is generated -->
 {#snippet Link()}
-    {#if UserState.username != ""}
-        <a href={UserState.pageLink}> <img src={Icon} alt=""></a>
-    {/if}
+    <a href={UserState.username != "" ? UserState.pageLink : null} data-title={UserState.username == "" ? "No URMC Active Directory Object" : "Go to User Page"}>  <img src={UserState.disabled ? ProfileDisabledIcon : Icon} alt=""></a>
 {/snippet}
 
 <!-- * Renders object information with each value being able to be copied -->
@@ -108,41 +114,35 @@
         margin-right: 2px;
     }
 
+    a:hover::after {
+        content: attr(data-title);
+        position: absolute;
+        top: -20px;
+        left: 20px;
+        background-color: #333;
+        color: var(--text);
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 100;
+    }
+
+    a:hover::before {
+        content: "";
+        position: absolute;
+        bottom: 110%;
+        border: 6px solid transparent;
+        border-top-color: #333;
+        z-index: 100;
+    }
+
 
     img {
         width: 20px;
-        opacity: 0.3;
     }
 
-    div#header {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-        width: 100%;
-        background: var(--color-surface-hover);
-        padding: 5px;
-        padding-left: 10px;
-        min-height: 40px;
-    }
-
-    div#container {
-        display: flex;
-        flex-direction: column;
-        word-break: break-all;
-        position: relative;
-        gap: 0.3rem;
-        overflow: hidden;
-        border-radius: 10px;
-        box-sizing: border-box;
-        background: var(--color-surface);
-        color: var(--color-text);
-        opacity: 0;
-        transform: translateY(20px);
-        animation: slideIn 0.2s ease-out forwards;
-        animation-delay: var(--delay);
-        margin: 0;
-        list-style: none;
-    }
 
     div#content {
         padding-left: 1.5rem;

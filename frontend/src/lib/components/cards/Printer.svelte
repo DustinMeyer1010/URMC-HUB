@@ -21,7 +21,7 @@
 
 <!-- * Renders main content -->
 <div style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton copyTemplate={PrinterState.copyTemplate} />
+    <CopyAllButton icon={""} copyTemplate={PrinterState.copyTemplate} />
     {@render Link()}
     {@render Content()}
 </div>

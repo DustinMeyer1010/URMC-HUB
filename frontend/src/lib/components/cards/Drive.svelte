@@ -20,7 +20,7 @@
 
 <!-- * Renders the main content for the card-->
 <div id="card" style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton copyTemplate={DriveState.copyTemplate} />
+    <CopyAllButton  icon={""} copyTemplate={DriveState.copyTemplate} />
     {@render Link()}
     {@render Content()}
 </div>

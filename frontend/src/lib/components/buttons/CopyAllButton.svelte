@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Copy } from "$lib/types/copy";
+
 	import { fade } from "svelte/transition";
 
     let copyState: Copy.State = $state(Copy.EMPTY_COPY_STATE)
@@ -57,7 +58,6 @@
         place-items: center;
         top: 0.2rem;
         left: 0.2rem;
-        opacity: 0.3;
     }
 
     button.copy-all img {
