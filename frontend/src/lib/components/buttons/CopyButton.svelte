@@ -1,6 +1,5 @@
 <script lang="ts">
     import { Copy } from "$lib/types/copy"
-	import { fade } from "svelte/transition";
 
  
 
@@ -45,8 +44,7 @@
 <style>
 
     button#title {
-        margin-bottom: 0.5rem;
-        font-size: 18px;
+        font-size: 20px;
     }
 
 

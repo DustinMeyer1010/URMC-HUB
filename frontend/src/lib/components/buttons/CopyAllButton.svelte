@@ -8,11 +8,13 @@
     let {
         icon,
         copiedIcon = icon,
-        copyTemplate
+        copyTemplate,
+        dataTitle = "Copy All"
     } : {
         icon: string,
         copiedIcon?: string
         copyTemplate: string
+        dataTitle?: string
     } = $props()
 
 </script>
@@ -21,6 +23,7 @@
     class:copied={copyState.copied != copyTemplate} 
     class="copy-all" 
     title="Copy All" 
+    data-title={dataTitle}
     onclick={() => Copy.ToClipboard(copyTemplate, copyState)}
 >
         {#key copyState.copied}
@@ -37,8 +40,10 @@
 
     button {
         background: none;
+        position: relative;
         border: none;
         padding: 0;
+        margin: 0;
         font: inherit;
         color: var(--color-text);
         cursor: pointer;
@@ -56,13 +61,27 @@
     button.copy-all {
         display: inline-grid;
         place-items: center;
-        top: 0.2rem;
-        left: 0.2rem;
     }
 
     button.copy-all img {
         grid-area: 1/1;
-        width: 25px;
+        height: 25px;
+    }
+
+    button:hover::after {
+        content: attr(data-title);
+        position: absolute;
+        top: -30px;
+        left: 15px;
+        background-color: #333;
+        color: var(--color-text);
+        padding: 6px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        white-space: nowrap;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 100;
+        opacity: 0.8;
     }
 
     button.copy-all:hover img {

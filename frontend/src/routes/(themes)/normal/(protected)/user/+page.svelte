@@ -4,11 +4,12 @@
 	import CopyButton from "$lib/components/buttons/CopyButton.svelte";
 	import PageLoading from "$lib/components/loading/PageLoading.svelte";
 	import { convertToReadableTime }  from "$lib/parsers/time";
-	import { readableOU } from "$lib/parsers/ou";
+	import { readableDN } from "$lib/parsers/ou";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
     import { browser } from "$app/environment";
 	import Groups from "./views/Groups.svelte";
+	import { Icons } from "$lib/managers/icons";
 
     let ou: string = $state("")
     let section: "PROFILE" | "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE" = $state("PROFILE")
@@ -28,11 +29,11 @@
 
     async function fetchUser(): Promise<any> {
         ou = page.url.searchParams.get("dn") ?? ""
-        if (ou == "") goto("/search"); 
+        if (ou == "") goto("/normal/search"); 
         const res = await fetch(`http://localhost:8000/api/user?dn=${encodeURIComponent(ou)}&attributes=${attributes.join(",")}`);
         if (!res.ok && browser) {
             setTimeout(() => {
-                goto("/search")
+                goto("/normal/search")
             }, 3000);
 
             startTimer()
@@ -76,16 +77,16 @@
 {#snippet Content(u: any)}
     <section>
         <div>
-            <CopyAllButton copyTemplate={"test"} />
-            <CopyButton value={u.cn[0]} category="title"/>
-            <CopyButton label="USERNAME" value={u.username[0] ?? "NA"} category="list-item"/>
-            <CopyButton label="NETID" value={u.netid[0] ?? "NA"} category="list-item"/>
-            <CopyButton label="URID" value={u.urid[0] ?? "NA"} category="list-item"/>
-            <CopyButton label="PHONE" value={u.phone[0] ?? "NA"} category="list-item"/>
-            <CopyButton label="DEPARTMENT" value={u.department[0] ?? "NA"} category="list-item"/>
-            <CopyButton label="RELATIONSHIP" value={u.relationship[0] ?? "NA"} category="list-item"/>
+            <CopyAllButton icon={Icons.COPY} copyTemplate={"test"} />
+            <CopyButton value={u.cn.length > 0 ? u.cn.join() : "NA"} category="title"/>
+            <CopyButton label="USERNAME" value={u.username.length > 0 ? u.username.join() : "NA"} category="list-item"/>
+            <CopyButton label="NETID" value={u.netid.length > 0 ? u.netid.join() : "NA"} category="list-item"/>
+            <CopyButton label="URID" value={u.urid.length > 0 ? u.urid.join() : "NA"} category="list-item"/>
+            <CopyButton label="PHONE" value={u.phone.length > 0 ? u.phone.join() : "NA"} category="list-item"/>
+            <CopyButton label="DEPARTMENT" value={u.department.length > 0 ?  u.department.join() : "NA"} category="list-item"/>
+            <CopyButton label="RELATIONSHIP" value={u.relationship.length > 0 ? u.relationship.join(" | ") : "NA"} category="list-item"/>
             <CopyButton label="LASTPASSWORDSET" value={convertToReadableTime(u.pwdlastset[0] ?? "0")} category="list-item"/>    
-            <CopyButton label="OU" value={readableOU(u.dn[0]) ?? "NA"} category="list-item"/>
+            <CopyButton label="OU" value={readableDN(u.dn[0]) ?? "NA"} category="list-item"/>
         </div>
     </section>
 {/snippet}

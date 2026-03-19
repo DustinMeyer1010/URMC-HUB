@@ -2,39 +2,35 @@
 import { readableDN } from "$lib/parsers/ou";
 import {Computer} from "$lib/types/computer";
 
-interface ComputerState {
-    name: string
-    ou: string
-    operating_system: string
 
-    disabled: boolean
-    readableOU: string
-    copyTemplate: string
-    pageLink: string
-}
+export class ComputerStateClass  {
+    cn: string = ""
+    dn: string = ""
+    operatingSystem: string = ""
+    information: string = ""
+    description: string = ""
 
-export class ComputerStateClass implements ComputerState {
-    name: string = ""
-    ou: string = ""
-    operating_system: string = ""
+    disabled: boolean = $derived(this.dn.toLowerCase().includes("disabled"))
 
-    disabled: boolean = $derived(this.ou.toLowerCase().includes("disabled"))
-
-    readableOU: string = $derived(readableDN(this.ou))
+    readableOU: string = $derived(readableDN(this.dn))
 
     pageLink: string = $derived.by(() => {
-        return `/computer/${this.name}`
+        return `/normal/computer?dn=${this.dn}`
     })
 
 
     copyTemplate: string = $derived.by(() => {
-        const osSuffix = this.operating_system ? ` (${this.operating_system})` : ""
+        const osSuffix = this.operatingSystem ? ` (${this.operatingSystem})` : ""
         const status = this.disabled ? "Disabled " : ""
-        return `Hostname = ${this.name}${osSuffix}\n${status}OU = ${this.readableOU}`
+        return `Hostname = ${this.cn}${osSuffix}\n${status}OU = ${this.readableOU}`
     })
 
 
     constructor(computer: Computer.CardInfo) {
-        Object.assign(this, computer)
+        this.cn = computer.cn.join()
+        this.dn = computer.dn.join()
+        this.operatingSystem = computer.operatingsystem.join()
+        this.information = computer.information.join()
+        this.description = computer.description.join()
     }
 }

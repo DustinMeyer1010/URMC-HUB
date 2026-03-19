@@ -1,10 +1,8 @@
 <script lang="ts">
-    import Icon from '$lib/assets/double-left-arrow-primary.png';
 	import { Drive } from "$lib/types/drive";
 	import CopyAllButton from '../buttons/CopyAllButton.svelte';
 	import CopyButton from "../buttons/CopyButton.svelte";
 	import { DriveStateClass } from './states/DriveState.svelte';
-	import { GroupStateClass } from './states/GroupState.svelte';
 
     let {
         item,
@@ -28,7 +26,7 @@
 
 {#snippet Link()}
         <a href={DriveState.pageLink}> 
-            <img src={Icon} alt="">
+            <img src={""} alt="Drive Icon Needed">
         </a>
 {/snippet}
 

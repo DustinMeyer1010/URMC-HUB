@@ -7,7 +7,7 @@ go install github.com/akavel/rsrc@latest
 Then I will have to put the icon in the package
 
 ```shell
-rsrc -manifest app.manifest -ico your_icon.ico -o rsrc.syso
+rsrc -manifest app.manifest -ico URMC.ico -o rsrc.syso
 ```
 
 Then put the syso file in the main package

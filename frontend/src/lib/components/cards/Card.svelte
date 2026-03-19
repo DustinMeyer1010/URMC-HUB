@@ -32,7 +32,7 @@
         height: fit-content;
         width: 100%;
         background: var(--color-surface);
-        border-radius: 20px;
+        border-radius: 10px;
         position: relative;
         opacity: 0;
         transform: translateY(100px);

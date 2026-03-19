@@ -1,20 +1,18 @@
 <script lang="ts">
 	import type { Group } from "$lib/types/group";
-    import Icon from '$lib/assets/double-left-arrow-primary.png';
 	import CopyButton from "../buttons/CopyButton.svelte";
 	import CopyAllButton from "../buttons/CopyAllButton.svelte";
-	import type { Snippet } from "svelte";
 	import { GroupStateClass } from "./states/GroupState.svelte";
+	import Card from "./Card.svelte";
+	import { Icons } from "$lib/managers/icons";
 
 
     let {
         item,
         idx,
-        children
     } : {
         item: Group.CardInfo
         idx: number
-        children?: Snippet
     } = $props()
 
     let GroupState: GroupStateClass = new GroupStateClass(item)
@@ -22,96 +20,85 @@
 
 </script>
 
-<!-- * Renders the content of the Card -->
-<div class:disabled={GroupState.ou.toLowerCase().includes("disabled")} style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton icon={""} copyTemplate={GroupState.copyTemplate}/>
-    {@render Link()}
-    {@render Content()}
-    {@render children?.()}
-</div>
+<Card {idx} >
+    {#snippet header()}
+        {@render Link()}
+        <CopyAllButton icon={Icons.COPY} copiedIcon={Icons.COPY_SUCCESSFUL} copyTemplate={GroupState.copyTemplate}/>
+        {#if GroupState.sigGroup}
+            <CopyAllButton icon={Icons.ADMIN} copyTemplate={""} dataTitle={"SIG Group"}/>
+        {/if}
+    {/snippet}
+    {#snippet body()}
+        {@render Content()}
+    {/snippet}
+</Card>
 
 <!-- * Creates the link to the group page -->
 {#snippet Link()}
-    <a href={GroupState.pageLink}> 
-        <img src={Icon} alt="">
+    <a href={GroupState.pageLink} data-title={"Go to Group Page"}> 
+        <img src={Icons.GROUP} alt="Group Icon Needed">
     </a>
 {/snippet}
 
 <!-- * Creates the content of the card -->
 {#snippet Content()}
-    <CopyButton value={GroupState.name} category={"title"}/>
-    {#if GroupState.information}
-        <CopyButton value={GroupState.information} label={"INFORMATION"}/>
-    {/if}
-    {#if GroupState.description}
-        <CopyButton value={GroupState.description} label={"DESCRIPTION"}/>
-    {/if}
-    {#if GroupState.readableOU}
-        <CopyButton value={GroupState.readableOU} label={"OU"}/>
-    {/if}
+    <div id="content">
+        <CopyButton value={GroupState.cn} category={"title"}/>
+        <div id="attributes">
+            {#if GroupState.information}
+                <CopyButton value={GroupState.information} label={"INFORMATION"}/>
+            {/if}
+            {#if GroupState.description}
+                <CopyButton value={GroupState.description} label={"DESCRIPTION"}/>
+            {/if}
+            {#if GroupState.readableOU}
+                <CopyButton value={GroupState.readableOU} label={"OU"}/>
+            {/if}
+        </div>
+    </div>
 {/snippet}
 
 
 <style >
-    div.disabled {
-        color: var(--color-ad-disabled)
-    }
+
 
     img {
-        width: 25px;
-    }
-
-
-    div {
-        display: flex;
-        flex-direction: column;
-        word-break: break-all;
-        position: relative;
-        gap: 0.5rem;
-        border-radius: 10px;
-        padding: 1.5rem;
-        padding-left: 1.5rem;
-        padding-right: 3rem;
-        box-sizing: border-box;
-        background: var(--color-surface);
-        color: var(--color-text);
-        opacity: 0;
-        overflow-x: hidden;
-        transform: translateY(20px);
-        animation: slideIn 0.2s ease-out forwards;
-        animation-delay: var(--delay);
-        margin: 0;
-        list-style: none;
+        width: 20px;
     }
 
     a {
         opacity: 0.8;
-        position: absolute;
         display: flex;
         justify-content: center;
         align-items: center;
-        top: 0.3rem;
-        right: -0.5rem;
-        width: 50px;
     }
 
-    a img {
-        transition: var(--transition-fast);
-        transform: rotate(130deg);
+    a:hover::after {
+        content: attr(data-title);
+        position: absolute;
+        top: -20px;
+        left: 20px;
+        background-color: #333;
+        color: var(--color-text);
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 100;
     }
 
-    a:hover img {
-        transform: rotate(130deg) translate(-3px, -1px);
+    div#content {
+        padding-left: 1.5rem;
+        padding-top: 0.5rem;
+        padding-bottom: 1.5rem;
     }
 
-
-    @media (max-width: 400px) {
-
-        div {
-            padding-right: 1rem;
-
-        }
+    div#attributes {
+        padding-left: 10px;
+        margin-top: 4px;
     }
+
 
 
     

@@ -17,6 +17,8 @@ export namespace User {
         urid: string[],
         email: string[],
         dn: string[],
+        memberof: string[],
+        pwdlastset: string[],
     }
 
     

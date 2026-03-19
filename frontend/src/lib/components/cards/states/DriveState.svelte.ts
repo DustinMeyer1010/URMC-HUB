@@ -16,7 +16,7 @@ export class DriveStateClass implements DriveState {
     local_path: string = ""
     searchValue: string = $state("")
 
-    pageLink: string = $derived(`/drive?name=${encodeURIComponent(this.drive)}`)
+    pageLink: string = $derived(`/normal/drive?name=${encodeURIComponent(this.drive)}`)
 
 
     filteredGroups: string[] = $derived.by(() => {

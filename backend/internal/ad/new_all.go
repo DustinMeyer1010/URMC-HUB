@@ -25,7 +25,7 @@ func SearchAll(searchValue string) models.AllResultsNew {
 
 func SearchUsers(searchValue string, users *[]map[string][]string, wg *sync.WaitGroup) {
 	defer wg.Done()
-	attributes := []string{"username", "netid", "dn", "cn", "email", "urid"}
+	attributes := []string{"username", "netid", "dn", "cn", "email", "urid", "memberof", "pwdlastset"}
 	SearchAllUserNew(users, searchValue, attributes...)
 }
 
@@ -37,7 +37,7 @@ func SearchGroups(searchValue string, groups *[]map[string][]string, wg *sync.Wa
 
 func SearchComputers(searchValue string, computers *[]map[string][]string, wg *sync.WaitGroup) {
 	defer wg.Done()
-	attributes := []string{"cn", "dn", "os", "information", "description"}
+	attributes := []string{"cn", "dn", "information", "description", "operatingsystem"}
 	SearchAllComputersNew(computers, searchValue, attributes...)
 }
 

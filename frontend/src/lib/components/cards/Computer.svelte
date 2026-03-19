@@ -1,10 +1,10 @@
 <script lang="ts">
     import { Computer } from "$lib/types/computer";
-    import goToIcon from '$lib/assets/double-left-arrow-primary.png';
-    import disabledIcon from '$lib/assets/disabled-computer.png'
 	import { ComputerStateClass } from "./states/ComputerState.svelte";
 	import CopyButton from "../buttons/CopyButton.svelte";
 	import CopyAllButton from "../buttons/CopyAllButton.svelte";
+	import Card from "./Card.svelte";
+	import { Icons } from "$lib/managers/icons";
     
     let {
         item,
@@ -18,132 +18,91 @@
 
 </script>
 
-<div class:disabled={ComputerState.disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton icon={""} copyTemplate={ComputerState.copyTemplate} />
-    {@render DisabledTag()}
-    {@render Link()}
-    {@render Content()}
-</div>
+<Card {idx} >
+    {#snippet header()}
+        {@render Link()}
+        <CopyAllButton icon={Icons.COPY} copiedIcon={Icons.COPY_SUCCESSFUL} copyTemplate={ComputerState.copyTemplate} />
+    {/snippet}
+
+    {#snippet body()}
+        {@render Content()}
+    {/snippet}
+</Card>
+
 
 <!-- TODO: Change over to query link rather than endpoint link-->
 {#snippet Link()}
-    <a href={ComputerState.pageLink}> 
-        <img src={goToIcon} alt="">
+    <a href={ComputerState.pageLink} data-title={ComputerState.disabled ? "Go to Computer Page (Disabled)" : "Go to Computer Page"}> 
+        <img 
+        src={ComputerState.disabled ? Icons.DISABLED_COMPUTER : Icons.COMPUTER} 
+        alt="Computer Icon Needed"
+        >
     </a>
 {/snippet}
 
 
-{#snippet DisabledTag()} 
-    {#if ComputerState.disabled}
-        <span class="disabled">
-            <img src={disabledIcon} alt="">
-            Computer Disabled
-        </span>
-    {/if}
-{/snippet}
-
-
 {#snippet Content()}
-    {#if ComputerState.name}
-        <CopyButton value={ComputerState.name} category={"title"}/>
-    {/if}
-    {#if ComputerState.ou}
-        <CopyButton value={ComputerState.readableOU} label={"OU"}/>
-    {/if}
-    {#if ComputerState.operating_system}
-        <CopyButton value={ComputerState.operating_system} label={"OPERATING_SYSTEM"}/>
-    {/if}
+    <div id="content">
+        {#if ComputerState.cn}
+            <CopyButton value={ComputerState.cn} category={"title"}/>
+        {/if}
+        <div id="attributes">
+            {#if ComputerState.operatingSystem}
+                <CopyButton value={ComputerState.operatingSystem} label={"OPERATING_SYSTEM"}/>
+            {/if}
+            {#if ComputerState.information}
+                <CopyButton value={ComputerState.information} label={"information"}/>
+            {/if}
+            {#if ComputerState.description}
+                <CopyButton value={ComputerState.description} label={"description"}/>
+            {/if}
+                {#if ComputerState.dn}
+                <CopyButton value={ComputerState.readableOU} label={"OU"}/>
+            {/if}
+        </div>
+    </div>
 {/snippet}
 
 <style >
-    span.disabled {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        color: var(--color-ad-disabled);
-        right: 1rem;
-        bottom: 0.5rem;
-        font-weight: bold;
-        font-size: 12px;
 
-    }
-
-    span.disabled img {
-        width: 20px;
-        margin-right: 2px;
-    }
-
-    img {
-        width: 25px;
-    }
-
-
-    div {
-        display: flex;
-        flex-direction: column;
-        word-break: break-all;
-        position: relative;
-        gap: 0.3rem;
-        border-radius: 10px;
-        padding: 1.5rem;
+    div#content {
         padding-left: 1.5rem;
-        padding-right: 3rem;
-        box-sizing: border-box;
-        background: var(--color-surface);
-        color: var(--color-text);
-        opacity: 0;
-        transform: translateY(20px);
-        animation: slideIn 0.2s ease-out forwards;
-        animation-delay: var(--delay);
-        margin: 0;
-        list-style: none;
-        box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.2);
+        padding-top: 0.5rem;
+        padding-bottom: 1.5rem;
     }
 
+    div#attributes {
+        padding-left: 10px;
+        margin-top: 4px;
+    }
 
     a {
         opacity: 0.8;
-        position: absolute;
         display: flex;
         justify-content: center;
         align-items: center;
-        top: 0.3rem;
-        right: -0.5rem;
-        width: 50px;
     }
 
-    a img {
-        transition: var(--transition-fast);
-        transform: rotate(130deg);
+    a:hover::after {
+        content: attr(data-title);
+        position: absolute;
+        top: -20px;
+        left: 20px;
+        background-color: #333;
+        color: var(--color-text);
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 100;
     }
 
-    a:hover img {
-        transform: rotate(130deg) translate(-3px, -1px);
+
+    img {
+        width: 20px;
     }
 
-    @media (max-width: 800px) {
-        div.disabled {
-            padding-bottom: 3rem;
-        }
-
-        span.disabled {
-            left: 50%;
-            right: 0;
-            transform: translateX(-50%);
-            text-wrap: nowrap;
-        }
-    } 
-
-    @media (max-width: 400px) {
-
-        div {
-            padding-right: 1rem;
-
-        }
-
-
-    }
     
     @keyframes slideIn {
         from {

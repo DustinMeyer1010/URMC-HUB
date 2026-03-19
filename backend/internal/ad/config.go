@@ -44,7 +44,7 @@ func DefaultSearchConfig() LDAPSearchConfig {
 		sizeLimit:  0,
 		timeLimit:  0,
 		typesOnly:  false,
-		control:    []ldap.Control{ldap.NewControlPaging(100)},
+		control:    []ldap.Control{ldap.NewControlPaging(50)},
 	}
 
 }
