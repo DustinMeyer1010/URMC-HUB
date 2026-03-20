@@ -59,8 +59,8 @@ var attributeAliases = map[string]string{
 	"OS":              "operatingSystem",
 	"OPERATINGSYSTEM": "operatingSystem",
 
-	"INFORMATION": "information",
-	"INFO":        "information",
+	"INFORMATION": "info",
+	"INFO":        "info",
 
 	"BADPASSWORDCOUNT": "badPwdCount",
 	"BADPWDCOUNT":      "badPwdCount",

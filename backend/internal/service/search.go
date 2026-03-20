@@ -1,50 +1,78 @@
 package service
 
 import (
-	"net/http"
-	"net/url"
+	"encoding/json"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
-	"github.com/gorilla/mux"
 )
 
-// Deprecated: No longer needed as search are query based
-func getSearchValue(r *http.Request) (string, error) {
-	vars := mux.Vars(r)
-	searchValue := vars["searchValue"]
+func SearchAll(searchValue string) []byte {
+	results := ad.SearchAll(searchValue)
 
-	searchValue, err := url.QueryUnescape(searchValue)
+	jsonData, _ := json.Marshal(results)
 
-	if err != nil {
-		cError := errs.INVALID_BODY.NewMessage("INVALID SEARCH PARAMETER")
-		return "", &cError
-	}
-
-	return searchValue, nil
-
+	return jsonData
 }
 
-// Deprecated: Replace with SearchAllGroupsNew
-func SearchAllGroups(r *http.Request) ([]models.GroupSimpleInfo, error) {
-
-	searchValue, cError := getSearchValue(r)
+func SearchAllUsers(searchValue string, attributes ...string) ([]byte, error) {
+	users := new([]map[string][]string)
+	cError := ad.SearchAllUserNew(users, searchValue, attributes...)
 
 	if cError != nil {
-		return []models.GroupSimpleInfo{}, cError
+		return []byte(""), cError
 	}
 
-	return ad.SearchAllGroups(searchValue)
+	jsonData, _ := json.Marshal(users)
+
+	return jsonData, nil
 }
 
-// Deprecated: Replaces with SearchAll
-func AllSearch(r *http.Request) (models.AllResults, error) {
-	searchValue, err := getSearchValue(r)
+func SearchAllGroupsNew(searchValue string, attributes ...string) ([]byte, error) {
+	groups := new([]map[string][]string)
+	cError := ad.SearchAllGroupsNew(groups, searchValue, attributes...)
 
-	if err != nil {
-		return models.AllResults{}, nil
+	if cError != nil {
+		return []byte(""), cError
 	}
 
-	return ad.AllSearch(searchValue)
+	jsonData, _ := json.Marshal(groups)
+
+	return jsonData, nil
+}
+
+func SearchAllComputers(searchValue string, attributes ...string) ([]byte, error) {
+	computers := new([]map[string][]string)
+	cError := ad.SearchAllComputersNew(computers, searchValue, attributes...)
+
+	if cError != nil {
+		return []byte(""), cError
+	}
+
+	jsonData, _ := json.Marshal(computers)
+
+	return jsonData, nil
+}
+
+func SearchAllDrives(searchValue string) ([]byte, error) {
+	drives, cError := ad.SearchAllDrives(searchValue)
+
+	if cError != nil {
+		return []byte(""), cError
+	}
+
+	jsonData, _ := json.Marshal(drives)
+
+	return jsonData, nil
+}
+
+func SearchAllPrinters(searchValue string) ([]byte, error) {
+	printers, cError := ad.SearchAllPrinters(searchValue)
+
+	if cError != nil {
+		return []byte(""), cError
+	}
+
+	jsonData, _ := json.Marshal(printers)
+
+	return jsonData, nil
 }

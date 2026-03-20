@@ -122,10 +122,14 @@ func GetShareDriveGroups(drive string) models.DrivePageInfo {
 		}
 	}
 
-	for _, group := range foundDrive.Groups {
-		groupInfo, _ := PullGroupInfo(group)
-		result.Groups = append(result.Groups, groupInfo)
-	}
+	/*
+
+		for _, group := range foundDrive.Groups {
+			// TODO: Need a AD functions that will look up a group based on the samaccountname
+			groupInfo, _ := PullGroupInfo(group)
+			result.Groups = append(result.Groups, groupInfo)
+		}
+	*/
 
 	result.Drive = foundDrive.Drive
 	result.LocalPath = foundDrive.LocalPath

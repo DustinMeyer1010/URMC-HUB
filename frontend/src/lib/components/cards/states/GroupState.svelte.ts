@@ -29,6 +29,7 @@ export class GroupStateClass  {
     })
 
     constructor(group: Group.CardInfo) {
+        console.log(group)
         this.cn = group.cn.join()
         this.samaccountname = group.samaccountname.join()
         this.information = group.information.join()

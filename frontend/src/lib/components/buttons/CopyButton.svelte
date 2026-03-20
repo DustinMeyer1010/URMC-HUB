@@ -75,12 +75,17 @@
 
     
 
-    @media (max-width: 350px) {
+    @media (max-width: 750px) {
         button {
             display: flex;
             gap: 5px;
-            margin-bottom: 5px;
             flex-direction: column;
+            font-size: 15px;
         }
+
+        button#title {
+            font-size: 18px;
+        }
+
     }
 </style>

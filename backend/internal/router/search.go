@@ -48,48 +48,6 @@ func searchRoutes(mux *mux.Router) {
 			http.HandlerFunc(handlers.SearchDrives),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
-		{
-			// Deprecated: To be Replace with GET /api/search/users
-			methods{"GET"},
-			"/api/search/users/{searchValue}",
-			http.HandlerFunc(handlers.UserSearch),
-			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
-		},
-		{
-			// Deprecated: To be Replace with GET /api/search/groups
-			methods{"GET"},
-			"/api/search/groups/{searchValue}",
-			http.HandlerFunc(handlers.GroupSearch),
-			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
-		},
-		{
-			// Deprecated: To be Replace with GET /api/search/computers
-			methods{"GET"},
-			"/api/search/computers/{searchValue}",
-			http.HandlerFunc(handlers.ComputerSearch),
-			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
-		},
-		{
-			// Deprecated: To be Replace with GET /api/search/printers
-			methods{"GET"},
-			"/api/search/printers/{searchValue}",
-			http.HandlerFunc(handlers.PrinterSearch),
-			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
-		},
-		{
-			// Deprecated: To be Replace with GET /api/search/drives
-			methods{"GET"},
-			"/api/search/drives/{searchValue}",
-			http.HandlerFunc(handlers.ShareDriveSearch),
-			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
-		},
-		{
-			// Deprecated: To be Replace with GET /api/search
-			methods{"GET"},
-			"/api/search/all/{searchValue}",
-			http.HandlerFunc(handlers.AllSearch),
-			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
-		},
 	}
 
 	routes.add(mux)

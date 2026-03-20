@@ -2,13 +2,9 @@ package ad
 
 import (
 	"fmt"
-	"net/http"
 	"strings"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
-	"github.com/go-ldap/ldap/v3"
 )
 
 var LDAP_STRING_REPLACE = strings.NewReplacer(
@@ -21,345 +17,116 @@ var LDAP_STRING_REPLACE = strings.NewReplacer(
 
 var RATE_LIMIT = 100
 
-// Pull all groups that match the search value returning CN, distinguishedName, description, info for each group
-// Deprecated: Being replaced by SearchAllGroupsNew
-func SearchAllGroups(searchValue string, attributes ...string) ([]models.GroupSimpleInfo, error) {
-	groups := []models.GroupSimpleInfo{}
-
-	/*
-		"cn",
-		"distinguishedName",
-		"sAMAccountName",
-		"description",
-		"info",
-	*/
+// Sanitizes a search string and executes a broad group query.
+// It matches the input against standard identity attributes and populates the
+// provided 'groups' pointer with a collection of attribute maps defined by
+// the 'attributes' parameter.
+func SearchAllGroupsNew(groups *[]map[string][]string, searchValue string, attributes ...string) error {
+	searchValue = LDAP_STRING_REPLACE.Replace(searchValue)
+	filter := fmt.Sprintf("(&(objectCategory=group)(anr=%s))", searchValue)
 
 	searchConfig := DefaultSearchConfig().
-		SetFilter(fmt.Sprintf("(&(objectCategory=group)(anr=%s*))", searchValue)).
+		SetFilter(filter).
 		SetAttributes(attributes)
 
 	searchResults, ldapError := searchConfig.Search()
 
-	if ldapError != nil {
-		logger.Error(ldapError)
-		cError := errs.LDAP_ERROR.NewError(ldapError)
-		return groups, &cError
-	}
-
-	if searchResults == nil {
-		cError := errs.NOT_FOUND.NewMessage(fmt.Sprintf("NO RESULTS FOUND FOR: %s", searchValue))
-		return groups, &cError
-	}
-
-	for _, entry := range searchResults.Entries {
-		groups = append(groups, models.ToGroupSimpleInfo(entry))
-	}
-
-	return groups, nil
-}
-
-// Deprecated: Going to be replace by LookupGroup
-func PullGroupInfo(group string, attr ...string) (models.GroupSimpleInfo, error) {
-	groupInfo := models.GroupSimpleInfo{}
-	group = LDAP_STRING_REPLACE.Replace(group)
-
-	/*
-		"cn",
-		"distinguishedName",
-		"sAMAccountName",
-		"description",
-		"info",
-	*/
-
-	results, ldapError := SearchWithFilter(
-		fmt.Sprintf("(&(objectCategory=group)(sAMAccountName=%s))", group),
-		attr...,
-	)
-
-	if ldapError != nil {
-		logger.Error(ldapError)
-		cError := errs.LDAP_ERROR.NewError(ldapError)
-		return groupInfo, &cError
-	}
-
-	if results == nil || len(results.Entries) == 0 {
-		cError := errs.NOT_FOUND.NewMessage(fmt.Sprintf("NO GROUP FOUND FOR: %s", group))
-		logger.Errorf("%v", cError)
-		logger.Debug(results.Entries)
-		return groupInfo, &cError
-	}
-
-	if len(results.Entries) > 1 {
-		logger.Debugf("Multiple Group Entries: %+v\n Input: %s", results.Entries, group)
-	}
-
-	entry := results.Entries[0]
-
-	return models.ToGroupSimpleInfo(entry), nil
-}
-
-// Deprecated: Going to be replace by LookupGroup
-func PullGroupInfoByDN(groupDN string, attr ...string) (models.GroupSimpleInfo, error) {
-	groupInfo := models.GroupSimpleInfo{}
-	groupDN = LDAP_STRING_REPLACE.Replace(groupDN)
-
-	/*
-		"cn",
-		"distinguishedName",
-		"sAMAccountName",
-		"description",
-		"info",
-	*/
-
-	results, ldapError := SearchWithFilter(
-		fmt.Sprintf("(&(objectCategory=group)(cn=%s))", groupDN),
-		attr...,
-	)
-
-	if ldapError != nil {
-		logger.Error(ldapError)
-		cError := errs.LDAP_ERROR.NewError(ldapError)
-		return groupInfo, &cError
-	}
-
-	if results == nil || len(results.Entries) == 0 {
-		cError := errs.NOT_FOUND.NewMessage(fmt.Sprintf("NO GROUP FOUND FOR: %s", groupDN))
-		logger.Errorf("%v", cError)
-		logger.Debug(results.Entries)
-		return groupInfo, &cError
-	}
-
-	if len(results.Entries) > 1 {
-		logger.Debugf("Multiple Group Entries: %+v\n Input: %s", results.Entries, groupDN)
-	}
-
-	entry := results.Entries[0]
-
-	return models.ToGroupSimpleInfo(entry), nil
-}
-
-// Deprecated: Getting replaced by GroupAddToUser
-func AddUsersToGroup(group string, newMembers []string) (map[string]models.GroupModifyResults, error) {
-	var results map[string]models.GroupModifyResults = make(map[string]models.GroupModifyResults)
-
-	usersDN, cError := GetUsersDN(newMembers)
-	if cError != nil {
-		logger.Error(cError.Error())
-		return results, cError
-	}
-	group = LDAP_STRING_REPLACE.Replace(group)
-	groupDN, cError := GetGroupDN(group)
-
-	if cError != nil {
-		return results, cError
-	}
-
-	for user, userDN := range usersDN {
-		cError = ModifyGroupNewMember(groupDN, userDN)
-		if err := errs.IsApiError(cError); err != nil {
-			results[user] = models.GroupModifyResults{
-				Group:      group,
-				Message:    err.Msg,
-				Successful: false,
-			}
-			continue
-		}
-		results[user] = models.GroupModifyResults{Group: group, Message: "Added to Group", Successful: true}
-	}
-
-	return results, nil
-}
-
-// Deprecated: Getting replaced by GroupRemoveFromUser
-func RemoveUsersFromGroup(group string, members []string) (map[string]models.GroupModifyResults, error) {
-	var cError error
-	var results map[string]models.GroupModifyResults = make(map[string]models.GroupModifyResults)
-
-	var usersDN map[string]string
-	if usersDN, cError = GetUsersDN(members); cError != nil {
-		logger.Error(cError.Error())
-		return results, cError
-	}
-
-	var groupDN string
-	if groupDN, cError = GetGroupDN(group); cError != nil {
-		logger.Error(cError.Error())
-		return results, cError
-	}
-
-	for user, userDN := range usersDN {
-		cError = ModifyGroupRemoveMember(groupDN, userDN)
-		if err := errs.IsApiError(cError); err != nil {
-			results[user] = models.GroupModifyResults{
-				Group:      group,
-				Message:    err.Msg,
-				Successful: false,
-			}
-			continue
-		}
-		results[user] = models.GroupModifyResults{Group: group, Message: "Removed from Group", Successful: true}
-	}
-
-	return results, nil
-}
-
-// Deprecated: No longer needed
-func GetGroupsDN(groups []string) (map[string]string, error) {
-	groupsDN := make(map[string]string, 0)
-
-	for _, group := range groups {
-		DN, cError := GetGroupDN(group)
-
-		// No group found with the given name
-		if err := errs.IsApiError(cError); err != nil {
-			if err.Type == "LDAP_ERROR" {
-				logger.Errorf("Could not find: %s - For a DN search", group)
-				return groupsDN, err
-			}
-			continue
-		}
-
-		groupsDN[group] = DN
-	}
-
-	return groupsDN, nil
-}
-
-// Deprecated: No longer needed
-func GetGroupDN(group string) (string, error) {
-
-	group = LDAP_STRING_REPLACE.Replace(group)
-
-	results, ldapError := SearchWithFilter(fmt.Sprintf("(&(objectCategory=group)(|(sAMAccountName=%s)(cn=%s)))", group, group), DISTINGUISHED_NAME)
-
-	if ldapError != nil {
-		logger.Error(ldapError)
-		cError := errs.LDAP_ERROR.NewError(ldapError)
-		return "", &cError
-	}
-
-	if len(results.Entries) == 0 {
-		cError := errs.NOT_FOUND.NewMessage(fmt.Sprintf("NO GROUP FOUND FOR: %s", group))
-		return "", &cError
-	}
-
-	return results.Entries[0].DN, nil
-}
-
-func ModifyGroupNewMember(groupDN, user string) error {
-	l, cError := connectToLDAP()
-
-	if cError != nil {
-		logger.Error(cError.Error())
+	if cError := checkSearchErrors(ldapError, searchResults); cError != nil {
 		return cError
 	}
-	defer l.Close()
-	defer l.Unbind()
 
-	addRequest := ldap.NewModifyRequest(groupDN, nil)
-	addRequest.Add("member", []string{user})
-	ldapError := l.Modify(addRequest)
-
-	if ldapError != nil {
-		logger.Error(ldapError)
-		cError := errs.LDAP_ERROR.NewError(ldapError)
-		return &cError
-	}
+	*groups = ExtractMultipleEntriesAtrributes(searchResults.Entries, attributes)
 
 	return nil
+
 }
 
-// * Sends a modify request to remove a member from group
-func ModifyGroupRemoveMember(groupDN, user string) error {
-	l, cError := connectToLDAP()
+// Performs an LDAP search for a specific group by its Distinguished Name.
+// It returns a mapped collection of the requested attributes or a custom error if the
+// group is not found or the search fails.
+func LookupGroup(groupDN string, attributes ...string) (map[string][]string, error) {
 
-	if cError != nil {
-		logger.Error(cError.Error())
-		return cError
-	}
-	defer l.Close()
-	defer l.Unbind()
+	searchConfig := GroupSearchConfig().
+		SetBaseDN(groupDN).
+		SetAttributes(attributes)
 
-	addRequest := ldap.NewModifyRequest(groupDN, nil)
-	addRequest.Delete("member", []string{user})
-	ldapError := l.Modify(addRequest)
+	searchResults, ldapError := searchConfig.Search()
 
-	if ldapError != nil {
-		logger.Error(ldapError)
-		cError := errs.LDAP_ERROR.NewError(ldapError)
-		return &cError
+	if cError := checkSearchErrors(ldapError, searchResults); cError != nil {
+		return map[string][]string{}, cError
 	}
 
-	return nil
+	entry := searchResults.Entries[0]
+
+	attrs := ExtractAttributes(entry, attributes)
+	return attrs, nil
 }
 
-// * Retrives all the members of a specific group
-// REFACTOR: This has to be refactor to be easier to read
-// NOTE: Total Retrive per request 1500
-// Deprecated: Replaced with GetGroupMembers
-func GetAllMembers(group string) ([]string, error) {
-	start := 0
-	end := 1499
+func GetGroupMembers(groupDN string, start, end int) (map[string][]string, error) {
+	attr := make(map[string][]string, 0)
+	memberAttr := []string{fmt.Sprintf("member;range=%d-%d", start, end)}
 
-	var final_memeber []string = []string{}
-	var temp_members []string = []string{}
+	searchConfig := DefaultSearchConfig().SetBaseDN(groupDN).SetAttributes(memberAttr)
 
-	l, cError := connectToLDAP()
+	searchResults, ldapError := searchConfig.Search()
 
-	if cError != nil {
-		logger.Error(cError.Error())
-		return final_memeber, cError
+	if cError := checkSearchErrors(ldapError, searchResults); cError != nil {
+		return map[string][]string{}, cError
 	}
 
-	defer l.Close()
-	defer l.Unbind()
+	entry := searchResults.Entries[0]
 
-	for {
-		config := DefaultSearchConfig().SetFilter(fmt.Sprintf("(&(objectCategory=group)(cn=%s))", group)).SetAttributes([]string{memberRangeAtrribute(start, end)}).SetControl(nil)
-		results, ldapError := config.Search()
+	for _, a := range entry.Attributes {
+		attr["members"] = a.Values
+	}
+
+	return attr, nil
+
+}
+
+func UsersRemoveFromGroup(usersDN []string, groupDN string) {
+	modifyConfig := NewDefaultModifyConfig(groupDN)
+
+	for _, u := range usersDN {
+		modifyConfig.Add(u)
+	}
+}
+
+func UsersAddToGroup(usersDN []string, groupDN string) []models.GroupModifyResults {
+
+	results := make([]models.GroupModifyResults, len(usersDN))
+
+	modifyConfig := NewDefaultModifyConfig(groupDN)
+
+	for _, u := range usersDN {
+		searchConfig := UserSearchConfig().SetBaseDN(u).SetAttributes([]string{"samAccountName"})
+		searchResult, ldapError := searchConfig.EntryExist()
 
 		if ldapError != nil {
-			logger.Error(ldapError)
-			cError := errs.LDAP_ERROR.NewError(ldapError)
-			return final_memeber, &cError
+			results = append(results, models.GroupModifyResults{
+				Group:      groupDN,
+				User:       "NOT_FOUND",
+				Message:    fmt.Sprintf("Failed to find user with DN: %s", u),
+				Successful: false},
+			)
+			continue
 		}
 
-		if results == nil {
-			logger.Error("LDAP RETURN RESULTS WERE NIL")
-			cError := errs.LDAP_ERROR.NewMessage("RESULTS WERE NIL FROM LDAP SEARCH")
-			return final_memeber, &cError
+		ldapError = modifyConfig.Remove(u)
+
+		if ldapError != nil {
+			results = append(results, models.GroupModifyResults{
+				Group:      groupDN,
+				User:       u,
+				Message:    fmt.Sprintf("Failed to find user with DN: %s", u),
+				Successful: false},
+			)
+			continue
 		}
 
-		if len(results.Entries) == 0 {
-			logger.Errorf("GROUP NOT FOUND FOR: %s", group)
-			cError := errs.NOT_FOUND.NewMessage(fmt.Sprintf("NO GROUPS FOUND FOR: %s", group))
-			return final_memeber, &cError
-		}
-
-		result := results.Entries[0]
-
-		for _, attr := range result.Attributes {
-			temp_members = attr.Values
-			final_memeber = append(final_memeber, temp_members...)
-		}
-
-		if len(temp_members) != 1500 {
-			logger.Infof("END OF MEMBERS FOR GROUP: %s", group)
-			break
-		}
-
-		if RATE_LIMIT < 0 {
-			logger.Errorf("RATE LIMIT WAS REACH FOR MEMBERS: %s", group)
-			cError := errs.NewError(http.StatusInternalServerError, "RATE_LIMIT_HIT", fmt.Sprintf("RATE LIMIT WAS REACH FOR MEMBERS: %s", group))
-			return []string{}, &cError
-		}
-
-		start += 1500
-		end += 1500
+		results = append(results, models.GroupModifyResults{Group: groupDN, User: searchResult.GetAttributeValue("samAccountName"), Message: "Successful Add", Successful: false})
 	}
 
-	logger.Info("Total Members: ", len(final_memeber))
-
-	return final_memeber, nil
+	return results
 
 }

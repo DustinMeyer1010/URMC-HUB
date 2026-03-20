@@ -1,38 +1,56 @@
 package handlers
 
+// NOTE: This file will replace group.go just contains all the new functions
+
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	"net/http"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/parser"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
-	"github.com/gorilla/mux"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/utils"
 )
 
-// Deprecated: These will fall under edit a person account. Using GroupAddToUser
-func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
-	vars := mux.Vars(r)
-	group := vars["group"]
+// HTTP GET requests to retrieve specific LDAP group attributes.
+// It expects a 'dn' query parameter for the target object and an optional 'attributes'
+// comma-separated list to filter the returned fields.
+func GetGroup(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
+	attributes := parser.QueryArray(query.Get("attributes"))
 
-	var modify models.ModifyMembers
+	data, _ := service.GetGroup(dn, attributes...)
 
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+}
 
-	if jsonError := decoder.Decode(&modify); jsonError != nil {
-		cError := errs.INVALID_BODY.NewMessage("INVALID GROUPS ARRAY")
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
-		return
-	}
+// HTTP GET requests to retrieve specific LDAP group all attrubutes
+// It expects a 'dn' query parameter for the target object
+func GetGroupAvaiableAttributes(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
 
-	results, cError := ad.AddUsersToGroup(group, modify.Members)
+	data, _ := service.GetGroupAvaiableAttributes(dn)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+}
+
+// HTTP GET request to retrieve specific members of ldap group.
+// It will expect a dn, start, end query. This will return the members
+// within the range of start and end up to 1500.
+func GetGroupMembers(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
+	startParm := query.Get("start")
+	endParm := query.Get("end")
+
+	start, end := utils.ExtractStartEndRange(startParm, endParm)
+
+	data, cError := service.GetGroupMembers(dn, start, end)
 
 	if e := errs.IsApiError(cError); e != nil {
 		http.Error(w, e.Type, e.StatusCode)
@@ -40,92 +58,23 @@ func AddUsersToGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonData, _ := json.Marshal(results)
-
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
 }
 
-// Deprecated: These will fall under edit a person account. Using GroupRemoveFromUser
-func RemoveUsersFromGroup(w http.ResponseWriter, r *http.Request) {
-	logger.Infof("%s %s", r.Method, r.URL)
-	vars := mux.Vars(r)
-	group := vars["group"]
-
-	var modify models.ModifyMembers
-
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
-
-	if jsonError := decoder.Decode(&modify); jsonError != nil {
-		cError := errs.INVALID_BODY.NewMessage("INVALID GROUPS ARRAY")
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
-		return
-	}
-
-	results, cError := ad.RemoveUsersFromGroup(group, modify.Members)
-
-	if e := errs.IsApiError(cError); e != nil {
-		http.Error(w, e.Type, e.StatusCode)
-		w.Write([]byte(e.Msg))
-		return
-	}
-
-	jsonData, _ := json.Marshal(results)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
+// TODO: Add a user to group
+func UsersAddTOGroup(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// Deprecated: Replace with GetGroups
-func PullGroupInfo(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
-	vars := mux.Vars(r)
-	group := vars["group"]
-
-	result, cError := ad.PullGroupInfo(group)
-
-	if e := errs.IsApiError(cError); e != nil {
-		http.Error(w, e.Type, e.StatusCode)
-		w.Write([]byte(e.Msg))
-		return
-	}
-
-	jsonData, _ := json.Marshal(result)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
-}
-
-// Deprecated: Replaced with GetGroupMemebers
-func GetAllMembers(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
-	vars := mux.Vars(r)
-	group := vars["group"]
-
-	membersDNs, cError := service.GetAllMembers(group)
-	members := ad.PullMembersInformation(membersDNs)
-
-	if e := errs.IsApiError(cError); e != nil {
-		http.Error(w, e.Type, e.StatusCode)
-		w.Write([]byte(e.Msg))
-		return
-	}
-
-	jsonData, _ := json.Marshal(members)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
+// TODO: Remove user from group
+func UsersRemoveFromGroup(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// Refactor: This will have to have a new function create to get all the members of a group.
+/*
+Refactor: This will have to have a new function create to get all the members of a group.
 func GetAllMembersExcel(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
@@ -151,3 +100,4 @@ func GetAllMembersExcel(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(buf.Bytes())))
 	w.Write(buf.Bytes())
 }
+*/

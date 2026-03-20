@@ -29,12 +29,6 @@ func computerRoutes(mux *mux.Router) {
 			http.HandlerFunc(handlers.PingComputer),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
-		{
-			methods{"GET"},
-			"/api/computer/{computer}/info",
-			http.HandlerFunc(handlers.ComputerInfo),
-			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
-		},
 	}
 
 	routes.add(mux)

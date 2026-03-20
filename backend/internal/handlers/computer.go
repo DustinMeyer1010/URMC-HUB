@@ -1,33 +1,55 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/parser"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
-	"github.com/gorilla/mux"
 )
 
-// Deprecated: To be replaced by GetComputer
-func ComputerInfo(w http.ResponseWriter, r *http.Request) {
+// HTTP GET requests to retrieve specific LDAP computer attributes.
+// It expects a 'dn' query parameter for the target object and an optional 'attributes'
+// comma-separated list to filter the returned fields.
+func GetComputer(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
+	attributes := parser.QueryArray(query.Get("attributes"))
 
-	logger.LogRequestInfo(r.Method, r.URL.Path)
+	jsonData, _ := service.GetComputer(dn, attributes...)
 
-	vars := mux.Vars(r)
-	computer := vars["computer"]
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
+}
 
-	computerResponse, cError := service.ComputerInfo(computer)
+// HTTP GET requests to retrieve specific LDAP computer all attrubutes
+// It expects a 'dn' query parameter for the target object
+func GetComputerAvaiableAttributes(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
 
-	if e := errs.IsApiError(cError); e != nil {
-		http.Error(w, e.Type, e.StatusCode)
-		w.Write([]byte(e.Msg))
+	jsonData, _ := service.GetComputerAvaiableAttributes(dn)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
+}
+
+func PingComputer(w http.ResponseWriter, r *http.Request) {
+
+	query := r.URL.Query()
+	computerName := query.Get("name")
+
+	data, err := service.PingComputer(computerName)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusConflict)
+		w.Write(data)
 		return
 	}
 
-	jsonData, _ := json.Marshal(computerResponse)
-
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+
 }

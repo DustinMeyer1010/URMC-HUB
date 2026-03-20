@@ -1,110 +1,46 @@
 package handlers
 
+// NOTE: This file will replace user.go just contains all the new functions
+
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"net/http"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/parser"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
-	"github.com/gorilla/mux"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/utils"
 )
 
-// Request handler for getting the lockout information for a user
-//
-// Deprecated: Going to be replaced by GetUserLockoutStatus
-func LockOutStatus(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
+// HTTP GET requests to retrieve specific LDAP user attributes.
+// It expects a 'dn' query parameter for the target object and an optional 'attributes'
+// comma-separated list to filter the returned fields.
+func GetUser(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
+	attributes := parser.QueryArray(query.Get("attributes"))
 
-	vars := mux.Vars(r)
-	username := vars["username"]
-
-	matches := ad.LockoutInfoData(username)
-
-	jsonData, _ := json.Marshal(matches)
-
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
-}
-
-// Deprecated: Going to be replaced by GetUser
-func PullUserInformation(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
-	vars := mux.Vars(r)
-	username := vars["username"]
-
-	user, cError := ad.PullUserInformation(username)
+	data, cError := service.GetUser(dn, attributes...)
 
 	if e := errs.IsApiError(cError); e != nil {
 		http.Error(w, e.Type, e.StatusCode)
 		w.Write([]byte(e.Msg))
 		return
 	}
-
-	jsonData, _ := json.Marshal(user)
-
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
-}
-
-// Request handler for removing a group from a user
-func RemoveGroup(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
-
-	vars := mux.Vars(r)
-	username := vars["username"]
-
-	var userModify models.UserModifyMemberOf
-
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
-
-	if jsonError := decoder.Decode(&userModify); jsonError != nil {
-		cError := errs.INVALID_BODY.NewMessage("INVALID GROUPS IN BODY")
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
-		return
-	}
-
-	modifyResults, cError := ad.RemoveGroup(username, userModify.Groups)
-
-	if e := errs.IsApiError(cError); e != nil {
-		http.Error(w, e.Type, e.StatusCode)
-		w.Write([]byte(e.Msg))
-		return
-	}
-
-	res, _ := json.Marshal(modifyResults)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(res)
+	w.Write(data)
 }
 
-// Request handler for adding a group to a user
-func AddGroup(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
+// HTTP GET requests to retrieve specific LDAP user all attrubutes
+// It expects a 'dn' query parameter for the target object
+func GetUserAvaiableAttributes(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
 
-	vars := mux.Vars(r)
-	username := vars["username"]
-
-	var userModify models.UserModifyMemberOf
-
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
-
-	if jsonError := decoder.Decode(&userModify); jsonError != nil {
-		cError := errs.INVALID_BODY.NewMessage("INVALID GROUPS IN BODY")
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
-		return
-	}
-
-	modifyResults, cError := ad.AddGroup(username, userModify.Groups)
+	data, cError := service.GetUserAvaiableAttributes(dn)
 
 	if e := errs.IsApiError(cError); e != nil {
 		http.Error(w, e.Type, e.StatusCode)
@@ -112,46 +48,107 @@ func AddGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, _ := json.Marshal(modifyResults)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+}
+
+// HTTP GET request to retrive specific ldap user and all the drives
+// that that user has access to. It expects a 'dn' query parameter for the target object
+func GetUserDrives(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
+	data, cError := service.GetUserDrives(dn)
+
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(res)
+	w.Write(data)
+}
+
+// HTTP GET request to retrive specifc ldap user and all the groups
+// they have on their account. It expects a 'dn' query parameter for the target object.
+// An optional attributes query parameter for the attributes of the groups wanted on
+// response
+func GetUserGroups(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
+	attributes := parser.QueryArray(query.Get("attributes"))
+
+	data := make([]byte, 0)
+	var cError error = nil
+
+	if len(attributes) == 0 {
+		data, cError = service.GetUserGroups(dn, "samaccountname", "information", "dn", "description", "cn")
+	} else {
+		data, cError = service.GetUserGroups(dn, attributes...)
+	}
+
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
 
 }
 
-// Search for all the user in the file and pull simple information
-func BulkUserSearchFile(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
-	r.ParseMultipartForm(1 << 20)
+// HTTP GET request to retrive specifc ldap user password attempt history.
+// expects a 'dn'
+func GetUserLockoutStatus(w http.ResponseWriter, r *http.Request) {
 
-	uploadedfiles, ok := r.MultipartForm.File["file"]
+	query := r.URL.Query()
+	dn := query.Get("dn")
 
-	if !ok {
-		http.Error(w, "NO_FILE_PROVIDED", http.StatusBadRequest)
-		return
-	}
+	data := service.GetUserLockoutStatus(dn)
 
-	f := service.BulkUserSearch(uploadedfiles)
-
-	if f == nil {
-		http.Error(w, "EXCEL_GENERATION_FAILED", http.StatusInternalServerError)
-		return
-	}
-
-	buf := new(bytes.Buffer)
-
-	if err := f.Write(buf); err != nil {
-		http.Error(w, "EXCEL_GENERATION_FAILED", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-	w.Header().Set("Content-Disposition", `attachment; filename="example.xlsx"`)
-	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(buf.Bytes())))
-	w.Write(buf.Bytes())
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
 }
 
+// HTTP POST request to add specific ldap user from a group
+func GroupAddToUser(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
+
+	var userModify models.UserModifyRequest
+
+	// TODO: Handle this error
+	err := utils.GatherBodyDetails(r.Body, &userModify)
+
+	fmt.Println(err)
+
+	// NOTE: This should not return and error because all modify request will
+	// have the reason on why or why not it was added
+	data, _ := service.GroupAddToUser(dn, userModify.GroupDN)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+}
+
+// HTTP DELETE request to remove specific ldap user from a group
+func GroupRemoveFromUser(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	dn := query.Get("dn")
+
+	fmt.Println(dn)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("Still Being Implemented"))
+}
+
+/*
 func BulkUserSearch(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
 
@@ -184,23 +181,37 @@ func BulkUserSearch(w http.ResponseWriter, r *http.Request) {
 	w.Write(buf.Bytes())
 }
 
-// Deprecated: Getting replaced with GetUserGroups
-func GetMemberOf(w http.ResponseWriter, r *http.Request) {
+
+
+// Search for all the user in the file and pull simple information
+func BulkUserSearchFile(w http.ResponseWriter, r *http.Request) {
 	logger.LogRequestInfo(r.Method, r.URL.Path)
-	vars := mux.Vars(r)
-	username := vars["username"]
+	r.ParseMultipartForm(1 << 20)
 
-	groups, cError := service.GetMemberOf(username)
+	uploadedfiles, ok := r.MultipartForm.File["file"]
 
-	if e := errs.IsApiError(cError); e != nil {
-		http.Error(w, e.Type, e.StatusCode)
-		w.Write([]byte(e.Msg))
+	if !ok {
+		http.Error(w, "NO_FILE_PROVIDED", http.StatusBadRequest)
 		return
 	}
 
-	jsonData, _ := json.Marshal(groups)
+	f := service.BulkUserSearch(uploadedfiles)
 
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
+	if f == nil {
+		http.Error(w, "EXCEL_GENERATION_FAILED", http.StatusInternalServerError)
+		return
+	}
 
+	buf := new(bytes.Buffer)
+
+	if err := f.Write(buf); err != nil {
+		http.Error(w, "EXCEL_GENERATION_FAILED", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	w.Header().Set("Content-Disposition", `attachment; filename="example.xlsx"`)
+	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(buf.Bytes())))
+	w.Write(buf.Bytes())
 }
+*/

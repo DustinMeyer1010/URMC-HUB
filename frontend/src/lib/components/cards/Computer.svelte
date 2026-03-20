@@ -69,9 +69,13 @@
         padding-left: 1.5rem;
         padding-top: 0.5rem;
         padding-bottom: 1.5rem;
+        padding-right: 0.5rem;
     }
 
     div#attributes {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
         padding-left: 10px;
         margin-top: 4px;
     }

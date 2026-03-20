@@ -103,6 +103,9 @@
     div#attributes {
         padding-left: 10px;
         margin-top: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
     }
 
 
@@ -139,6 +142,7 @@
         padding-left: 1.5rem;
         padding-top: 0.5rem;
         padding-bottom: 1.5rem;
+        padding-right: 0.5rem;
     }
 
     a {
@@ -147,6 +151,17 @@
         justify-content: center;
         align-items: center;
     }
+
+    @media (max-width: 750px) {
+        div#content {
+            padding-left: 1rem;
+            padding-bottom: 1rem;
+        }
+
+
+    }
+
+
 
 
     @keyframes slideIn {
