@@ -13,8 +13,20 @@ func computerRoutes(mux *mux.Router) {
 	routes := routes{
 		{
 			methods{"GET"},
-			"/api/computer/{computer}/info",
-			http.HandlerFunc(handlers.ComputerInfo),
+			"/api/computer",
+			http.HandlerFunc(handlers.GetComputer),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+		{
+			methods{"GET"},
+			"/api/computer/attributes",
+			http.HandlerFunc(handlers.GetComputerAvaiableAttributes),
+			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
+		},
+		{
+			methods{"GET"},
+			"/api/computer/ping",
+			http.HandlerFunc(handlers.PingComputer),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 	}

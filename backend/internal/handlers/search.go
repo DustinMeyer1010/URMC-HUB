@@ -1,139 +1,126 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
-	"net/url"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/parser"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/service"
-	"github.com/gorilla/mux"
 )
 
-func AllSearch(w http.ResponseWriter, r *http.Request) {
+func SearchAll(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	searchValue := query.Get("value")
 
-	logger.LogRequestInfo(r.Method, r.URL.Path)
-
-	matches, cError := service.AllSearch(r)
-
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if searchValue == "" {
+		http.Error(w, "INVALID_SEARCH_VALUE", http.StatusBadRequest)
 		return
 	}
 
-	jsonData, _ := json.Marshal(matches)
+	data := service.SearchAll(searchValue)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
-
+	w.Write(data)
 }
 
-func UserSearch(w http.ResponseWriter, r *http.Request) {
+func SearchUsers(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	searchValue := query.Get("value")
+	attributes := parser.QueryArray(query.Get("attributes"))
 
-	logger.LogRequestInfo(r.Method, r.URL.Path)
+	if len(attributes) == 0 {
+		attributes = []string{"*"}
+	}
 
-	vars := mux.Vars(r)
-	searchValue := vars["searchValue"]
+	data, cError := service.SearchAllUsers(searchValue, attributes...)
 
-	searchValue, _ = url.QueryUnescape(searchValue)
-
-	userMatches, cError := ad.SearchAllUsers(searchValue)
-
-	if cError != nil {
-		w.WriteHeader(cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
-	jsonData, _ := json.Marshal(userMatches)
-
-	logger.Info(jsonData)
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
+	w.Write(data)
+
 }
 
-func GroupSearch(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
+func SearchGroups(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	searchValue := query.Get("value")
+	attributes := parser.QueryArray(query.Get("attributes"))
 
-	groupMatches, cError := service.SearchAllGroups(r)
+	if len(attributes) == 0 {
+		attributes = []string{"*"}
+	}
 
-	if cError != nil {
-		http.Error(w, cError.Type, cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	data, cError := service.SearchAllGroupsNew(searchValue, attributes...)
+
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
-	jsonData, _ := json.Marshal(groupMatches)
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
-
+	w.Write(data)
 }
 
-func PrinterSearch(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
+func SearchComputer(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	searchValue := query.Get("value")
+	attributes := parser.QueryArray(query.Get("attributes"))
 
-	vars := mux.Vars(r)
-	searchValue := vars["searchValue"]
+	if len(attributes) == 0 {
+		attributes = []string{"*"}
+	}
 
-	printerMatches, cError := ad.SearchAllPrinters(searchValue)
+	data, cError := service.SearchAllComputers(searchValue, attributes...)
 
-	if cError != nil {
-		w.WriteHeader(cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
-	jsonData, _ := json.Marshal(printerMatches)
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
-
+	w.Write(data)
 }
 
-func ComputerSearch(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
+func SearchDrives(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	searchValue := query.Get("value")
 
-	vars := mux.Vars(r)
-	searchValue := vars["searchValue"]
+	data, cError := service.SearchAllDrives(searchValue)
 
-	searchValue, _ = url.QueryUnescape(searchValue)
-
-	computerMatches, cError := ad.SearchAllComputers(searchValue)
-
-	if cError != nil {
-		w.WriteHeader(cError.StatusCode)
-		w.Write([]byte(cError.Msg))
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
 		return
 	}
 
-	jsonData, _ := json.Marshal(computerMatches)
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
-
+	w.Write(data)
 }
 
-func ShareDriveSearch(w http.ResponseWriter, r *http.Request) {
-	logger.LogRequestInfo(r.Method, r.URL.Path)
+func SearchPrinters(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	searchValue := query.Get("value")
 
-	vars := mux.Vars(r)
-	searchValue := vars["searchValue"]
-	searchValue, _ = url.QueryUnescape(searchValue)
-	driveMatches, _ := ad.SearchAllDrives(searchValue)
+	data, cError := service.SearchAllPrinters(searchValue)
 
-	jsonData, _ := json.Marshal(driveMatches)
+	if e := errs.IsApiError(cError); e != nil {
+		http.Error(w, e.Type, e.StatusCode)
+		w.Write([]byte(e.Msg))
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
-
+	w.Write(data)
 }

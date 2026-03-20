@@ -26,6 +26,8 @@ const config = {
 				'/computer/index',
 				'/drive/index',
 				'/drive',
+				'/user',
+				'/group',
 				'/group/index',
 				'/user/index',
 				'/printer/index',

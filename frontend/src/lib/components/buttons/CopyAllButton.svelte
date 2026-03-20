@@ -1,24 +1,49 @@
 <script lang="ts">
 	import { Copy } from "$lib/types/copy";
-    import Icon from "$lib/assets/copy-color-text.png"
-    let { copyTemplate } : {copyTemplate: string} = $props()
+
+	import { fade } from "svelte/transition";
 
     let copyState: Copy.State = $state(Copy.EMPTY_COPY_STATE)
 
+    let {
+        icon,
+        copiedIcon = icon,
+        copyTemplate,
+        dataTitle = "Copy All"
+    } : {
+        icon: string,
+        copiedIcon?: string
+        copyTemplate: string
+        dataTitle?: string
+    } = $props()
+
 </script>
 
-{#if copyState.copied != copyTemplate}
-    <button class="copy-all" title="Copy All" onclick={() => Copy.ToClipboard(copyTemplate, copyState)}><img src={Icon} alt="Copy All"></button>
-{:else}
-    <span class="copied-all">ALL COPIED</span>
-{/if}
-
-
+<button 
+    class:copied={copyState.copied != copyTemplate} 
+    class="copy-all" 
+    title="Copy All" 
+    data-title={dataTitle}
+    onclick={() => Copy.ToClipboard(copyTemplate, copyState)}
+>
+        {#key copyState.copied}
+            <img 
+                in:fade={{ duration: 50}}
+                out:fade={{duration: 50}}
+                src={copyState.copied != copyTemplate ? icon : copiedIcon} 
+                alt="Copy All"
+            >
+        {/key}
+</button>
 <style>
+
+
     button {
         background: none;
+        position: relative;
         border: none;
         padding: 0;
+        margin: 0;
         font: inherit;
         color: var(--color-text);
         cursor: pointer;
@@ -29,40 +54,40 @@
         outline: none;
     }
 
-    span.copied-all {
-        font-size: 10px;
-        position: absolute;
-        top: 0.4rem;
-        left: 0.4rem;
-        opacity: 0.3;
-        z-index: -1;
-        color: var(--color-text)
+    button.copied {
+        color: var(--color-success);
     }
 
     button.copy-all {
-        position: absolute;
-        top: 0.2rem;
-        left: 0.2rem;
-        opacity: 0.3;
-        z-index: -1;
+        display: inline-grid;
+        place-items: center;
     }
 
     button.copy-all img {
-        width: 20px;
+        grid-area: 1/1;
+        height: 25px;
+    }
+
+    button:hover::after {
+        content: attr(data-title);
+        position: absolute;
+        top: -30px;
+        left: 15px;
+        background-color: #333;
+        color: var(--color-text);
+        padding: 6px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        white-space: nowrap;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 100;
+        opacity: 0.8;
     }
 
     button.copy-all:hover img {
         transform: scale(1.1);
     }
 
-    button {
-        background: none;
-        border: none;
-        padding: 0;
-        font: inherit;
-        color: inherit;
-        cursor: pointer;
-    }
 
     button:active,
     button:focus { 

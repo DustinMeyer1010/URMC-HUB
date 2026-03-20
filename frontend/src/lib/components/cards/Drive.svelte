@@ -1,8 +1,9 @@
 <script lang="ts">
-    import Icon from '$lib/assets/double-left-arrow-primary.png';
+	import { Icons } from "$lib/managers/icons";
 	import { Drive } from "$lib/types/drive";
 	import CopyAllButton from '../buttons/CopyAllButton.svelte';
 	import CopyButton from "../buttons/CopyButton.svelte";
+	import Card from "./Card.svelte";
 	import { DriveStateClass } from './states/DriveState.svelte';
 
     let {
@@ -17,24 +18,29 @@
 
 </script>
 
-<!-- * Renders the main content for the card-->
-<div id="card" style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton copyTemplate={DriveState.copyTemplate} />
-    {@render Link()}
-    {@render Content()}
-</div>
+<Card {idx} >
+    {#snippet header()}
+        {@render Link()}
+        <CopyAllButton  icon={Icons.COPY} copiedIcon={Icons.COPY_SUCCESSFUL} copyTemplate={DriveState.copyTemplate} />
+    {/snippet}
+    {#snippet body()}
+        {@render Content()}
+    {/snippet}
+</Card>
 
 
 {#snippet Link()}
-        <a href={DriveState.pageLink}> 
-            <img src={Icon} alt="">
+        <a href={DriveState.pageLink} data-title={"Go to Drive Page"}> 
+            <img src={Icons.DRIVE} alt="Drive Icon Needed">
         </a>
 {/snippet}
 
 {#snippet Content()}
-    <CopyButton value={DriveState.drive} category={"title"}/>
-    <CopyButton value={DriveState.local_path} label={"LOCAL_PATH"}/>
-    {@render Groups()}
+    <div id="content">
+        <CopyButton value={DriveState.drive} category={"title"}/>
+        <CopyButton value={DriveState.local_path} label={"LOCAL_PATH"}/>
+        {@render Groups()}
+    </div>
 {/snippet}
 
 
@@ -46,9 +52,10 @@
         {#if DriveState.groups.length >= 10}
             <input placeholder="Search For Group" bind:value={DriveState.searchValue}/> 
         {/if}
+        <span>{DriveState.groupCount}</span>
         <div id="groups" >
             <!-- Note: Each group is transitioned in and can be copied -->
-            {#each DriveState.filteredGroups as group,i }
+            {#each DriveState.filteredGroups as group (group) }
                 <CopyButton value={group} category={"drive-group"}></CopyButton>
             {/each}
         </div>
@@ -71,9 +78,16 @@
         outline: none;
     }
 
+    div#content {
+        padding-left: 1.5rem;
+        padding-top: 0.5rem;
+        padding-bottom: 1.5rem;
+        padding-right: 0.5rem;
+    }
+
     div#groups {
         display: flex;
-        gap: 0.5rem;
+        gap: 0.3rem;
         transition: 0.5s ease;
         margin-top: 0.5rem;
         padding: 0.5rem;
@@ -86,56 +100,43 @@
     }
 
     img {
-        width: 25px;
+        width: 20px;
     }
 
-
-    div#card {
-        display: flex;
-        flex-direction: column;
-        word-break: break-all;
-        position: relative;
-        gap: 0.5rem;
-        border-radius: 10px;
-        padding: 1.5rem;
-        padding-bottom: 2rem;
-        padding-left: 1.5rem;
-        padding-right: 3rem;
-        box-sizing: border-box;
-        background: var(--color-surface);
-        color: var(--color-text);
-        opacity: 0;
-        overflow-x: hidden;
-        transform: translateY(20px);
-        animation: slideIn 0.2s ease-out forwards;
-        animation-delay: var(--delay);
-        margin: 0;
-        list-style: none;
-    }
 
     a {
-        opacity: 0.8;
+        color: var(--color-text);
+    }
+
+    a:hover::after:visited {
+        color: var(--color-text);
+    }
+
+    a:hover::after {
+        content: attr(data-title);
         position: absolute;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        top: 0.3rem;
-        right: -0.5rem;
-        width: 50px;
-    }
-
-    a img {
-        transition: var(--transition-fast);
-        transform: rotate(130deg);
-    }
-
-    a:hover img {
-        transform: rotate(130deg) translate(-3px, -1px);
+        top: -20px;
+        left: 20px;
+        background-color: #333;
+        color: var(--color-text);
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 100;
     }
 
 
     section#groups {
         text-align: left;
+    }
+    
+    a {
+        opacity: 0.8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     @media (max-width: 400px) {

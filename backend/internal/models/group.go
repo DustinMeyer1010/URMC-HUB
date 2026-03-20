@@ -26,3 +26,15 @@ func ToGroupSimpleInfo(entry *ldap.Entry) GroupSimpleInfo {
 type ModifyMembers struct {
 	Members []string `json:"members"`
 }
+
+type GroupModifyRequest struct {
+	UserDN []string `json:"user"`
+}
+
+// Used to show Remove and Add of group results
+type GroupModifyResults struct {
+	Group      string `json:"group"`
+	User       string `json:"user"`
+	Message    string `json:"message"`
+	Successful bool   `json:"successful"`
+}

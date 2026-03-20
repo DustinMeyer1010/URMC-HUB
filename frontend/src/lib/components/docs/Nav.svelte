@@ -1,6 +1,6 @@
 <script lang="ts">
     import { page } from '$app/state';
-    import { DocAuth, DocRoutes, DocSearchRoutes, DocUser } from "../../../routes/(docs)/docRoutes"
+    import { DocAuth, DocRoutes, DocSearchRoutes, DocUser } from "../../../routes/(themes)/normal/(docs)/docRoutes"
 
 </script>
 

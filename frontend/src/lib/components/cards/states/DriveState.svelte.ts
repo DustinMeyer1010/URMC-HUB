@@ -1,5 +1,4 @@
 import { Drive } from "$lib/types/drive"
-import { Copy } from "$lib/types/copy"
 
 interface DriveState {
     groups: string[];
@@ -8,6 +7,7 @@ interface DriveState {
     pageLink: string
     filteredGroups: string[];
     copyTemplate: string;
+    groupCount: string;
 }
 
 export class DriveStateClass implements DriveState {
@@ -16,7 +16,8 @@ export class DriveStateClass implements DriveState {
     local_path: string = ""
     searchValue: string = $state("")
 
-    pageLink: string = $derived(`/drive?name=${encodeURIComponent(this.drive)}`)
+    pageLink: string = $derived(`/normal/drive?name=${encodeURIComponent(this.drive)}`)
+
 
     filteredGroups: string[] = $derived.by(() => {
         if (!this.searchValue) {
@@ -28,6 +29,8 @@ export class DriveStateClass implements DriveState {
             return group.toUpperCase().includes(this.searchValue.toUpperCase())
         })
     })
+
+    groupCount: string = $derived(`Groups (${this.filteredGroups.length})`)
 
     copyTemplate: string = $derived.by(() => {
         const name: string = `Name = ${this.drive}`

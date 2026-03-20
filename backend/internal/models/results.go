@@ -9,9 +9,10 @@ type AllResults struct {
 	Shares    []DriveSimpleInfo    `json:"drives"`
 }
 
-// Used to show Remove and Add of group results
-type GroupModifyResults struct {
-	Group      string `json:"group"`
-	Message    string `json:"message"`
-	Successful bool   `json:"successful"`
+type AllResultsNew struct {
+	Users     []map[string][]string `json:"users"`
+	Computers []map[string][]string `json:"computers"`
+	Groups    []map[string][]string `json:"groups"`
+	Printers  []PrinterSimpleInfo   `json:"printers"`
+	Drives    []DriveSimpleInfo     `json:"drives"`
 }

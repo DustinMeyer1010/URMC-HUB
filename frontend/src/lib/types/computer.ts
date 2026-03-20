@@ -1,15 +1,19 @@
 export namespace Computer {
 
     export const EMPTY_CARDINFO: CardInfo = {
-        name: "",
-        ou: "",
-        operating_system: ""
+        cn: [],
+        dn: [],
+        operatingsystem: [],
+        information: [],
+        description: [],
     }
 
     export type CardInfo = {
-        name: string,
-        ou: string,
-        operating_system: string
+        cn: string[],
+        dn: string[],
+        operatingsystem: string[],
+        information: string[],
+        description: string[],
     }
 
     export type PageInfo = {

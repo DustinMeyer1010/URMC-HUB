@@ -1,65 +1,44 @@
 package service
 
 import (
-	"os/exec"
+	"encoding/json"
+	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/utils"
 )
 
-func ComputerInfo(computer string) (models.ComputerPageInfo, *customError.Error) {
-	var isOnline bool = true
+// GetComputer retrieves a computer's attributes by DistinguishedName and returns them as JSON.
+// If attributes is empty, it returns the DistinguishedName. Returns a NOT_FOUND error, if
+// the computer is not found
+func GetComputer(dn string, attributes ...string) ([]byte, error) {
 
-	computerInfo, cError := ad.PullComputerInformation(computer)
+	attr, _ := ad.LookupComputer(dn, attributes...)
 
-	if cError != nil {
-		return models.ComputerPageInfo{}, cError
+	jsonData, _ := json.Marshal(attr)
+
+	return jsonData, nil
+
+}
+
+// GetComputer retrieves a computer's attributes by DistinguishedName and returns them as []byte.
+// Returns a NOT_FOUND error if computer is not found
+func GetComputerAvaiableAttributes(dn string) ([]byte, error) {
+	attr, _ := ad.LookupComputer(dn, "*")
+
+	var allAttributesNames strings.Builder
+	for k := range attr {
+		allAttributesNames.WriteString(k + "\n")
 	}
+	return []byte(allAttributesNames.String()), nil
+}
 
-	pingOutput, err := Ping(computerInfo.Name)
+func PingComputer(computerName string) ([]byte, error) {
+	output, err := utils.Ping(computerName)
 
 	if err != nil {
-		isOnline = false
+		return nil, err
 	}
 
-	return models.ComputerPageInfo{
-		ComputerInfo: computerInfo,
-		IsOnline:     isOnline,
-		PingResults:  pingOutput,
-	}, nil
-}
-
-func Ping(host string) (string, error) {
-	cmd := exec.Command("ping", "-n", "1", host)
-	out, err := cmd.CombinedOutput()
-
-	return string(out), err
-}
-
-/*
-func parsePingInformation(output string) {
-
-	out := strings.SplitSeq(output, "\r\n\r\n")
-
-	for line := range out {
-		split := strings.SplitSeq(line, "\r\n")
-		for section := range split {
-			fmt.Printf("Section: %s\n", section)
-		}
-	}
-		re := regexp.MustCompile(`\[(.*?)\]`)
-
-		matches := re.FindStringSubmatch(output)
-
-		fmt.Println(matches)
-}
-*/
-
-type PingResults struct {
-	DNS        string
-	IP         string
-	Reply      string
-	Statistics string
-	Packets    string
+	return []byte(output), nil
 }

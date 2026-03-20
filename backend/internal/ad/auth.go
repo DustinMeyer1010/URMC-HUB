@@ -3,17 +3,17 @@ package ad
 import (
 	"fmt"
 
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/global"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/go-ldap/ldap/v3"
 )
 
-func connectToLDAP() (*ldap.Conn, *customError.Error) {
+func connectToLDAP() (*ldap.Conn, error) {
 
 	if global.Username == "" || global.Password == "" {
-		cError := customError.UNAUTHORIZED
+		cError := errs.UNAUTHORIZED
 		return nil, &cError
 	}
 
@@ -21,27 +21,27 @@ func connectToLDAP() (*ldap.Conn, *customError.Error) {
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return nil, &cError
 	}
 
 	ldapError = l.Bind(formatUsername(global.Username), global.Password)
 
 	if ldapError != nil {
-		cError := customError.UNAUTHORIZED
+		cError := errs.UNAUTHORIZED
 		return nil, &cError
 	}
 
 	return l, nil
 }
 
-func Login(user models.UserLogin) *customError.Error {
+func Login(user models.UserLogin) error {
 
 	l, ldapError := ldap.DialURL(global.URMC_LDAP)
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return &cError
 	}
 
@@ -49,20 +49,35 @@ func Login(user models.UserLogin) *customError.Error {
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return &cError
 	}
 
 	global.Username = user.Username
 	global.Password = user.Password
 
+	CreatePresistantLdapConnection()
+	LDAP_CONNECTION.StartHeartBeat()
+
 	return nil
 
 }
 
-func ConnectToServer(URL string) (*ldap.Conn, *customError.Error) {
+func CreatePresistantLdapConnection() error {
+	conn, err := connectToLDAP()
+
+	if err != nil {
+		return err
+	}
+
+	LDAP_CONNECTION.Conn = conn
+
+	return nil
+}
+
+func ConnectToServer(URL string) (*ldap.Conn, error) {
 	if global.Username == "" || global.Password == "" {
-		cError := customError.NOT_LOGGED_IN
+		cError := errs.NOT_LOGGED_IN
 		return nil, &cError
 	}
 
@@ -70,7 +85,7 @@ func ConnectToServer(URL string) (*ldap.Conn, *customError.Error) {
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return nil, &cError
 	}
 
@@ -78,14 +93,14 @@ func ConnectToServer(URL string) (*ldap.Conn, *customError.Error) {
 
 	if ldapError != nil {
 		logger.Error(ldapError)
-		cError := customError.LDAP_ERROR.NewError(ldapError)
+		cError := errs.LDAP_ERROR.NewError(ldapError)
 		return nil, &cError
 	}
 
 	return l, nil
 }
 
-func Verify() *customError.Error {
+func Verify() error {
 	_, cError := connectToLDAP()
 	return cError
 }

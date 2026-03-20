@@ -26,7 +26,7 @@ export namespace Copy {
         state.timeout = setTimeout(() => {
             state.copied = ""
             state.timeout = null
-        }, 500)
+        }, 1000)
     }
 }
 

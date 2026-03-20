@@ -29,7 +29,7 @@ export class PrinterStateClass implements PrinterState {
     fullName: string = $derived(`\\\\${this.server}\\${this.queue}`)
 
     pageLink: string = $derived.by(() => {
-        return `/printer/${this.server}?queue=${this.queue}`
+        return `/normal/printer?server=${this.server}&queue=${this.queue}`
     })
 
     copyTemplate: string = $derived.by(() => {

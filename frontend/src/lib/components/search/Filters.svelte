@@ -1,10 +1,8 @@
 <script lang="ts">
 
 
-    import { Search } from '$lib/types/search'
+    import { Search } from '$lib/types/search';
     import { fly } from 'svelte/transition'
-    import filterIconDark from '$lib/assets/filter-color-accent-dark.png'
-    import filterIconLight from '$lib/assets/filter-color-accent-light.png'
     import { get } from 'svelte/store';
     import { theme } from '$lib/stores/theme';
 
@@ -37,10 +35,6 @@
         {/each}
     </div>  
 
-    <button class="open-filters" onclick={() => isFiltersOpen = !isFiltersOpen}>
-        <img src={currentTheme === "dark"? filterIconDark : filterIconLight} alt="filter">
-    </button>
-
 <style>
 
 
@@ -48,41 +42,26 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        flex-wrap: wrap-reverse;
-        gap: 1rem;
-        width: 80%;
-        flex-basis: 100%;
-        order: 0;
-    }
-
-    .open-filters {
-        min-width: 25px;
-        border-radius: 10px;
         padding: 10px;
-        box-sizing: border-box;
-        bottom: 25px;
-        left: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border: none;
-        background: var(--color-bg-opacity-80);
+        border-radius: 20px;
+        gap: 1rem;
+        grid-column: span 3;
     }
 
-
-
-    img {
-        width: 20px;
-    }
 
     button.filter-options {
-        padding: 0.5rem 1rem;
+
+        box-shadow: 
+        inset -5px -5px 20px 2px rgba(255,255,255,0.1),
+        inset 5px 5px 10px 2px rgba(0,0,0,0.5);
+        transition: 0.3s ease-in-out;
+        padding: 1rem 1rem;
+        border: 1px solid rgba(255,255,255,0.3);
         width: 150px;
-        border: 2px solid var(--color-accent);
         border-radius: 20px;
-        background: var(--color-bg-opacity-80);
+        background: var(--color-surface);
         transform-origin: center;
-        color: var(--color-accent);
+        color: var(--text);
         transition: 0.3s ease;
         font-weight: bold;
         backdrop-filter: blur(10px);
@@ -90,23 +69,31 @@
     }
 
     button.active {
-        background: var(--color-accent-focus);
-        color: var(--color-bg)
+        background-color: var(--color-surface);
+        box-shadow: 
+        inset 5px 5px 10px 2px rgba(255,255,255,0.15),
+        inset -5px -5px 10px 2px rgba(0,0,0,0),
+        5px 5px 10px 2px rgba(0,0,0,0.3);
+        color: var(--color-accent);
+        border: 1px solid var(--color-accent-hover-opacity-40);
     }
 
-    button.active:hover {
-        background: var(--color-accent-focus);
-    }
 
     button:hover {
-        background: var(--color-accent-hover-opacity-20);
+        box-shadow: 
+        inset 5px 10px 10px 2px rgba(255,255,255,0.15),
+        inset -5px -5px 10px 2px rgba(0,0,0,0),
+        5px 5px 10px 2px rgba(0,0,0,0.3);
     }
 
-    @media (max-width: 950px) {
+    @media (max-width: 800px) {
         button.filter-options {
             width: 120px;
-            padding: 5px;
             font-size: 12px;
+        }
+
+        div {
+            flex-wrap: wrap-reverse;
         }
 
 

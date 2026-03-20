@@ -1,51 +1,73 @@
+import { readableDN } from "$lib/parsers/ou";
 import type { User } from "$lib/types/user";
-import { readableOU } from "$lib/utils/stringEditor";
 
-interface UserState {
-    name: string
-    username: string
-    net_id: string
-    urid: string
-    email: string
-    ou: string
-    pageLink: string
-    readableOU: string
-    disabled: boolean
-    copyTemplate: string
-}
 
-export class UserStateClass implements UserState {
-    name = "";
-    username = "";
-    net_id = "";
-    urid = "";
-    email = "";
-    ou = "";
+export class UserStateClass {
+    cn: string = "";
+    username: string = "";
+    netid: string = "";
+    urid: string = "";
+    email: string = "";
+    dn: string = "";
+    memberof: string[] = [];
+    passwordLastSet = "0";
 
-    readableOU: string = $derived(readableOU(this.ou))
+    readableDN: string = $derived(readableDN(this.dn))
     
     disabled: boolean = $derived.by(() => {
-        const ou = this.ou.toLowerCase()
-        return ou.includes("disabled") || ou.includes("offboarded")
+        const dn = this.dn.toLowerCase()
+        return dn.includes("disabled") || dn.includes("offboarded")
     })
 
-    // TODO: Turn in query for the user and OU rather than just searching by person username
+    idleAccount: boolean = $derived.by(() => {
+        for (let i=0; i < this.memberof.length; i++){
+            if (this.memberof[i].toLowerCase().includes("idm_idleaccounts_urmc")){
+                return true
+            }
+        }
+        return false
+    })
+
+    // Refactor: This will need to be seperated into a function that does the conversions
+    expiredPassword: boolean = $derived.by(() => {
+        const val = BigInt(this.passwordLastSet);
+        if (val === 0n) return true;
+        const windowsEpochOffset = 116444736000000000n;
+        const millisecondsSinceEpoch = (val - windowsEpochOffset) / 10000n;
+
+        const passwordDate = new Date(Number(millisecondsSinceEpoch));
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
+        return passwordDate < oneYearAgo;
+    })
+
     pageLink: string = $derived.by(() => {
-      return `/user/${this.username}`  
+      return `/normal/user?dn=${encodeURIComponent(this.dn)}&section=PROFILE`  
     })
 
     copyTemplate: string = $derived.by(() => {
-        const name: string = `Name = ${this.name || "NA"}`
+        const name: string = `Name = ${this.cn || "NA"}`
         const username: string = `Username = ${this.username || "NA"}`
-        const netID: string = `NetID = ${this.net_id || "NA"}`
+        const netID: string = `NetID = ${this.netid || "NA"}`
         const urid: string = `URID = ${this.urid || "NA"}`
         const email: string = `Email = ${this.email || "NA"}`
+        return `${name}\n${username}\n${netID}\n${urid}\n${email}\n${this.readableDN}\n`
+    })
 
-        return `${name}\n${username}\n${netID}\n${urid}\n${email}\n${this.readableOU}\n`
+    simpleCopyTemplate: string = $derived.by(() => {
+        return `${this.cn} (${this.username})`
     })
 
 
     constructor(user: User.CardInfo) {
-        Object.assign(this, user)
+        this.cn = user.cn.join()
+        this.username = user.username.join()
+        this.netid = user.netid.join()
+        this.urid = user.urid.join()
+        this.email = user.email.join()
+        this.dn = user.dn.join()
+        this.memberof = user.memberof
+        this.passwordLastSet = user.pwdlastset.join()
     }
 }

@@ -1,8 +1,9 @@
 <script lang="ts">
+	import { Icons } from "$lib/managers/icons";
     import {Printer} from "$lib/types/printer";
-    import Icon from '$lib/assets/double-left-arrow-primary.png';
 	import CopyAllButton from "../buttons/CopyAllButton.svelte";
 	import CopyButton from "../buttons/CopyButton.svelte";
+	import Card from "./Card.svelte";
 	import { PrinterStateClass } from "./states/PrinterState.svelte";
 
 
@@ -18,40 +19,46 @@
 
 </script>
 
-
-<!-- * Renders main content -->
-<div style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton copyTemplate={PrinterState.copyTemplate} />
-    {@render Link()}
-    {@render Content()}
-</div>
+<Card {idx} >
+    {#snippet header()}
+        {@render Link()}
+        <CopyAllButton icon={Icons.COPY} copiedIcon={Icons.COPY_SUCCESSFUL} copyTemplate={PrinterState.copyTemplate} />
+    {/snippet}
+    {#snippet body()}
+        {@render Content()}
+    {/snippet}
+</Card>
 
 
 {#snippet Link()}
-    <a href={PrinterState.pageLink}> 
-        <img src={Icon} alt="">
+    <a href={PrinterState.pageLink}  data-title={"Go to Printer Page"}> 
+        <img src={Icons.PRINTER} alt="Printer Icon Needed">
     </a>
 {/snippet}
 
 
 <!-- * Renders the object information in copy format -->
 {#snippet Content()}
-    <CopyButton value={PrinterState.fullName} category={"title"}/>
-    {#if PrinterState.model} 
-        <CopyButton value={PrinterState.model} label={"MODEL"}/>
-    {/if}
-    {#if PrinterState.ip} 
-        <CopyButton value={PrinterState.ip} label={"IP"}/>
-    {/if}
-    {#if PrinterState.print_processor} 
-        <CopyButton value={PrinterState.print_processor} label={"PROCESSOR"}/>
-    {/if}
-    {#if PrinterState.location} 
-        <CopyButton value={PrinterState.location} label={"LOCATION"}/>
-    {/if}
-    {#if PrinterState.notes} 
-        <CopyButton value={PrinterState.readableNotes} label={"NOTES"}/>
-    {/if}
+    <div id="content">
+        <CopyButton value={PrinterState.fullName} category={"title"}/>
+        <div id="attributes">
+            {#if PrinterState.model} 
+                <CopyButton value={PrinterState.model} label={"MODEL"}/>
+            {/if}
+            {#if PrinterState.ip} 
+                <CopyButton value={PrinterState.ip} label={"IP"}/>
+            {/if}
+            {#if PrinterState.print_processor} 
+                <CopyButton value={PrinterState.print_processor} label={"PROCESSOR"}/>
+            {/if}
+            {#if PrinterState.location} 
+                <CopyButton value={PrinterState.location} label={"LOCATION"}/>
+            {/if}
+            {#if PrinterState.notes} 
+                <CopyButton value={PrinterState.readableNotes} label={"NOTES"}/>
+            {/if}
+        </div>
+    </div>
     
 {/snippet}
 
@@ -59,58 +66,56 @@
 
 <style >
 
+    div#attributes {
+        padding-left: 10px;
+        margin-top: 4px;
+                display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
     img {
-        width: 25px;
+        width: 20px;
     }
 
     a {
-        opacity: 0.8;
+        color: var(--color-text);
+    }
+
+    a:hover::after:visited {
+        color: var(--color-text);
+    }
+
+    a:hover::after {
+        content: attr(data-title);
         position: absolute;
+        top: -20px;
+        left: 20px;
+        background-color: #333;
+        color: var(--color-text);
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 100;
+    }
+
+    
+    a {
+        opacity: 0.8;
         display: flex;
         justify-content: center;
         align-items: center;
-        top: 0.3rem;
-        right: -0.5rem;
-        width: 50px;
     }
 
-    a img {
-        transition: var(--transition-fast);
-        transform: rotate(130deg);
-    }
-
-    a:hover img {
-        transform: rotate(130deg) translate(-3px, -1px);
-    }
-
-    div {
-        display: flex;
-        flex-direction: column;
-        word-break: break-all;
-        position: relative;
-        gap: 0.5rem;
-        border-radius: 10px;
-        padding: 1.5rem;
+    div#content {
         padding-left: 1.5rem;
-        padding-right: 3rem;
-        box-sizing: border-box;
-        background: var(--color-surface);
-        color: var(--color-text);
-        opacity: 0;
-        transform: translateY(20px);
-        animation: slideIn 0.2s ease-out forwards;
-        animation-delay: var(--delay);
-        margin: 0;
-        list-style: none;
+        padding-top: 0.5rem;
+        padding-bottom: 1.5rem;
+        padding-right: 0.5rem;
     }
 
-    @media (max-width: 400px) {
-
-        div {
-            padding-right: 1rem;
-
-        }
-    }
 
 
     

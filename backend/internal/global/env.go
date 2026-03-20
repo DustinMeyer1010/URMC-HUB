@@ -29,7 +29,8 @@ var (
 	BASEDN,
 	USERNAME_PREFIX,
 	URMC_LDAP,
-	ADMIN string
+	ADMIN,
+	PRINTQUEUEREPORT string
 )
 
 func LoadEnv() {
@@ -111,6 +112,11 @@ func LoadEnv() {
 	if ADMIN, found = os.LookupEnv("ADMIN"); !found {
 		logger.Error("ADMIN IS MISSING IN ENV")
 		panic("ADMIN IS MISSING IN ENV")
+	}
+
+	if PRINTQUEUEREPORT, found = os.LookupEnv("PRINTQUEUEREPORT"); !found {
+		logger.Error("PRINTQUEUEREPORT IS MISSING IN ENV")
+		panic("PRINTQUEUEREPORT IS MISSING IN ENV")
 	}
 
 }

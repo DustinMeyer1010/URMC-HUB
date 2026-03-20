@@ -2,22 +2,20 @@
 
 <script lang="ts">
 	import type { User } from "$lib/types/user";
-    import Icon from '$lib/assets/double-left-arrow-primary.png';
-    import disabledIcon from '$lib/assets/disabled-color-disabled.png'
 	import CopyButton from "../buttons/CopyButton.svelte";
 	import CopyAllButton from "../buttons/CopyAllButton.svelte";
-	import type { Snippet } from "svelte";
 	import { UserStateClass } from "./states/User.svelte";
+	import Card from "./Card.svelte";
+	import { Icons } from "$lib/managers/icons";
 
     let {
         item,
         idx,
-        children
     } : {
         item: User.CardInfo
         idx: number
-        children?: Snippet
     } = $props();
+
 
     let UserState: UserStateClass = new UserStateClass(item)
 
@@ -25,142 +23,146 @@
 </script>
 
 <!-- * Renders the main content -->
-<ul class:disabled={UserState.disabled} style="--delay: {Math.min(idx * 50, 2000)}ms">
-    <CopyAllButton copyTemplate={UserState.copyTemplate} />
-    {@render Disabled()}
-    {@render Link()}
-    {@render Content()}
-    {@render children?.()}
-</ul>
 
-<!-- * Renders the disabled contnent if object return is disabled -->
-{#snippet Disabled()}
-    {#if UserState.disabled}
-        <span class="disabled"><img src={disabledIcon} alt="">Disabled Account</span>
-    {/if}
-{/snippet}
+<Card {idx}>
+    {#snippet header()}
+        {@render Link()}
+        <CopyAllButton 
+            icon={Icons.COPY} 
+            copiedIcon={Icons.COPY_SUCCESSFUL} 
+            copyTemplate={UserState.copyTemplate} />
+        <CopyAllButton 
+            icon={Icons.SIMPLE_COPY} 
+            copiedIcon={Icons.SIMPLE_COPY_SUCCESSFUL} 
+            dataTitle={"Copy: Name (Username)"} 
+            copyTemplate={UserState.simpleCopyTemplate} />
+        {#if UserState.idleAccount} 
+            <CopyAllButton 
+                icon={Icons.IDLE} 
+                copyTemplate={""} 
+                dataTitle={"User has IDM_IdleAccounts_URMC"}/>
+        {/if}
+        {#if UserState.expiredPassword && UserState.username != ""}
+            <CopyAllButton 
+                icon={Icons.BAD_PASSWORD} 
+                copyTemplate={""} 
+                dataTitle={"Expired Password"}/>
+        {/if}
+    {/snippet}
+
+    {#snippet body()}
+        {@render Content()}
+    {/snippet}
+</Card>
+
+
 
 <!-- Refactor: This should be done based on the DN rather than a person username -->
 <!-- * Renders a link to users page -->
 <!-- Note: If user does not have username user page will not working so no link is generated -->
 {#snippet Link()}
-    {#if UserState.username != ""}
-        <a href={UserState.pageLink}> <img src={Icon} alt=""></a>
-    {/if}
+    <a 
+        href={UserState.username != "" ? UserState.pageLink : null}
+        data-title={UserState.username == "" 
+        ? "No URMC Active Directory Object" 
+        : `Go to User Page ${UserState.disabled ? "(Disabled Account)" : ""}`}>  
+        <img src={UserState.disabled ? Icons.DISABLED_PROFILE : Icons.PROFILE} alt="">
+    </a>
 {/snippet}
 
 <!-- * Renders object information with each value being able to be copied -->
 {#snippet Content()}
-    {#if UserState.name}
-        <CopyButton value={UserState.name} category={"title"}/>
-    {/if}
-    {#if UserState.username}
-        <CopyButton value={UserState.username} label={"USERNAME"}/>
-    {/if}
-    {#if UserState.net_id}
-        <CopyButton value={UserState.net_id} label={"NETID"}/>
-    {/if}
-    {#if UserState.urid}
-        <CopyButton value={UserState.urid} label={"URID"}/>
-    {/if}
-    {#if UserState.email}
-        <CopyButton value={UserState.email} label={"EMAIL"}/>
-    {/if}
-    {#if UserState.readableOU}
-        <CopyButton value={UserState.readableOU} label={"OU"}/>
-    {/if}
+    <div id="content">
+        {#if UserState.cn}
+            <CopyButton value={UserState.cn} category={"title"}/>
+        {/if}
+        <div id="attributes">
+            {#if UserState.username}
+                <CopyButton value={UserState.username} label={"USERNAME"}/>
+            {/if}
+            {#if UserState.netid}
+                <CopyButton value={UserState.netid} label={"NETID"}/>
+            {/if}
+            {#if UserState.urid}
+                <CopyButton value={UserState.urid} label={"URID"}/>
+            {/if}
+            {#if UserState.email}
+                <CopyButton value={UserState.email} label={"EMAIL"}/>
+            {/if}
+            {#if UserState.readableDN}
+                <CopyButton value={UserState.readableDN} label={"DN"}/>
+            {/if}
+        </div>
+    </div>
 
 {/snippet}
 
 
 <style >
 
-    span.disabled {
+    div#attributes {
+        padding-left: 10px;
+        margin-top: 4px;
         display: flex;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        color: var(--color-ad-disabled);
-        right: 1rem;
-        bottom: 0.5rem;
-        font-weight: bold;
-        font-size: 12px;
+        flex-direction: column;
+        gap: 4px;
     }
 
-    span.disabled img {
-        width: 20px;
-        margin-right: 2px;
+
+    a {
+        color: var(--color-text);
+    }
+
+    a:hover::after:visited {
+        color: var(--color-text);
+    }
+
+    a:hover::after {
+        content: attr(data-title);
+        position: absolute;
+        top: -20px;
+        left: 20px;
+        background-color: #333;
+        color: var(--color-text);
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 100;
     }
 
 
     img {
-        width: 25px;
+        width: 20px;
     }
 
-    ul {
-        display: flex;
-        flex-direction: column;
-        word-break: break-all;
-        position: relative;
-        gap: 0.7rem;
-        border-radius: 10px;
-        padding: 1.5rem;
+
+    div#content {
         padding-left: 1.5rem;
-        padding-right: 3rem;
-        box-sizing: border-box;
-        background: var(--color-surface);
-        color: var(--color-text);
-        opacity: 0;
-        transform: translateY(20px);
-        animation: slideIn 0.2s ease-out forwards;
-        animation-delay: var(--delay);
-        margin: 0;
-        list-style: none;
+        padding-top: 0.5rem;
+        padding-bottom: 1.5rem;
+        padding-right: 0.5rem;
     }
 
     a {
         opacity: 0.8;
-        position: absolute;
         display: flex;
         justify-content: center;
         align-items: center;
-        top: 0.3rem;
-        right: -0.5rem;
-        width: 50px;
     }
 
-    a img {
-        transition: var(--transition-fast);
-        transform: rotate(130deg);
-    }
-
-    a:hover img {
-        transform: rotate(130deg) translate(-3px, -1px);
-    }
-
-
-
-
-    @media (max-width: 1000px) {
-        ul.disabled {
-            padding-bottom: 3rem;
+    @media (max-width: 750px) {
+        div#content {
+            padding-left: 1rem;
+            padding-bottom: 1rem;
         }
 
-        span.disabled {
-            left: 50%;
-            right: 0;
-            transform: translateX(-50%);
-            text-wrap: nowrap;
-        }
-    } 
-
-    @media (max-width: 400px) {
-
-        ul {
-            padding-right: 1rem;
-        }
 
     }
+
+
+
 
     @keyframes slideIn {
         from {

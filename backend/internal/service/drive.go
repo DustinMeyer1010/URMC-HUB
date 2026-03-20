@@ -2,11 +2,10 @@ package service
 
 import (
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/customError"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 )
 
-func GetDriveAccess(groups []string) ([]models.DriveAccess, *customError.Error) {
+func GetDriveAccess(groups []string) ([]models.DriveAccess, error) {
 	var result []models.DriveAccess
 	var accessMapping map[string][]string = make(map[string][]string)
 	groupToDrive, cError := ad.GetGroupToDrivesMapping()

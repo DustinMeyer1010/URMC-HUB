@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/errs"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/logger"
 )
 
@@ -12,11 +13,11 @@ func Verify(w http.ResponseWriter, r *http.Request) {
 
 	cError := ad.Verify()
 
-	if cError != nil {
+	if e := errs.IsApiError(cError); e != nil {
 		logger.LogRequestInfo(r.Method, r.URL.Path)
-		logger.Error(cError)
+		logger.Error(e)
 		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(cError.Msg))
+		w.Write([]byte(e.Msg))
 		return
 	}
 	w.WriteHeader(http.StatusOK)

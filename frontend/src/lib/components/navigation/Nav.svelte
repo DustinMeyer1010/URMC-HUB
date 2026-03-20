@@ -2,9 +2,9 @@
 
     import urmc from '$lib/assets/URMC.png';
 	import ToggleTheme from '../buttons/ToggleTheme.svelte';
-    import menuIcon from "$lib/assets/menu-color-text-dark.png"
 	import { onMount } from 'svelte';
 	import { NavStateClass } from './NavState.svelte';
+	import { Icons } from '$lib/managers/icons';
 
 
 
@@ -41,7 +41,7 @@
         <li>
             <a href={BookmarksRoute}>Bookmarks</a>
         </li>
-        <button bind:this={NavState.DropDownButton} onclick={NavState.OpenMenu}><img src={menuIcon} alt=""></button>
+        <button bind:this={NavState.DropDownButton} onclick={NavState.OpenMenu}><img src={Icons.MENU} alt=""></button>
         <li class="dropdown">
             {#if NavState.ShowMenu}
                 <div>
@@ -59,7 +59,7 @@
 {#snippet DropDownOnly()}
     <ul>
         <li class="dropdown">
-            <button bind:this={NavState.DropDownButton} onclick={NavState.OpenMenu}><img src={menuIcon} alt=""></button>
+            <button bind:this={NavState.DropDownButton} onclick={NavState.OpenMenu}><img src={Icons.MENU} alt=""></button>
             {#if NavState.ShowMenu}
                 <div>
                     <a href="/">Search</a>
