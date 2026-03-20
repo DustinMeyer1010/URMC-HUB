@@ -22,6 +22,7 @@ import DisabledGroup from "$lib/assets/icons/dark/disabled-group.png"
 import Group from "$lib/assets/icons/dark/group.png"
 import Admin from "$lib/assets/icons/dark/admin.png"
 import Printer from "$lib/assets/icons/dark/printer.png"
+import Drive from "$lib/assets/icons/dark/drive.png"
 
 
 
@@ -51,5 +52,6 @@ export const Icons = {
     GROUP: Group,
     ADMIN: Admin,
     PRINTER: Printer,
+    DRIVE: Drive,
 
 } as const;
