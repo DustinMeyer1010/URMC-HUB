@@ -73,12 +73,13 @@
     }
 
     div#attributes {
+        padding-left: 5px;
+        margin-top: 4px;
         display: flex;
         flex-direction: column;
-        gap: 4px;
-        padding-left: 10px;
-        margin-top: 4px;
+        gap: 2px;
     }
+
 
     a {
         opacity: 0.8;

@@ -1,54 +1,25 @@
 <script lang="ts">
 	import { page } from "$app/state";
-	import CopyAllButton from "$lib/components/buttons/CopyAllButton.svelte";
-	import CopyButton from "$lib/components/buttons/CopyButton.svelte";
-	import PageLoading from "$lib/components/loading/PageLoading.svelte";
-	import { convertToReadableTime }  from "$lib/parsers/time";
-	import { readableDN } from "$lib/parsers/ou";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
-    import { browser } from "$app/environment";
 	import Groups from "./views/Groups.svelte";
-	import { Icons } from "$lib/managers/icons";
+	import Lockout from "./views/Lockout.svelte";
+	import About from "./views/About.svelte";
 
-    let ou: string = $state("")
+    let userDN: string = $state("")
     let section: "PROFILE" | "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE" = $state("PROFILE")
-    const attributes = ["cn","username","phone","department","dn","urid","netid","relationship","pwdlastset","email","description","title"]
-    let userPromise: Promise<any> = $state(new Promise(() => {}));
-    let timer: number = $state(3)
+    let loading: boolean = $state(true)
 
     function changeSection(newSection: "PROFILE" | "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE") {
         section = newSection
     }
-    
-    function startTimer() {
-        setInterval(() => {
-            timer -= 1;
-        }, 1000);
-    }
 
-    async function fetchUser(): Promise<any> {
-        ou = page.url.searchParams.get("dn") ?? ""
-        if (ou == "") goto("/normal/search"); 
-        const res = await fetch(`http://localhost:8000/api/user?dn=${encodeURIComponent(ou)}&attributes=${attributes.join(",")}`);
-        if (!res.ok && browser) {
-            setTimeout(() => {
-                goto("/normal/search")
-            }, 3000);
-
-            startTimer()
-
-            throw new Error(`Failed to find User with ${ou}`);
-        }
-        return res.json();
-    }
 
     onMount(async () => {
-        userPromise = fetchUser()
+        userDN = page.url.searchParams.get("dn") ?? ""
+        if (userDN == "") goto("/normal/search"); 
+        loading = false
     })
-
-
-
 
 </script>
 
@@ -61,35 +32,18 @@
         <button class:active={section == "ADD"} onclick={() => changeSection("ADD")}>ADD</button>
         <button class:active={section == "GROUPS"} onclick={() => changeSection("GROUPS")}>GROUPS</button>
     </nav>
-    {#if section == "PROFILE"}
-        {#await userPromise}
-            <PageLoading/>
-        {:then user} 
-            {@render Content(user)}
-        {:catch error}
-            <h1>{error.message} Redirecting in {timer}s</h1>
-        {/await}
-    {:else if section == "GROUPS"}
-    <Groups dn={ou}></Groups>
+    {#if !loading}
+        {#if section == "PROFILE"}
+            <About userDN={userDN} />
+        {:else if section == "GROUPS"}
+            <Groups userDN={userDN}></Groups>
+        {:else if section == "LOCKOUT"}
+            <Lockout userDN={userDN}/>
+        {/if}
     {/if}
 </main>
 
-{#snippet Content(u: any)}
-    <section>
-        <div>
-            <CopyAllButton icon={Icons.COPY} copyTemplate={"test"} />
-            <CopyButton value={u.cn.length > 0 ? u.cn.join() : "NA"} category="title"/>
-            <CopyButton label="USERNAME" value={u.username.length > 0 ? u.username.join() : "NA"} category="list-item"/>
-            <CopyButton label="NETID" value={u.netid.length > 0 ? u.netid.join() : "NA"} category="list-item"/>
-            <CopyButton label="URID" value={u.urid.length > 0 ? u.urid.join() : "NA"} category="list-item"/>
-            <CopyButton label="PHONE" value={u.phone.length > 0 ? u.phone.join() : "NA"} category="list-item"/>
-            <CopyButton label="DEPARTMENT" value={u.department.length > 0 ?  u.department.join() : "NA"} category="list-item"/>
-            <CopyButton label="RELATIONSHIP" value={u.relationship.length > 0 ? u.relationship.join(" | ") : "NA"} category="list-item"/>
-            <CopyButton label="LASTPASSWORDSET" value={convertToReadableTime(u.pwdlastset[0] ?? "0")} category="list-item"/>    
-            <CopyButton label="OU" value={readableDN(u.dn[0]) ?? "NA"} category="list-item"/>
-        </div>
-    </section>
-{/snippet}
+
 
 <style>
 

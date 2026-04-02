@@ -67,12 +67,13 @@
 <style >
 
     div#attributes {
-        padding-left: 10px;
+        padding-left: 5px;
         margin-top: 4px;
-                display: flex;
+        display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 2px;
     }
+
 
     img {
         width: 20px;

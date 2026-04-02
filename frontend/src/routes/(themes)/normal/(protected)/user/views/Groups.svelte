@@ -7,24 +7,23 @@
 
 
     let {
-        dn
+        userDN
     } : {
-        dn: string
+        userDN: string
     } = $props()
 
     let userGroupPromise: Promise<any> = $state(new Promise(() => {}))
 
-        $inspect(dn)
 
 
     async function fetchUserGroups(): Promise<any> {
-        if (dn == "") goto("/search")
-        const res =  await fetch(`http://localhost:8000/api/user?dn=${encodeURIComponent(dn)}&attributes=memberof`)
+        if (userDN == "") goto("/search")
+        const res =  await fetch(`http://localhost:8000/api/user?dn=${encodeURIComponent(userDN)}&attributes=memberof`)
         if (!res.ok && browser) {
             setTimeout(() => {
                 goto("/search")
             }, 3000);
-            throw new Error(`Failed to find User with ${dn}`)
+            throw new Error(`Failed to find User with ${userDN}`)
         }
         return res.json()
     }
