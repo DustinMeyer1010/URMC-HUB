@@ -21,9 +21,9 @@ export class ComputerStateClass  {
 
     copyTemplate: string = $derived.by(() => {
         const osSuffix = this.operatingSystem ? ` (${this.operatingSystem})` : ""
-        const description = this.description ? `Description = ${this.description}` : ""
+        const description = this.description ? `Description = ${this.description}\n` : ""
         const status = this.disabled ? "Disabled " : ""
-        return `Hostname = ${this.cn}${osSuffix}\n${status}${description}\nOU = ${this.readableOU}`
+        return `Hostname = ${this.cn}${osSuffix}\n${status}${description}OU = ${this.readableOU}`
     })
 
 

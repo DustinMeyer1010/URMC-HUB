@@ -83,6 +83,8 @@ func GetUserGroups(w http.ResponseWriter, r *http.Request) {
 	data := make([]byte, 0)
 	var cError error = nil
 
+	fmt.Println(len(attributes))
+
 	if len(attributes) == 0 {
 		data, cError = service.GetUserGroups(dn, "samaccountname", "information", "dn", "description", "cn")
 	} else {

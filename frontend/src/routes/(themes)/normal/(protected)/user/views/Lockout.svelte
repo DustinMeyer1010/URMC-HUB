@@ -31,6 +31,11 @@
     {#await lockoutStatus}
         <div> awaiting for information</div>
     {:then statuses}
+        <div>
+            <span>Count</span>
+            <span>Sever</span>
+            <span>Time</span>
+        </div>
         {#each statuses as status}
             <div>
                 <span>{status.count}</span>
@@ -46,12 +51,25 @@
 
 <style>
 
+    section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        height: 100%;
+        width: 100%;
+    }
+
     section div {
         display: flex;
-        gap: 20px;
+        justify-content: space-evenly;
+        flex-grow: 1;
+        align-items: center;
+        text-align: center;
     }
 
     span {
+        text-align: center;
+        width: 100%;
         font-size: 20px;
     }
 

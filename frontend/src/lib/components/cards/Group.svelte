@@ -5,14 +5,17 @@
 	import { GroupStateClass } from "./states/GroupState.svelte";
 	import Card from "./Card.svelte";
 	import { Icons } from "$lib/managers/icons";
+	import type { Snippet } from "svelte";
 
 
     let {
         item,
         idx,
+        children,
     } : {
         item: Group.CardInfo
         idx: number
+        children?: Snippet
     } = $props()
 
     let GroupState: GroupStateClass = new GroupStateClass(item)
@@ -20,7 +23,7 @@
 
 </script>
 
-<Card {idx} >
+<Card {children} {idx} >
     {#snippet header()}
         {@render Link()}
         <CopyAllButton icon={Icons.COPY} copiedIcon={Icons.COPY_SUCCESSFUL} copyTemplate={GroupState.copyTemplate}/>

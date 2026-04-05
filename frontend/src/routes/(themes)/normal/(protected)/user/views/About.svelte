@@ -29,7 +29,6 @@
             setTimeout(() => {
                 goto("/normal/search")
             }, 3000);
-
             startTimer()
 
             throw new Error(`Failed to find User with ${userDN}`);
@@ -71,3 +70,16 @@
         </div>
     </section>
 {/snippet}
+
+
+<style> 
+
+    div {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        background: var(--color-surface);
+        padding: 10px;
+        border-radius: 10px;
+    }
+</style>

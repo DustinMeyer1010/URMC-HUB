@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Bookmark from "$lib/components/bookmarks/Bookmark.svelte";
 	import { onMount } from "svelte";
-    import editIcon from "$lib/assets/edit.png";
 	import AddForm from "$lib/components/bookmarks/AddForm.svelte";
 	import {BookmarkStateClass}  from "./state.svelte";
 
@@ -36,7 +35,7 @@
 
     </div>
         {#if state.Owner}
-            <button class="edit" onclick={() => state.EditMode = !state.EditMode}><img src={editIcon} alt=""/></button>
+            <button class="edit" onclick={() => state.EditMode = !state.EditMode}><img alt=""/></button>
         {/if}
 
 </header>

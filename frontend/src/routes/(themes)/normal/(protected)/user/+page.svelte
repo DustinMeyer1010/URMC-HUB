@@ -1,24 +1,26 @@
 <script lang="ts">
-	import { page } from "$app/state";
-	import { onMount } from "svelte";
-	import { goto } from "$app/navigation";
 	import Groups from "./views/Groups.svelte";
 	import Lockout from "./views/Lockout.svelte";
 	import About from "./views/About.svelte";
+	import Drives from "./views/Drives.svelte";
+	import type { PageData } from "./$types";
 
-    let userDN: string = $state("")
-    let section: "PROFILE" | "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE" = $state("PROFILE")
-    let loading: boolean = $state(true)
+    let section: "PROFILE" | "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE" = $state("GROUPS")
+
+    let { data } : { data: PageData } = $props();
+
+    const userDN = data.userDN
 
     function changeSection(newSection: "PROFILE" | "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE") {
         section = newSection
     }
 
+    $effect(() =>{ 
+        document.body.style.overflow = "hidden"
 
-    onMount(async () => {
-        userDN = page.url.searchParams.get("dn") ?? ""
-        if (userDN == "") goto("/normal/search"); 
-        loading = false
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
     })
 
 </script>
@@ -26,21 +28,28 @@
 <!-- * Waits for the response for the server to render content -->
  <main>
     <nav>
-        <button class:active={section == "PROFILE"} onclick={() => changeSection("PROFILE")}>PROFILE</button>
         <button class:active={section == "LOCKOUT"} onclick={() => changeSection("LOCKOUT")}>LOCKOUT</button>
         <button class:active={section == "DRIVE"} onclick={() => changeSection("DRIVE")}>DRIVE</button>
         <button class:active={section == "ADD"} onclick={() => changeSection("ADD")}>ADD</button>
         <button class:active={section == "GROUPS"} onclick={() => changeSection("GROUPS")}>GROUPS</button>
     </nav>
-    {#if !loading}
-        {#if section == "PROFILE"}
-            <About userDN={userDN} />
-        {:else if section == "GROUPS"}
-            <Groups userDN={userDN}></Groups>
-        {:else if section == "LOCKOUT"}
-            <Lockout userDN={userDN}/>
-        {/if}
-    {/if}
+    <section>
+        <div id="left">
+            <About {userDN} />
+        </div>
+        <div id="right">
+            {#if section == "GROUPS"}
+                <Groups {userDN} />
+            {:else if section == "LOCKOUT"}
+                <Lockout {userDN} />
+            {:else if section == "DRIVE"}
+                <Drives {userDN} />
+            {:else if section == "ADD"}
+                <span>No implemented</span>
+            {/if}
+        </div>
+    </section>
+
 </main>
 
 
@@ -51,14 +60,38 @@
         display: flex;
         flex-direction: row;
         position: sticky;
-        top: 75px;
         gap: 1rem;
         width: 90%;
+        z-index: 100;
         background: var(--color-surface);
         padding: 10px;
         align-self: center;
         border-radius: 20px;
         transition: 0.3s;
+    }
+
+    section {
+        display: flex;
+        flex-direction: row;
+        padding: 1rem;
+        gap: 1rem;
+        width: 100%;
+        overflow: hidden;
+        flex-grow: 1;
+        justify-items: center;
+        align-items: center;
+    }
+
+    div#right {
+        display: flex;
+        flex-direction: column;
+        overflow-y: scroll;
+        height: 100%;
+        flex-basis: 80%;
+    }
+
+    div#left {
+        flex-basis: 40%;
     }
 
     button {
@@ -85,11 +118,13 @@
     }
 
     main {
-        width: 100%;
+        width: 100vw;
         color: var(--text);
         display: flex;
         flex-direction: column;
         align-items: center;
+        height: calc(100vh - 40px);
+        overflow: hidden
     }
 
     @media (max-width: 700px) {

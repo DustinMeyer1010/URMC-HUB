@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
-	import { goto } from "$app/navigation";
+	import Group from "$lib/components/cards/Group.svelte";
 	import PageLoading from "$lib/components/loading/PageLoading.svelte";
-	import { seperateMemberOfGroups } from "$lib/parsers/members";
 	import { onMount } from "svelte";
+
 
 
     let {
@@ -13,17 +13,22 @@
     } = $props()
 
     let userGroupPromise: Promise<any> = $state(new Promise(() => {}))
+    let searchFilter: string = $state("")
+    let allGroups: any = $state([])
+    let filteredGroups: any = $derived.by(() => {
+        if (searchFilter == "") {
+            return allGroups
+        }
+        console.log(searchFilter)
+        return allGroups.filter((group: any) => group.cn.join().toLowerCase().includes(searchFilter))
+    })
 
 
 
     async function fetchUserGroups(): Promise<any> {
-        if (userDN == "") goto("/search")
-        const res =  await fetch(`http://localhost:8000/api/user?dn=${encodeURIComponent(userDN)}&attributes=memberof`)
+        const res =  await fetch(`http://localhost:8000/api/user/groups?dn=${encodeURIComponent(userDN)}`)
         if (!res.ok && browser) {
-            setTimeout(() => {
-                goto("/search")
-            }, 3000);
-            throw new Error(`Failed to find User with ${userDN}`)
+            throw new Error("Failed to load groups")
         }
         return res.json()
     }
@@ -37,11 +42,14 @@
 <section>
     {#await userGroupPromise}
         <PageLoading/>
-    {:then user} 
-        {#each seperateMemberOfGroups(user.memberof) as group}
-            <p>
-            {group}
-            </p>
+    {:then groups}
+        <div>
+            <span hidden>{allGroups = groups}</span>
+            <span>Search: </span><input bind:value={searchFilter}>
+        </div>
+        {#each filteredGroups as group, idx (group.dn)}
+            <Group item={group} {idx}>
+            </Group>
         {/each}
     {:catch error}
         <h1>{error.message} Redirecting in 3s</h1>
@@ -49,4 +57,42 @@
 </section>
 
 <style>
+
+    section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        justify-content: center;
+        align-items: center;
+    }
+
+    input {
+        background: var(--color-surface);
+        border: none;
+        height: 30px;
+        width: 100%;
+        border-radius: 8px;
+        color: var(--color-text);
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    div {
+        position: sticky;
+        z-index: 10;
+        top: 0;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        align-items: center;
+        width: 50%;
+        padding: 0.5em;
+        border-radius: 5px;
+        background: var(--color-bg);
+        backdrop-filter: blur(20px);
+    }
+
+    input:focus {
+        outline: 1px solid var(--color-text);
+    }
 </style>

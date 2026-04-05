@@ -5,11 +5,13 @@
     let {
         header,
         body,
-        idx
+        idx,
+        children,
     } : {
         header: Snippet,
         body: Snippet,
         idx: number,
+        children?: Snippet,
     } = $props()
 
 </script>
@@ -21,6 +23,7 @@
     </header>
 
     {@render body()}
+    {@render children?.()}
 </div>
 
 
