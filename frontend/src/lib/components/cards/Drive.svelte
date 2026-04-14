@@ -38,7 +38,9 @@
 {#snippet Content()}
     <div id="content">
         <CopyButton value={DriveState.drive} category={"title"}/>
-        <CopyButton value={DriveState.local_path} label={"LOCAL_PATH"}/>
+        {#if DriveState.local_path}
+            <CopyButton value={DriveState.local_path} label={"LOCAL_PATH"}/>
+        {/if}
         {@render Groups()}
     </div>
 {/snippet}
@@ -47,12 +49,12 @@
 <!-- * Renders the Groups for the drive-->
 {#snippet Groups()}
     <section id="groups">
-        GROUPS: 
+        <span>{DriveState.groupCount}</span>
         <!-- Note: If more than 10 groups then you can search for specific group by name-->
         {#if DriveState.groups.length >= 10}
             <input placeholder="Search For Group" bind:value={DriveState.searchValue}/> 
         {/if}
-        <span>{DriveState.groupCount}</span>
+        
         <div id="groups" >
             <!-- Note: Each group is transitioned in and can be copied -->
             {#each DriveState.filteredGroups as group (group) }
@@ -89,7 +91,6 @@
         display: flex;
         gap: 0.3rem;
         transition: 0.5s ease;
-        margin-top: 0.5rem;
         padding: 0.5rem;
         flex-wrap: wrap;
         max-height: 150px;
@@ -130,6 +131,7 @@
 
     section#groups {
         text-align: left;
+        padding-top: 0.5rem;
     }
     
     a {

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
+	import Drive from "$lib/components/cards/Drive.svelte";
 	import { onMount } from "svelte";
 
 
@@ -24,25 +25,30 @@
 
 </script>
 
-{#await userDrives}
-    <div>Fetching Drives</div>
-{:then drives}
-    {#each drives as drive}
-        <div>
-            <span>{drive.drive}</span>
-            {#each drive.groups as group}
-                <span>{group}</span>
-            {/each}
-        </div>
-        
-    {/each}
+<section>
 
-{:catch error}
-    {console.log(error)}
-    
-{/await}
+    {#await userDrives}
+        <div>Fetching Drives</div>
+    {:then drives}
+        {#each drives as drive, idx}
+        <Drive item={drive} {idx}/>
+            
+        {/each}
+
+    {:catch error}
+        {console.log(error)}
+    {/await}
+
+</section>
 
 
 <style>
+
+    section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
 
 </style>

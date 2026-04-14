@@ -27,13 +27,13 @@ func searchRoutes(mux *mux.Router) {
 		{
 			methods{"GET"},
 			"/api/search/groups",
-			http.HandlerFunc(handlers.SearchUsers),
+			http.HandlerFunc(handlers.SearchGroups),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{
 			methods{"GET"},
 			"/api/search/printers",
-			http.HandlerFunc(handlers.SearchUsers),
+			http.HandlerFunc(handlers.SearchPrinters),
 			middleware.Middleware{middleware.IsAuthorized, middleware.CorsHandler},
 		},
 		{

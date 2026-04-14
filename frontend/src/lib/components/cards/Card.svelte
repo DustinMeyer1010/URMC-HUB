@@ -10,14 +10,14 @@
     } : {
         header: Snippet,
         body: Snippet,
-        idx: number,
+        idx?: number,
         children?: Snippet,
     } = $props()
 
 </script>
 
 
-<div style={`--delay: ${Math.min(idx * 50, 1000)}ms`}>
+<div style={`--delay: ${Math.min(idx ?? 0 * 50, 1000)}ms`}>
     <header>
         {@render header()}
     </header>
@@ -66,6 +66,7 @@
             transform: translateY(0);
         }
     }
+
 
 
 

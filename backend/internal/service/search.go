@@ -27,7 +27,7 @@ func SearchAllUsers(searchValue string, attributes ...string) ([]byte, error) {
 	return jsonData, nil
 }
 
-func SearchAllGroupsNew(searchValue string, attributes ...string) ([]byte, error) {
+func SearchAllGroups(searchValue string, attributes ...string) ([]byte, error) {
 	groups := new([]map[string][]string)
 	cError := ad.SearchAllGroupsNew(groups, searchValue, attributes...)
 

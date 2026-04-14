@@ -70,7 +70,7 @@
         background: var(--color-surface);
         border: none;
         height: 30px;
-        width: 100%;
+        width: 30%;
         border-radius: 8px;
         color: var(--color-text);
         padding: 10px;
@@ -85,9 +85,8 @@
         gap: 1rem;
         justify-content: center;
         align-items: center;
-        width: 50%;
-        padding: 0.5em;
-        border-radius: 5px;
+        width: 100%;
+        padding: 1em;
         background: var(--color-bg);
         backdrop-filter: blur(20px);
     }

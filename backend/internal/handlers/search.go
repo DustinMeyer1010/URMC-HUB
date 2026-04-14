@@ -56,7 +56,7 @@ func SearchGroups(w http.ResponseWriter, r *http.Request) {
 		attributes = []string{"*"}
 	}
 
-	data, cError := service.SearchAllGroupsNew(searchValue, attributes...)
+	data, cError := service.SearchAllGroups(searchValue, attributes...)
 
 	if e := errs.IsApiError(cError); e != nil {
 		http.Error(w, e.Type, e.StatusCode)

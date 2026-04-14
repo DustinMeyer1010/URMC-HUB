@@ -4,6 +4,7 @@
 	import About from "./views/About.svelte";
 	import Drives from "./views/Drives.svelte";
 	import type { PageData } from "./$types";
+	import Add from "./views/Add.svelte";
 
     let section: "PROFILE" | "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE" = $state("GROUPS")
 
@@ -45,7 +46,7 @@
             {:else if section == "DRIVE"}
                 <Drives {userDN} />
             {:else if section == "ADD"}
-                <span>No implemented</span>
+                <Add {userDN} />
             {/if}
         </div>
     </section>
@@ -93,6 +94,7 @@
     div#left {
         flex-basis: 40%;
     }
+    
 
     button {
         font-weight: bold;
@@ -129,6 +131,19 @@
 
     @media (max-width: 700px) {
         nav {
+            width: 100%;
+        }
+
+        section {
+            flex-direction: column;
+            padding: 0.3rem;
+        }
+
+        div#left {
+            flex-basis: 20%;
+        }
+
+        div#right {
             width: 100%;
         }
 
