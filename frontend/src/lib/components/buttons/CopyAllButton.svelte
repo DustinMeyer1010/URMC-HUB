@@ -65,7 +65,7 @@
 
     button.copy-all img {
         grid-area: 1/1;
-        height: 25px;
+        height: 30px;
     }
 
     button:hover::after {

@@ -83,8 +83,6 @@ func GetUserGroups(w http.ResponseWriter, r *http.Request) {
 	data := make([]byte, 0)
 	var cError error = nil
 
-	fmt.Println(len(attributes))
-
 	if len(attributes) == 0 {
 		data, cError = service.GetUserGroups(dn, "samaccountname", "information", "dn", "description", "cn")
 	} else {
@@ -129,9 +127,7 @@ func GroupAddToUser(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(err)
 
-	// NOTE: This should not return and error because all modify request will
-	// have the reason on why or why not it was added
-	data, _ := service.GroupAddToUser(dn, userModify.GroupDN)
+	data := service.GroupAddToUser(dn, userModify.GroupDN)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
@@ -143,11 +139,18 @@ func GroupRemoveFromUser(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	dn := query.Get("dn")
 
-	fmt.Println(dn)
+	var userModify models.UserModifyRequest
+
+	// TODO: Handle this error
+	err := utils.GatherBodyDetails(r.Body, &userModify)
+
+	fmt.Println(err)
+
+	data := service.GroupRemoveFromUser(dn, userModify.GroupDN)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("Still Being Implemented"))
+	w.Write(data)
 }
 
 /*

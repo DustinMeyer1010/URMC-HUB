@@ -44,13 +44,13 @@
 <style>
 
     button#title {
-        font-size: 20px;
+        font-size: 24px;
     }
 
 
     b#drive-group {
         margin-bottom: 0.5rem;
-        font-size: 15px;
+        font-size: 20px;
     }
 
 
@@ -59,7 +59,7 @@
     }
 
     button {
-        font-size: 15px;
+        font-size: 20px;
         margin: 0;
         padding: 0.2rem;
         text-align: left;

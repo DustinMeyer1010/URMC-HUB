@@ -2,11 +2,12 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
+	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	"github.com/LostProgrammer1010/URMC-HUB/internal/utils"
+	"github.com/go-ldap/ldap/v3"
 )
 
 // Find user based on the dn given and return attributes mapped to their values.
@@ -91,28 +92,54 @@ func GetUserLockoutStatus(dn string, attributes ...string) []byte {
 	return jsonData
 }
 
-func GroupAddToUser(userDN, groupDN string) ([]byte, error) {
+func GroupAddToUser(userDN, groupDN string) []byte {
 
 	err := ad.GroupAddToUser(userDN, groupDN)
 
-	if err != nil {
-		fmt.Println(err)
-		return []byte("group was not added"), err
+	var results models.UserModifyResults = models.UserModifyResults{GroupDN: groupDN, Successful: true, ErrorMessage: "Group Added"}
+
+	if ldapError, ok := err.(*ldap.Error); ok {
+		results.Successful = false
+		switch ldapError.ResultCode {
+		case ldap.LDAPResultEntryAlreadyExists:
+			results.ErrorMessage = "Group already exist"
+		case ldap.LDAPResultInsufficientAccessRights:
+			results.ErrorMessage = "Insufficent Access"
+		case ldap.LDAPResultUnwillingToPerform:
+			results.ErrorMessage = "Unwilling to Perform"
+		default:
+			results.ErrorMessage = err.Error()
+		}
 	}
 
-	return []byte("group was added"), nil
+	jsonData, _ := json.Marshal(&results)
+
+	return jsonData
 
 }
 
-func GroupRemoveFromUser(userDN, groupDN string) ([]byte, error) {
+func GroupRemoveFromUser(userDN, groupDN string) []byte {
+	var results models.UserModifyResults = models.UserModifyResults{GroupDN: groupDN, Successful: true, ErrorMessage: "Group Removed"}
+
 	err := ad.GroupRemoveFromUser(userDN, groupDN)
 
-	if err != nil {
-		fmt.Println(err)
-		return []byte(""), err
+	if ldapError, ok := err.(*ldap.Error); ok {
+		results.Successful = false
+		switch ldapError.ResultCode {
+		case ldap.LDAPResultEntryAlreadyExists:
+			results.ErrorMessage = "Group already exist"
+		case ldap.LDAPResultInsufficientAccessRights:
+			results.ErrorMessage = "Insufficent Access"
+		case ldap.LDAPResultUnwillingToPerform:
+			results.ErrorMessage = "Not a Member of Group"
+		default:
+			results.ErrorMessage = err.Error()
+		}
 	}
 
-	return []byte("group was added"), nil
+	jsonData, _ := json.Marshal(&results)
+
+	return jsonData
 }
 
 /*

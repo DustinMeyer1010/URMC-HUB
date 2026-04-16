@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/LostProgrammer1010/URMC-HUB/internal/ad"
-	"github.com/LostProgrammer1010/URMC-HUB/internal/models"
 	excel "github.com/xuri/excelize/v2"
 )
 
@@ -75,6 +74,7 @@ func createExcelFile(single []ad.BulkSearchResult, duplicates [][]ad.BulkSearchR
 
 }
 
+/*
 func CreateAllMembersExcel(members []models.UserSimpleInfo) *excel.File {
 
 	f := excel.NewFile()
@@ -102,3 +102,4 @@ func CreateAllMembersExcel(members []models.UserSimpleInfo) *excel.File {
 	return f
 
 }
+*/

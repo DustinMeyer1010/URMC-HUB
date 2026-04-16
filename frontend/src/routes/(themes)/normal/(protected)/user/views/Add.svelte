@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Group from "$lib/components/cards/Group.svelte";
+	import { pullNameFromDN } from "$lib/parsers/ou";
 	import { onMount } from "svelte";
 
     let { userDN } : {userDN: string} = $props()
@@ -7,11 +8,15 @@
     let groups: Promise<any> = $state(new Promise(() => {}))
     let commonGroups: string[] = ["ISDG_CTX_eRecord", "ISDG_CTX_eRecord2", "ISDU_CitrixAccessGateway", "ISDU_VPN_GP_FullAccess", "URMC_PACS_CLINICAL", "ISDL_PyxisUser_C", "ISDG_Imprivata_Users", "ISDG_CustomApp_OutboundEx_NewReport"]
     let commonGroupsValues: any[] = $state([])
+    let modificationResult: any = $state({})
+    let messageShow: boolean = $state(false)
 
     async function searchGroups(e: SubmitEvent) {
         e.preventDefault()
 
         if (search.length == 0) {
+            fetchCommonGroups()
+            groups = new Promise(() => {})
             return
         }
         const res = await fetch(`http://localhost:8000/api/search/groups?value=${encodeURIComponent(search)}&attributes=cn,samaccountname,information,description,dn`)
@@ -29,10 +34,13 @@
             body: JSON.stringify({group: groupDN})
         })
 
-        if (!res.ok) {
-            console.log(await res.text())
-            return
-        }
+        setTimeout(() => {
+            messageShow = false
+        }, 3000);
+
+        modificationResult = await res.json()
+        messageShow = true
+
     }
 
     async function fetchCommonGroups() {
@@ -54,10 +62,14 @@
 
 <section>
 
+    {#if messageShow}
+        {@render ResultMessage()}
+    {/if}
     <form onsubmit={searchGroups} action="submit">
         <span>Search: </span> <input type="text" bind:value={search}>
         <button type="submit">Search</button>
     </form>
+
 
 
     <div id="groups" >
@@ -79,9 +91,32 @@
 
 </section>
 
+
+{#snippet ResultMessage()}
+    <div id="message" class:error={!modificationResult.successful}>
+        <span>{modificationResult.errorMessage.toUpperCase()}</span>
+        <span>|</span>
+        <span>{pullNameFromDN(modificationResult.group)}</span>
+    
+    </div>
+{/snippet}
+
 <style>
 
+    div#message {
+        display: flex;
+        gap: 1rem;
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--color-text);
+        border-radius: 5px;
+    }
+
+    div#message.error {
+        border: 1px solid var(--color-error);
+    }
+
     section {
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -99,7 +134,7 @@
         padding: 10px 0px;
         top: 0;
         background: var(--color-bg);
-        z-index: 100;
+        z-index: 50;
     }
 
     form button {
