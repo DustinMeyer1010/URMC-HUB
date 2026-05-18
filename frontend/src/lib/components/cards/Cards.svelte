@@ -18,6 +18,7 @@
         data: Search.Results
     } = $props()
 
+
     
     const FilterMap: Record<string, { items: any[], Component: Component<{item: any, idx: number}> }> = {
         COMPUTERS: { items: data.computers, Component: Computer },

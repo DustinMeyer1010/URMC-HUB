@@ -91,10 +91,11 @@
                     <CopyButton label="USERNAME" value={u.username.length > 0 ? u.username.join() : "NA"} category="list-item"/>
                     <CopyButton label="NETID" value={u.netid.length > 0 ? u.netid.join() : "NA"} category="list-item"/>
                     <CopyButton label="URID" value={u.urid.length > 0 ? u.urid.join() : "NA"} category="list-item"/>
+                    <CopyButton label="EMAIL" value={u.email.length > 0 ? u.email.join() : "NA"} category="list-item"/>
                     <CopyButton label="PHONE" value={u.phone.length > 0 ? u.phone.join() : "NA"} category="list-item"/>
                     <CopyButton label="DEPARTMENT" value={u.department.length > 0 ?  u.department.join() : "NA"} category="list-item"/>
                     <CopyButton label="RELATIONSHIP" value={u.relationship.length > 0 ? u.relationship.join(" | ") : "NA"} category="list-item"/>
-                    <CopyButton label="LASTPASSWORDSET" value={convertToReadableTime(u.pwdlastset[0] ?? "0")} category="list-item"/>    
+                    <CopyButton label="LAST PASSWORD SET" value={convertToReadableTime(u.pwdlastset[0] ?? "0")} category="list-item"/>    
                     <CopyButton label="OU" value={readableDN(u.dn[0]) ?? "NA"} category="list-item"/>
                 </div>
             {/snippet}

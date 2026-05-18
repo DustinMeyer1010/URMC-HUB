@@ -1,20 +1,22 @@
 <script lang="ts">
 
-    import Search from '$lib/components/search/Search.svelte'
     import Filters from '$lib/components/search/Filters.svelte'
     import Cards from '$lib/components/cards/Cards.svelte';
 
 	import { onMount } from 'svelte';
 	import CardLoading from '$lib/components/loading/CardLoading.svelte';
 	import { SearchStateClass } from './state.svelte';
+	import type { Search as S } from '$lib/types/search';
+	import Search from '$lib/components/search/Search.svelte';
 
 
-    let SearchState: SearchStateClass = new SearchStateClass()
+    let {data} : {data: {searchValue: string, filter: S.Filter}} = $props()
+
+    let SearchState: SearchStateClass = new SearchStateClass(data.filter, data.searchValue)
 
 
     onMount(async () => {
-        SearchState.GetURLParams()
-        SearchState.SwitchFilter(SearchState.filter)
+        SearchState.SwitchFilter(data.filter)
         SearchState.Search()
     })
 
@@ -47,11 +49,8 @@
 
     section {
         position: fixed;
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto;
         padding-bottom: 20px;
-        width: fit-content;
+        width: 50%;
         place-items: center;
         gap: 1rem; 
         bottom: 0px;
@@ -61,7 +60,7 @@
     
     @media (max-width: 800px) {
         section {
-            width: 100%;
+            width: 80%;
         }
 
     }

@@ -8,6 +8,9 @@ export function convertToReadableTime(time: number | string): string {
     return date.toLocaleDateString('en-US', {
         month: 'long',
         day: 'numeric',
-        year: 'numeric'
+        year: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
     });
 }

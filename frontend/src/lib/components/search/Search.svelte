@@ -43,6 +43,7 @@
         display: flex;
         flex-wrap: nowrap;
         gap: 1rem;
+        width: 100%;
 
     }
 
@@ -58,6 +59,7 @@
         width: 500px;
         color: var(--color-text);
         transition: 0.3s ease;
+        flex-basis: 80%;
     }
 
     input:focus {
@@ -77,6 +79,7 @@
         font-weight: bold;
         color: var(--color-text);
         transition: 0.3s ease;
+        flex-basis: 20%;
     }
 
     button:hover {
@@ -85,21 +88,6 @@
         inset 5px 5px 10px 2px rgba(0,0,0,0.5);
     }
 
-    @media (max-width: 601px) {
 
-        input {
-            width: 200px;
-        }
-    }
 
-    @media (max-width: 400px) {
-
-        input {
-            width: 150px;
-        }
-
-        button {
-            padding: 0 0.2rem;
-        }
-    }
 </style>

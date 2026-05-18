@@ -43,7 +43,7 @@ export class UserStateClass {
     })
 
     pageLink: string = $derived.by(() => {
-      return `/normal/user?dn=${encodeURIComponent(this.dn)}&section=PROFILE`  
+      return `/normal/user?dn=${encodeURIComponent(this.dn)}&section=GROUPS`  
     })
 
     copyTemplate: string = $derived.by(() => {

@@ -4,6 +4,8 @@
 	import PageLoading from "$lib/components/loading/PageLoading.svelte";
 	import { pullNameFromDN } from "$lib/parsers/ou";
 	import { onMount } from "svelte";
+    import type { Group as g } from "$lib/types/group";
+	import { Icons } from "$lib/managers/icons";
 
 
 
@@ -13,20 +15,20 @@
         userDN: string
     } = $props()
 
-    let userGroupPromise: Promise<any> = $state(new Promise(() => {}))
+    let userGroupPromise: Promise<g.CardInfo[]> = $state(new Promise(() => {}))
     let searchFilter: string = $state("")
-    let allGroups: any = $state([])
+    let allGroups: g.CardInfo[] = $state([])
 
     let modificationResult: any = $state({})
     let messageShow: boolean = $state(false)
 
 
-    let filteredGroups: any = $derived.by(() => {
+    let filteredGroups: g.CardInfo[] = $derived.by(() => {
         if (searchFilter == "") {
             return allGroups
         }
         console.log(searchFilter)
-        return allGroups.filter((group: any) => group.cn.join().toLowerCase().includes(searchFilter))
+        return allGroups.filter((group: g.CardInfo) => group.cn.join().toLowerCase().includes(searchFilter.toLocaleLowerCase()))
     })
 
 
@@ -78,7 +80,7 @@
         </div>
         {#each filteredGroups as group, idx (group.dn)}
             <Group item={group} {idx}>
-                <button id="group" onclick={() => removeGroup(group.dn.join())}>Remove</button>
+                <button id="group" aria-label="Remove Group" onclick={() => removeGroup(group.dn.join())}><img src={Icons.TRASH_CAN} alt=""></button>
             </Group>
         {/each}
     {:catch error}
@@ -121,8 +123,19 @@
 
     button#group {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: 8px;
+        right: 8px;
+        background: none;
+        border: none;
+    }
+
+    button#group img {
+        width: 25px;
+        transition: 0.3s ease-in-out;
+    }
+
+    button#group:hover img {
+        transform: scale(1.1);
     }
 
     input {

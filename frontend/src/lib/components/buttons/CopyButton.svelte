@@ -9,9 +9,11 @@
     let {
         value,
         label = "",
+        style = "",
         category = "list-item",
     } : {
         value: string
+        style?: string
         label?: string
         category?: kind
     } = $props()
@@ -23,7 +25,7 @@
 
 </script>
 
-<button id={category} onclick={() => Copy.ToClipboard(updatedValue, copyState)} title="Click to Copy">
+<button {style} id={category} onclick={() => Copy.ToClipboard(updatedValue, copyState)} title="Click to Copy">
     {#if category == "title" || category == "drive-group"}
         <b id={category}>
             <span>{updatedValue == copyState.copied ? "COPIED" : updatedValue}</span>
@@ -43,14 +45,13 @@
 
 <style>
 
-    button#title {
-        font-size: 24px;
-    }
-
 
     b#drive-group {
         margin-bottom: 0.5rem;
-        font-size: 20px;
+    }
+
+    button#title{
+        font-size: clamp(8px, 2vw + 1rem, 20px);
     }
 
 
@@ -71,21 +72,9 @@
         word-break: keep-all;
         width: 100%;
         transition: 0.3s;
+        font-size: clamp(15px, 2vw + 1rem, 18px);
     }
 
     
 
-    @media (max-width: 750px) {
-        button {
-            display: flex;
-            gap: 5px;
-            flex-direction: column;
-            font-size: 15px;
-        }
-
-        button#title {
-            font-size: 18px;
-        }
-
-    }
 </style>

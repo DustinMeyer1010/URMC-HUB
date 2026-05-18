@@ -5,15 +5,22 @@
 	import Drives from "./views/Drives.svelte";
 	import type { PageData } from "./$types";
 	import Add from "./views/Add.svelte";
+	import { goto } from "$app/navigation";
 
-    let section: "PROFILE" | "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE" = $state("GROUPS")
+    let section: "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE" = $state("GROUPS")
 
     let { data } : { data: PageData } = $props();
 
     const userDN = data.userDN
-
-    function changeSection(newSection: "PROFILE" | "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE") {
+    section = data.section as "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE"
+    $inspect(userDN)
+    function changeSection(newSection: "GROUPS" | "ADD" | "LOCKOUT" | "DRIVE") {
+        updateFilterParms(newSection)
         section = newSection
+    }
+
+    function updateFilterParms(filter: string) {
+        goto(`?dn=${encodeURIComponent(userDN)}&filter=${filter}`, { replaceState: true, keepFocus: true, noScroll: true })
     }
 
     $effect(() =>{ 
@@ -25,6 +32,8 @@
     })
 
 </script>
+
+
 
 <!-- * Waits for the response for the server to render content -->
  <main>

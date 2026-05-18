@@ -1,4 +1,3 @@
-<!-- Add: This component should allow for children. Needed for adding extra buttons like add, remove, etc -->
 
 <script lang="ts">
 	import type { User } from "$lib/types/user";
@@ -56,10 +55,6 @@
 </Card>
 
 
-
-<!-- Refactor: This should be done based on the DN rather than a person username -->
-<!-- * Renders a link to users page -->
-<!-- Note: If user does not have username user page will not working so no link is generated -->
 {#snippet Link()}
     <a 
         href={UserState.username != "" ? UserState.pageLink : null}
@@ -87,10 +82,10 @@
                 <CopyButton value={UserState.urid} label={"URID"}/>
             {/if}
             {#if UserState.email}
-                <CopyButton value={UserState.email} label={"EMAIL"}/>
+                <CopyButton  value={UserState.email} label={"EMAIL"}/>
             {/if}
             {#if UserState.readableDN}
-                <CopyButton value={UserState.readableDN} label={"DN"}/>
+                <CopyButton  value={UserState.readableDN} label={"DN"}/>
             {/if}
         </div>
     </div>

@@ -82,7 +82,7 @@
     span {
         text-align: center;
         width: 100%;
-        font-size: 20px;
+        font-size: 18px;
     }
 
     button {

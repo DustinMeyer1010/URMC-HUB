@@ -77,7 +77,7 @@
 <style>
     nav {
         display: flex;
-        z-index: 10;
+        z-index: 101;
         justify-content: space-between;
         align-items: center;
         position: sticky;

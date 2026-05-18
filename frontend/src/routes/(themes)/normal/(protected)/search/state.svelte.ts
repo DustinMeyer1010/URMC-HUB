@@ -19,8 +19,9 @@ export class SearchStateClass {
     data: Search.Results = $state(emptyResults)
 
 
-    constructor() {
-        $inspect(this.currentFilterItems)
+    constructor(filter: Search.Filter, searchValue: string) {
+        this.filter = filter
+        this.searchValue = searchValue
     }
 
     currentFilterItems: Results = $state([])
@@ -52,27 +53,6 @@ export class SearchStateClass {
         window.scrollTo(0,0)
         this.SetURLParams()
     };
-
-    GetURLParams = () => {
-        let urlParams = page.url.searchParams
-        this.searchValue = urlParams.get("search") ?? ""
-
-        let filter = urlParams.get("filter")?.toUpperCase() ?? "USERS"
-        this.filter = Search.isValidFilter(filter) ? filter as Search.Filter : "USERS"
-
-        if (this.filter == "USERS") {
-            filter = localStorage.getItem("filter")?.toUpperCase() ?? "USERS"
-            this.filter = Search.isValidFilter(filter) ? filter as Search.Filter : "USERS"
-        }
-
-        if (this.searchValue == "") {
-            this.searchValue = localStorage.getItem("search") ?? ""
-        }
-        this.searchValue = decodeURIComponent(this.searchValue)
-
-
-
-    }
 
     SetURLParams() {
         localStorage.setItem("filter", this.filter)
